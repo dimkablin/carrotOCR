@@ -4,11 +4,11 @@ import numpy as np
 
 
 def cut_image(image: Image.Image, k=1.4142) -> Image.Image:
-    """ Change size of image from (w, h) to (new_w, k * new_w) where new_w equals to min(w, h)
+    """ Changing size of the image from (w, h) to (new_w, k * new_w) where new_w equals to min(w, h)
 
-    :param image: Image.Image object
-    :param k: a coefficient that shows how much longer the length is than the width
-    :return: Image.Image object
+    :param image: An Image.Image object representing input image
+    :param k: A coefficient that shows how much longer the length is than the width
+    :return: An Image.Image object
     """
 
     assert len(image.size) == 2, f"image dim has to be equal to 2, but image.shape has {len(image.size)} dim."
@@ -23,8 +23,8 @@ def cut_image(image: Image.Image, k=1.4142) -> Image.Image:
 def check_exif(image: Image.Image) -> Image.Image:
     """ Checking exif attribute
 
-    :param image: Image.Image object
-    :return: Image.Image a rotated object according to the attribute
+    :param image: An Image.Image object
+    :return: An Image.Image rotated object according to the attribute
     """
     if hasattr(image, '_getexif') and image._getexif() is not None:
         exif = dict(image._getexif().items())
@@ -42,8 +42,8 @@ def check_exif(image: Image.Image) -> Image.Image:
 def open_image(url: str) -> Image.Image:
     """ Open an image
 
-    :param url: str path to the image file
-    :return: Image.Image object
+    :param url: A string object representing the path to the image file
+    :return: An Image.Image object representing the output image.
     """
 
     image = Image.open(url)

@@ -13,7 +13,6 @@ numpy
 tqdm
 torchvision
 transformers
-easyocr
 pytesseract
 opencv-python
 Pillow
