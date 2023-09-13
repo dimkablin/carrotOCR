@@ -106,7 +106,7 @@ def denoising(image: np.ndarray,
 
 
 def threshold(image: np.ndarray,
-              thresh: int = 195,
+              thresh: int = 220,
               maxval: int = 255) -> np.ndarray:
     """ Apply thresholding to the input image.
 
