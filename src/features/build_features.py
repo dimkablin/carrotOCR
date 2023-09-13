@@ -62,6 +62,17 @@ def PILtoNumpy(image: Image.Image) -> np.ndarray:
     return np.array(image)
 
 
+def grayscale(image: Image.Image) -> Image.Image:
+    """ Converting image from _ to GRAY
+
+    :param image: image (Image.Image): The input image.
+    :return: A grayscale version of the input image.
+    """
+
+    image = image.convert('L')
+    return image
+
+
 def blur(image: np.ndarray,
          kernel: tuple[int, int] = (3, 3),
          sigma: int = 3) -> np.ndarray:
