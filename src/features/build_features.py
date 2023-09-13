@@ -1,4 +1,10 @@
-# pylint: disable=W,R
+""" Image Processing Utilities
+
+This module contains utility functions for image processing tasks.
+You can see an example of usage in 'notebooks/preprocessing-example.ipynb'
+"""
+
+# pylint: disable=W,R,E
 
 from PIL import Image
 import cv2
