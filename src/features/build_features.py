@@ -124,16 +124,40 @@ def clahe(image: np.ndarray,
 
 def threshold(image: np.ndarray,
               thresh: int = 220,
-              maxval: int = 255) -> np.ndarray:
+              maxval: int = 255,
+              threshold_type: int = cv2.THRESH_BINARY) -> np.ndarray:
     """ Apply thresholding to the input image.
 
     :param image: A NumPy array representing the input image.
     :param thresh: The threshold value used for binarization. Pixels below this value become 0.
     :param maxval: The maximum value assigned to pixels that exceed the threshold.
+    :param threshold_type: The thresholding type
     :return: A NumPy array representing the thresholded image.
     """
 
-    _, image = cv2.threshold(image, thresh, maxval, cv2.THRESH_BINARY)
+    _, image = cv2.threshold(image, thresh, maxval, threshold_type)
+    return image
+
+
+def adaptive_threshold(image: np.ndarray,
+                       maxval: int = 255,
+                       adaptive_method: int = cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+                       threshold_type: int = cv2.THRESH_BINARY,
+                       blockSize: int = 11,
+                       C: float = 2) -> np.ndarray:
+    """ Apply adaptive thresholding to the input image.
+
+    :param image: A NumPy array representing the input image.
+    :param maxval: The maximum pixel value used for thresholding.
+    :param adaptive_method: The adaptive thresholding method to use (e.g., cv2.ADAPTIVE_THRESH_GAUSSIAN_C).
+    :param threshold_type: The type of thresholding (e.g., cv2.THRESH_BINARY).
+    :param blockSize: The blockSize determines the size of the neighbourhood area
+    :param C: C is a constant that is subtracted from the mean or weighted sum of the neighbourhood pixels.
+
+    :return: A NumPy array representing the thresholded image.
+    """
+
+    image = cv2.adaptiveThreshold(image, maxval, adaptive_method, threshold_type, blockSize, C)
     return image
 
 
@@ -177,4 +201,19 @@ def invert(image: np.ndarray) -> np.ndarray:
     """
 
     image = cv2.bitwise_not(image)
+    return image
+
+
+def blend(image1: np.ndarray,
+          image2: np.ndarray,
+          alpha: float = 0.5) -> np.ndarray:
+    """
+
+    :param image1:
+    :param image2:
+    :param alpha:
+    :return:
+    """
+
+    image = cv2.addWeighted(image1, 1 - alpha, image2, alpha, 0)
     return image
