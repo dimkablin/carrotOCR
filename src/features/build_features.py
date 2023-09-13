@@ -89,7 +89,7 @@ def blur(image: np.ndarray,
 
 
 def denoising(image: np.ndarray,
-              kernel: np.ndarray = np.ones((2, 2), np.uint8),
+              kernel: np.ndarray = np.ones((3, 3), np.uint8),
               iterations: int = 1) -> np.ndarray:
     """ Apply denoising to the input image.
 
@@ -102,6 +102,23 @@ def denoising(image: np.ndarray,
 
     image = cv2.erode(image, kernel, iterations=iterations)
     image = cv2.dilate(image, kernel, iterations=iterations)
+    return image
+
+
+def clahe(image: np.ndarray,
+          clipLimit: int = 2,
+          tileGridSize: tuple[int, int] = (8, 8)) -> np.ndarray:
+    """ Apply clahe histogram equalization
+
+    :param image: The input image (grayscale).
+    :param clipLimit: The contrast limit for CLAHE.
+    :param tileGridSize: The size of the grid for histogram equalization. Default is (8, 8).
+    :return: The contrast-enhanced image.
+    """
+
+    clahe_ = cv2.createCLAHE(clipLimit, tileGridSize)
+    image = clahe_.apply(image)
+
     return image
 
 
@@ -133,4 +150,31 @@ def contrast_enhancement(image: np.ndarray) -> np.ndarray:
                                 beta=-min_val * (255.0 / (max_val - min_val))
                                 )
 
+    return image
+
+
+def sobel_filter(image: np.ndarray,
+                 ksize: int = 3) -> np.ndarray:
+    """ Apply Sobel filter to the input image
+
+    :param image: A NumPy array representing the input image
+    :param ksize: The kernel size of sobel filter
+    :return: A NumPy array representing edge-enhanced image
+    """
+
+    sobel_x = cv2.Sobel(image, cv2.CV_64F, 1, 0, ksize)
+    sobel_y = cv2.Sobel(image, cv2.CV_64F, 0, 1, ksize)
+    image = cv2.addWeighted(sobel_x, 0.5, sobel_y, 0.5, 0)
+
+    return image
+
+
+def invert(image: np.ndarray) -> np.ndarray:
+    """ Invert thr colors of the input image
+
+    :param image: A NumPy array representing the input image.
+    :return: A NumPy array representing the inverted image.
+    """
+
+    image = cv2.bitwise_not(image)
     return image
