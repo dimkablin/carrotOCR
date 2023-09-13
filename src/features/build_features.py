@@ -1,3 +1,5 @@
+# pylint: disable=W,R
+
 from PIL import Image
 import cv2
 import numpy as np
@@ -81,7 +83,8 @@ def blur(image: np.ndarray,
 
     :param image: The input image as a NumPy array.
     :param kernel: A tuple specifying the size of the Gaussian blur kernel (width, height).
-    :param sigma: The standard deviation of the Gaussian blur. Higher values result in stronger blur.
+    :param sigma: The standard deviation of the Gaussian blur.
+        Higher values result in stronger blur.
     :return: The blurred image as a NumPy array.
     """
 
@@ -96,7 +99,7 @@ def denoising(image: np.ndarray,
 
     :param image: A NumPy array representing the input image.
     :param kernel: A NumPy array representing the kernel for erosion and dilation operations.
-                   By default, it's a 2x2 matrix with data type np.uint8.
+        By default, it's a 2x2 matrix with data type np.uint8.
     :param iterations: The number of times the erosion and dilation operations are applied.
     :return: A NumPy array representing the denoised image.
     """
@@ -145,20 +148,27 @@ def adaptive_threshold(image: np.ndarray,
                        adaptive_method: int = cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
                        threshold_type: int = cv2.THRESH_BINARY,
                        block_size: int = 11,
-                       c: float = 2) -> np.ndarray:
+                       c_var: float = 2) -> np.ndarray:
     """ Apply adaptive thresholding to the input image.
 
     :param image: A NumPy array representing the input image.
     :param maxval: The maximum pixel value used for thresholding.
-    :param adaptive_method: The adaptive thresholding method to use (e.g., cv2.ADAPTIVE_THRESH_GAUSSIAN_C).
+    :param adaptive_method: The adaptive thresholding method to use
+        (e.g., cv2.ADAPTIVE_THRESH_GAUSSIAN_C).
     :param threshold_type: The type of thresholding (e.g., cv2.THRESH_BINARY).
     :param block_size: The blockSize determines the size of the neighbourhood area
-    :param c: C is a constant that is subtracted from the mean or weighted sum of the neighbourhood pixels.
+    :param c_var: C is a constant that is subtracted from the mean or weighted
+        sum of the neighbourhood pixels.
 
     :return: A NumPy array representing the thresholded image.
     """
 
-    image = cv2.adaptiveThreshold(image, maxval, adaptive_method, threshold_type, block_size, c)
+    image = cv2.adaptiveThreshold(image,
+                                  maxval,
+                                  adaptive_method,
+                                  threshold_type,
+                                  block_size,
+                                  c_var)
     return image
 
 
