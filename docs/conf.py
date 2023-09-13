@@ -1,3 +1,5 @@
+# pylint: disable-all
+
 # -*- coding: utf-8 -*-
 #
 # TatneftIT OCR documentation build configuration file, created by
