@@ -1,4 +1,4 @@
-import PIL.Image as Image
+from PIL import Image
 import cv2
 import numpy as np
 
@@ -11,7 +11,8 @@ def cut_image(image: Image.Image, k=1.4142) -> Image.Image:
     :return: An Image.Image object
     """
 
-    assert len(image.size) == 2, f"image dim has to be equal to 2, but image.shape has {len(image.size)} dim."
+    assert len(image.size) == 2, \
+        f"image dim has to be equal to 2, but image.shape has {len(image.size)} dim."
 
     width, height = image.size
     height = int(min(k * width, height))
