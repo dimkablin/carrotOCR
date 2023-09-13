@@ -52,7 +52,7 @@ def open_image(url: str) -> Image.Image:
     return image
 
 
-def PILtoNumpy(image: Image.Image) -> np.ndarray:
+def pil_to_numpy(image: Image.Image) -> np.ndarray:
     """ Convert a PIL image to a NumPy array.
 
     :param image: An Image.Image object representing the input image.
@@ -106,17 +106,17 @@ def denoising(image: np.ndarray,
 
 
 def clahe(image: np.ndarray,
-          clipLimit: int = 2,
-          tileGridSize: tuple[int, int] = (8, 8)) -> np.ndarray:
+          clip_limit: int = 2,
+          tile_grid_size: tuple[int, int] = (8, 8)) -> np.ndarray:
     """ Apply clahe histogram equalization
 
     :param image: The input image (grayscale).
-    :param clipLimit: The contrast limit for CLAHE.
-    :param tileGridSize: The size of the grid for histogram equalization. Default is (8, 8).
+    :param clip_limit: The contrast limit for CLAHE.
+    :param tile_grid_size: The size of the grid for histogram equalization. Default is (8, 8).
     :return: The contrast-enhanced image.
     """
 
-    clahe_ = cv2.createCLAHE(clipLimit, tileGridSize)
+    clahe_ = cv2.createCLAHE(clip_limit, tile_grid_size)
     image = clahe_.apply(image)
 
     return image
@@ -143,21 +143,21 @@ def adaptive_threshold(image: np.ndarray,
                        maxval: int = 255,
                        adaptive_method: int = cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
                        threshold_type: int = cv2.THRESH_BINARY,
-                       blockSize: int = 11,
-                       C: float = 2) -> np.ndarray:
+                       block_size: int = 11,
+                       c: float = 2) -> np.ndarray:
     """ Apply adaptive thresholding to the input image.
 
     :param image: A NumPy array representing the input image.
     :param maxval: The maximum pixel value used for thresholding.
     :param adaptive_method: The adaptive thresholding method to use (e.g., cv2.ADAPTIVE_THRESH_GAUSSIAN_C).
     :param threshold_type: The type of thresholding (e.g., cv2.THRESH_BINARY).
-    :param blockSize: The blockSize determines the size of the neighbourhood area
-    :param C: C is a constant that is subtracted from the mean or weighted sum of the neighbourhood pixels.
+    :param block_size: The blockSize determines the size of the neighbourhood area
+    :param c: C is a constant that is subtracted from the mean or weighted sum of the neighbourhood pixels.
 
     :return: A NumPy array representing the thresholded image.
     """
 
-    image = cv2.adaptiveThreshold(image, maxval, adaptive_method, threshold_type, blockSize, C)
+    image = cv2.adaptiveThreshold(image, maxval, adaptive_method, threshold_type, block_size, c)
     return image
 
 
