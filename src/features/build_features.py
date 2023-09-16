@@ -224,12 +224,12 @@ def invert(image: np.ndarray) -> np.ndarray:
 def blend(image1: np.ndarray,
           image2: np.ndarray,
           alpha: float = 0.5) -> np.ndarray:
-    """
+    """ Averaging two images with a coefficient 1-alpha and alpha
 
-    :param image1:
-    :param image2:
-    :param alpha:
-    :return:
+    :param image1: The first image
+    :param image2: The second image
+    :param alpha: The coefficient that has to be between 0 and 1
+    :return: A np.ndarray object that represent average image
     """
 
     image = cv2.addWeighted(image1, 1 - alpha, image2, alpha, 0)
