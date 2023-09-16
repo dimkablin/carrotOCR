@@ -229,7 +229,7 @@ def blend(image1: np.ndarray,
     :param image1: The first image
     :param image2: The second image
     :param alpha: The coefficient that has to be between 0 and 1
-    :return: A np.ndarray object that represent average image
+    :return: A np.ndarray object representing the average image
     """
 
     image = cv2.addWeighted(image1, 1 - alpha, image2, alpha, 0)
