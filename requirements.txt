@@ -16,5 +16,8 @@ transformers
 pytesseract
 opencv-python
 Pillow
+mmcv
+mmdet
+mmengine
 mmocr
 setuptools
