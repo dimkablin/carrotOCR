@@ -68,7 +68,7 @@ def pil_to_numpy(image: Image.Image) -> np.ndarray:
     :return: A NumPy array representing the image.
     """
 
-    return np.array(image)
+    return np.array(image, dtype=np.uint8)
 
 
 def grayscale(image: Image.Image) -> Image.Image:
