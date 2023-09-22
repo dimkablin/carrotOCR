@@ -1,6 +1,8 @@
 """ mmOCR class initialization """
+
 from mmocr.apis import MMOCRInferencer
 from mmocr.apis.inferencers.base_mmocr_inferencer import InputsType
+from src.utils.utils import get_abspath
 
 
 class MMOCRModel():
@@ -14,6 +16,11 @@ class MMOCRModel():
         self.det = det
         self.rec = rec
         self.device = device
+
+        if 'det_weights' in kwargs:
+            kwargs['det_weights'] = get_abspath(kwargs['det_weights'])
+        if 'rec_weights' in kwargs:
+            kwargs['rec_weights'] = get_abspath(kwargs['rec_weights'])
 
         self.inference = MMOCRInferencer(det=self.det, rec=self.rec, device=self.device, **kwargs)
 
