@@ -1,9 +1,11 @@
 """ Factory Method - Design Pattern """
 
+from abc import ABC
 from models.mmocr.model import MMOCRModel
+from models.ocr_interface import OCR
 
 
-class OCRModelFactory:
+class OCRModelFactory(OCR, ABC):
     """ Factory Method - Design Pattern implementation """
 
     MODEL_MAPPING = {
