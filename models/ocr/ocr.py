@@ -1,6 +1,5 @@
 """ Factory Method - Design Pattern """
-
-from models.mmocr.model import MMOCRModel
+from models.ocr.mmocr.model import MMOCRModel
 
 
 class OCRModelFactory:
@@ -19,10 +18,12 @@ class OCRModelFactory:
 
         if model_class is None:
             raise ValueError("Invalid OCR model type")
-        return model_class()
+        return model_class
 
-    def __str__(self) -> str:
+    @staticmethod
+    def __str__() -> str:
         return str(OCRModelFactory.MODEL_MAPPING.keys())
 
-    def __len__(self) -> int:
+    @staticmethod
+    def __len__() -> int:
         return len(OCRModelFactory.MODEL_MAPPING)

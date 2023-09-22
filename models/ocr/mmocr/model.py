@@ -1,10 +1,9 @@
 """ mmOCR class initialization """
 from mmocr.apis import MMOCRInferencer
 from mmocr.apis.inferencers.base_mmocr_inferencer import InputsType
-from models.ocr_interface import OCR
 
 
-class MMOCRModel(OCR):
+class MMOCRModel():
     """Class for mmOCR"""
     def __init__(self,
                  det: str = 'DBNet',
