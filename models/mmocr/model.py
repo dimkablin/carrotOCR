@@ -1,9 +1,9 @@
 """ mmOCR class initialization """
 from mmocr.apis import MMOCRInferencer
-from mmocr.apis.inferencers.base_mmocr_inferencer import InputsType, PredType
+from mmocr.apis.inferencers.base_mmocr_inferencer import InputsType
 
 
-class MMOCR:
+class MMOCRModel:
     """Class for mmOCR"""
     def __init__(self,
                  det: str = 'DBNet',
@@ -17,7 +17,7 @@ class MMOCR:
 
         self.inference = MMOCRInferencer(det=self.det, rec=self.rec, device=self.device, **kwargs)
 
-    def __call__(self, inputs: InputsType, **kwargs) -> PredType:
+    def __call__(self, inputs: InputsType, **kwargs) -> dict:
         """ Using inference class to predict"""
         pred = self.inference(inputs, **kwargs)
         return pred
