@@ -1,4 +1,5 @@
 """ Factory Method - Design Pattern """
+
 from mmocr.apis import MMOCRInferencer
 from src.utils.utils import get_abspath
 from src.models.ocr_interface import OCR
@@ -51,9 +52,6 @@ class OCRModelFactory:
         return model_class()
 
     @staticmethod
-    def __str__() -> str:
-        return str(OCRModelFactory.MODEL_MAPPING.keys())
-
-    @staticmethod
-    def __len__() -> int:
-        return len(OCRModelFactory.MODEL_MAPPING)
+    def get_models():
+        """ Getter of models name """
+        return OCRModelFactory.MODEL_MAPPING.keys()
