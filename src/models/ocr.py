@@ -1,9 +1,10 @@
 """ Factory Method - Design Pattern """
 from mmocr.apis import MMOCRInferencer
 from src.utils.utils import get_abspath
+from src.models.ocr_interface import OCR
 
 
-class MMOCRModelInited:
+class MMOCRModelInited(OCR):
     """ Initialized mmOCR model """
     def __init__(self):
         self.det = 'DBNet'
@@ -15,7 +16,11 @@ class MMOCRModelInited:
 
         self.device = 'cuda'
 
-        self.model = MMOCRInferencer(det=self.det, rec=self.rec, device=self.device)
+        self.model = MMOCRInferencer(det=self.det,
+                                     det_weights=self.det_weights,
+                                     rec=self.rec_config,
+                                     rec_weights=self.rec_weights,
+                                     device=self.device)
 
     def __call__(self, *args, **kwargs) -> dict:
         """ Using inference class to predict"""
