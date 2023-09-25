@@ -1,4 +1,4 @@
-TatneftIT OCR
+TatneftIT 
 ==============================
 
 Implementation of OCR from open sources for internal tasks of the Tatneft Group.
