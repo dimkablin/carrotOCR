@@ -1,11 +1,16 @@
 """ Factory Method - Design Pattern """
 
+# mmOCR
 from mmocr.apis import MMOCRInferencer
+from pytesseract import Output
+import pytesseract
+import easyocr
+
 from src.utils.utils import get_abspath
 from src.models.ocr_interface import OCR
 
 
-class MMOCRModelInited(OCR):
+class MMOCRInited(OCR):
     """ Initialized mmOCR model """
     def __init__(self):
         self.det = 'DBNet'
@@ -33,13 +38,45 @@ class MMOCRModelInited(OCR):
         return f"MMOCR(det={self.det}, rec={self.rec}, device={self.device})"
 
 
+class PyTesseractInited(OCR):
+    """ Initialized PyTesseract model """
+    def __init__(self):
+        self.local_config_dir = 'models/ocr/pytesseract/rus.traineddata'
+        self.oem = 3
+        self.psm = 6
+        self.config = f"--oem {self.oem} --psm {self.psm} --tessdata-dir {self.local_config_dir}"
+
+    def __call__(self, inputs, *args, **kwargs) -> dict:
+        return pytesseract.image_to_data(inputs,
+                                         lang='rus',
+                                         config=self.config,
+                                         output_type=Output.DICT,
+                                         *args,
+                                         **kwargs)
+
+    def __str__(self):
+        return "PyTesseract OCR"
+
+
+class EasyOCRInited(OCR):
+    """ Initialized EasyOCR model """
+    def __init__(self):
+        self.model = easyocr.easyocr.detection_models
+
+    def __call__(self, *args, **kwargs) -> dict:
+        pass
+
+    def __str__(self):
+        return "EasyOCR"
+
+
 class OCRModelFactory:
     """ Factory Method - Design Pattern implementation """
 
     MODEL_MAPPING = {
-        "mmocr": MMOCRModelInited,
-        "pytesseract": None,
-        "easyocr": None,
+        "mmocr": MMOCRInited,
+        "pytesseract": PyTesseractInited,
+        "easyocr": EasyOCRInited,
     }
 
     @staticmethod
