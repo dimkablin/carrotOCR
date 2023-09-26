@@ -17,6 +17,7 @@ pytesseract
 easyocr
 opencv-python
 Pillow
+openmim
 mmcv
 mmdet
 mmengine
