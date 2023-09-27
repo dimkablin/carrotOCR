@@ -48,11 +48,11 @@ class PyTesseractInited(OCR):
 
     def __call__(self, inputs, *args, **kwargs) -> dict:
         outputs = pytesseract.image_to_data(inputs,
-                                         lang='rus',
-                                         config=self.config,
-                                         output_type=Output.DICT,
-                                         *args,
-                                         **kwargs)
+                                            lang='rus',
+                                            config=self.config,
+                                            output_type=Output.DICT,
+                                            *args,
+                                            **kwargs)
         result = {
             'rec_texts': [],
             'rec_scores': [],
