@@ -9,9 +9,10 @@ awscli
 flake8
 python-dotenv
 torch
-numpy
-tqdm
 torchvision
+torchaudio
+numpy==1.24.4
+tqdm
 transformers
 pytesseract
 easyocr
