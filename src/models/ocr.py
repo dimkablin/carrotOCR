@@ -41,7 +41,7 @@ class MMOCRInited(OCR):
 class PyTesseractInited(OCR):
     """ Initialized PyTesseract model """
     def __init__(self):
-        self.local_config_dir = 'models/ocr/pytesseract/rus.traineddata'
+        self.local_config_dir = 'models/ocr/pytesseract'
         self.oem = 3
         self.psm = 6
         self.config = f"--oem {self.oem} --psm {self.psm} --tessdata-dir {self.local_config_dir}"
