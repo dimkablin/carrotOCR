@@ -16,7 +16,6 @@ tqdm
 transformers
 pytesseract
 easyocr
-dotenv
 opencv-python
 Pillow
 openmim

@@ -16,7 +16,7 @@ default_hooks = dict(
 default_scope = 'mmocr'
 dictionary = dict(
     dict_file=
-    '../models/ocr/mmocr/russian_dict.txt',
+    'models/ocr/mmocr/russian_dict.txt',
     same_start_end=True,
     type='Dictionary',
     with_end=True,
@@ -51,7 +51,7 @@ model = dict(
         dec_gru=False,
         dictionary=dict(
             dict_file=
-            '../models/ocr/mmocr/russian_dict.txt',
+            'models/ocr/mmocr/russian_dict.txt',
             same_start_end=True,
             type='Dictionary',
             with_end=True,

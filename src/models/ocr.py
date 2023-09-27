@@ -14,13 +14,13 @@ class MMOCRInited(OCR):
     """ Initialized mmOCR model """
     def __init__(self):
         self.det = 'DBNet'
-        self.det_weights = get_abspath(r'models\ocr\mmocr\dbnet\dbnet_resnet50-oclip.pth')
+        self.det_weights = get_abspath('models/ocr/mmocr/dbnet/dbnet_resnet50-oclip.pth')
 
         self.rec = 'SAR'
-        self.rec_config = get_abspath(r'models\ocr\mmocr\config.py')
-        self.rec_weights = get_abspath(r'models\ocr\mmocr\sar\epoch_10.pth')
+        self.rec_config = get_abspath('models/ocr/mmocr/config.py')
+        self.rec_weights = get_abspath('models/ocr/mmocr/sar/epoch_10.pth')
 
-        self.device = 'cuda'
+        self.device = 'cpu'
 
         self.model = MMOCRInferencer(det=self.det,
                                      det_weights=self.det_weights,
@@ -31,7 +31,7 @@ class MMOCRInited(OCR):
     def __call__(self, *args, **kwargs) -> dict:
         """ Using inference class to predict"""
         pred = self.model(*args, **kwargs)
-        return pred
+        return pred['predictions']
 
     def __str__(self):
         """ Define the string representation of the MMOCR instance """
@@ -43,16 +43,42 @@ class PyTesseractInited(OCR):
     def __init__(self):
         self.local_config_dir = 'models/ocr/pytesseract'
         self.oem = 3
-        self.psm = 6
+        self.psm = 3
         self.config = f"--oem {self.oem} --psm {self.psm} --tessdata-dir {self.local_config_dir}"
 
     def __call__(self, inputs, *args, **kwargs) -> dict:
-        return pytesseract.image_to_data(inputs,
+        outputs = pytesseract.image_to_data(inputs,
                                          lang='rus',
                                          config=self.config,
                                          output_type=Output.DICT,
                                          *args,
                                          **kwargs)
+        result = {
+            'rec_texts': [],
+            'rec_scores': [],
+            'det_polygons': [],
+            'det_scores': []
+        }
+
+        for i, conf in enumerate(outputs['conf']):
+            # if rec is empty
+            if conf == -1:
+                continue
+
+            x_bbox = outputs['left'][i]
+            y_bbox = outputs['top'][i]
+            width = outputs['width'][i]
+            height = outputs['height'][i]
+
+            result['det_scores'].append(1)
+            result['det_polygons'].append([x_bbox, y_bbox,
+                                           x_bbox + width, y_bbox,
+                                           x_bbox + width, y_bbox + height,
+                                           x_bbox, y_bbox + height])
+            result['rec_scores'].append(conf / 100.)
+            result['rec_texts'].append(outputs['text'][i])
+
+        return result
 
     def __str__(self):
         return "PyTesseract OCR"
