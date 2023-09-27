@@ -81,7 +81,7 @@ class PyTesseractInited(OCR):
         return result
 
     def __str__(self):
-        return "PyTesseract OCR"
+        return f"PyTesseract OCR --oem {self.oem} --psm {self.psm}"
 
 
 class EasyOCRInited(OCR):
