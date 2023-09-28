@@ -20,7 +20,7 @@ def result2show(image, result, cmap=colormaps['summer']) -> None:
     A dictionary with the following keys and value types:
         - 'rec_texts': List of strings
         - 'rec_scores': List of floats
-        - 'det_polygons': List of tuples with four floats each
+        - 'det_polygons': List of tuples [x1 y1 x2 y2 x3 y3 x4 y4] with four floats each
         - 'det_scores': List of floats
 
     """

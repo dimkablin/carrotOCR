@@ -1,4 +1,5 @@
 """ Factory Method - Design Pattern """
+from typing import Any
 
 # mmOCR
 from mmocr.apis import MMOCRInferencer
@@ -28,7 +29,7 @@ class MMOCRInited(OCR):
                                      rec_weights=self.rec_weights,
                                      device=self.device)
 
-    def __call__(self, *args, **kwargs) -> dict:
+    def __call__(self, *args, **kwargs) -> list[dict[str, list[Any]]]:
         """ Using inference class to predict"""
         pred = self.model(*args, **kwargs)
         return pred['predictions']
@@ -43,42 +44,47 @@ class PyTesseractInited(OCR):
     def __init__(self):
         self.local_config_dir = 'models/ocr/pytesseract'
         self.oem = 3
-        self.psm = 3
+        self.psm = 6
         self.config = f"--oem {self.oem} --psm {self.psm} --tessdata-dir {self.local_config_dir}"
+        self.thresh = 0.3
 
-    def __call__(self, inputs, *args, **kwargs) -> dict:
-        outputs = pytesseract.image_to_data(inputs,
-                                            lang='rus',
-                                            config=self.config,
-                                            output_type=Output.DICT,
-                                            *args,
-                                            **kwargs)
-        result = {
-            'rec_texts': [],
-            'rec_scores': [],
-            'det_polygons': [],
-            'det_scores': []
-        }
+    def __call__(self, inputs, *args, **kwargs) -> list[dict[str, list[Any]]]:
+        results = []
+        for image in inputs:
+            outputs = pytesseract.image_to_data(image,
+                                                lang='rus',
+                                                config=self.config,
+                                                output_type=Output.DICT,
+                                                *args,
+                                                **kwargs)
+            result = {
+                'rec_texts': [],
+                'rec_scores': [],
+                'det_polygons': [],
+                'det_scores': []
+            }
 
-        for i, conf in enumerate(outputs['conf']):
-            # if rec is empty
-            if conf == -1:
-                continue
+            for i, conf in enumerate(outputs['conf']):
+                # if rec is empty or it's lower than thresh
+                if conf == -1 or conf/100. < self.thresh:
+                    continue
 
-            x_bbox = outputs['left'][i]
-            y_bbox = outputs['top'][i]
-            width = outputs['width'][i]
-            height = outputs['height'][i]
+                x_bbox = outputs['left'][i]
+                y_bbox = outputs['top'][i]
+                width = outputs['width'][i]
+                height = outputs['height'][i]
 
-            result['det_scores'].append(1)
-            result['det_polygons'].append([x_bbox, y_bbox,
-                                           x_bbox + width, y_bbox,
-                                           x_bbox + width, y_bbox + height,
-                                           x_bbox, y_bbox + height])
-            result['rec_scores'].append(conf / 100.)
-            result['rec_texts'].append(outputs['text'][i])
+                result['det_scores'].append(1)
+                result['det_polygons'].append([x_bbox, y_bbox,
+                                               x_bbox + width, y_bbox,
+                                               x_bbox + width, y_bbox + height,
+                                               x_bbox, y_bbox + height])
+                result['rec_scores'].append(conf / 100.)
+                result['rec_texts'].append(outputs['text'][i])
 
-        return result
+            results.append(result)
+
+        return results
 
     def __str__(self):
         return f"PyTesseract OCR --oem {self.oem} --psm {self.psm}"
@@ -87,13 +93,34 @@ class PyTesseractInited(OCR):
 class EasyOCRInited(OCR):
     """ Initialized EasyOCR model """
     def __init__(self):
-        self.model = easyocr.easyocr.detection_models
+        self.languages = ['ru']
+        self.use_cuda = False
+        self.model = easyocr.Reader(self.languages, gpu=self.use_cuda)
 
-    def __call__(self, *args, **kwargs) -> dict:
-        pass
+    def __call__(self, inputs, *args, **kwargs) -> list[dict[str, list[Any]]]:
+        results = []
+        for image in inputs:
+            horizontal_boxes, free_boxes = self.model.detect(image)
+            outputs = self.model.recognize(image, horizontal_boxes[0], free_boxes[0])
+
+            result = {
+                'rec_texts': [],
+                'rec_scores': [],
+                'det_polygons': [],
+                'det_scores': []
+            }
+
+            for bbox, text, conf in outputs:
+                result['det_scores'].append(1)
+                result['det_polygons'].append([coord for xy in bbox for coord in xy])
+                result['rec_scores'].append(conf)
+                result['rec_texts'].append(text)
+            results.append(result)
+
+        return results
 
     def __str__(self):
-        return "EasyOCR"
+        return f"EasyOCR lang {self.languages}"
 
 
 class OCRModelFactory:
