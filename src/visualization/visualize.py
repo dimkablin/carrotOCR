@@ -65,10 +65,10 @@ def result2show(image, result, cmap=colormaps['summer']) -> None:
         axis[1].add_patch(rect1)
         axis[1].text(x_coord[0],
                      np.mean(y_coord),
-                     rec_texts,
+                     rec_texts.replace('$', r'\$'),
                      color='black',
                      fontsize=7,
-                     va="center")
+                     va='center')
 
     plt.tight_layout()
     plt.show()
