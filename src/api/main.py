@@ -1,7 +1,8 @@
 """ FastAPI connection """
 from typing import List
 
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, UploadFile
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 from src.models.ocr import OCRModelFactory
 
@@ -13,21 +14,21 @@ model = OCRModelFactory.create("pytesseract")
 # create structures
 class OCRResponse(BaseModel):
     """ Response of the OCR model """
-    image: File
+    image: str
     text: List[str]
-    bboxes: List[tuple[int]]
+    bboxes: List[List[int]]
 
 
 class OCRRequest(BaseModel):
     """ Request to the OCR model """
-    images: List[UploadFile]
+    image: UploadFile
 
 
-@app.post("/process-image/", response_model=List[OCRResponse])
+@app.post("/process-image/", response_model=OCRResponse)
 async def process_image(req: OCRRequest):
     """ Process image function """
-    images = [await img.read() for img in req.images]
-    outputs = model(images)
+    image = await req.image.read()
+    outputs = model([image])
 
     return [{
         'image': None,
@@ -36,7 +37,25 @@ async def process_image(req: OCRRequest):
     } for output in outputs]
 
 
-@app.get("/")
+@app.get("/", response_class=HTMLResponse)
 async def root():
-    """ Init message """
-    return {"message": "Hello, World!"}
+    """ Init website """
+    return '''
+    <html>
+    <head>
+        <title>OCR Image Processing</title>
+    </head>
+    <body>
+        <h1>OCR Image Processing Service</h1>
+        <form action="/process-image/" method="post" enctype="multipart/form-data">
+            <input type="file" name="image" accept="image/*">
+            <input type="submit" value="Process Image">
+        </form>
+    </body>
+    </html>
+    '''
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run(app, host='127.0.0.1', port=8000)
