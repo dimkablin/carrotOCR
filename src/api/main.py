@@ -1,10 +1,14 @@
 """ FastAPI connection """
+import io
 from typing import List
 
+from PIL import Image
 from fastapi import FastAPI, UploadFile
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
+
 from src.models.ocr import OCRModelFactory
+import src.features.build_features as pp
 
 # Init app
 app = FastAPI()
@@ -14,7 +18,6 @@ model = OCRModelFactory.create("pytesseract")
 # create structures
 class OCRResponse(BaseModel):
     """ Response of the OCR model """
-    image: str
     text: List[str]
     bboxes: List[List[int]]
 
@@ -24,17 +27,22 @@ class OCRRequest(BaseModel):
     image: UploadFile
 
 
-@app.post("/process-image/", response_model=OCRResponse)
-async def process_image(req: OCRRequest):
+@app.post("/process-image/", response_model=List[OCRResponse])
+async def process_image(image: UploadFile):
     """ Process image function """
-    image = await req.image.read()
+    image = await image.read()
+
+    # preprocess
+    image = io.BytesIO(image)
+    image = Image.open(image)
+    image = pp.pil_to_numpy(image)
+
     outputs = model([image])
 
-    return [{
-        'image': None,
-        'text': output['rec_texts'],
-        'bboxes': output['det_polygons']
-    } for output in outputs]
+    return [OCRResponse(
+        text=output['rec_texts'],
+        bboxes=output['det_polygons']
+    ) for output in outputs]
 
 
 @app.get("/", response_class=HTMLResponse)
