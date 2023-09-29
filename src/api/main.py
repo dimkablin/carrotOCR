@@ -39,7 +39,7 @@ async def process_image(image: UploadFile):
 
     outputs = model([image])
 
-    return [OCRResponse(
+    return [ OCRResponse(
         text=output['rec_texts'],
         bboxes=output['det_polygons']
     ) for output in outputs]

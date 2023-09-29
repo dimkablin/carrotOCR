@@ -53,3 +53,26 @@ Project Organization
 
 
 --------
+
+## Run project
+It is preferable to run the project on the linux
+```bash
+uvicorn src.api.main:app --reload --host 127.0.0.1 --port 8000
+```
+
+## Example of usage
+
+```python
+import mmcv
+from src.visualization.visualize import *
+from src.models.ocr import OCRModelFactory
+
+url = 'data/raw/example1.jpg'
+image = mmcv.imread(url)
+
+model = OCRModelFactory.create("pytesseract")
+outputs = model([image])
+result2show(image, outputs[0])
+```
+
+<img src="references/output1.png" alt="#">
