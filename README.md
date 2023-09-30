@@ -59,6 +59,7 @@ It is preferable to run the project on the linux
 ```bash
 uvicorn src.api.main:app --reload --host 127.0.0.1 --port 8000
 ```
+where you can choose --host and --port 
 
 ## Example of usage
 
