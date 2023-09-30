@@ -1,8 +1,5 @@
 """ FastAPI connection """
-import io
 from typing import List
-
-from PIL import Image
 from fastapi import FastAPI, UploadFile
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
@@ -15,34 +12,45 @@ app = FastAPI()
 model = OCRModelFactory.create("pytesseract")
 
 
-# create structures
-class OCRResponse(BaseModel):
-    """ Response of the OCR model """
+class Result(BaseModel):
+    """ OCR model result type """
+    tags: List[str]
     text: List[str]
     bboxes: List[List[int]]
 
 
+# create structures
+class OCRResponse(BaseModel):
+    """ Response of the OCR model """
+    results: dict[int, Result]
+
+
 class OCRRequest(BaseModel):
     """ Request to the OCR model """
-    image: UploadFile
+    ids: List[int]
+    images: List[UploadFile]
 
 
-@app.post("/process-image/", response_model=List[OCRResponse])
-async def process_image(image: UploadFile):
+@app.post("/process-image/", response_model=OCRResponse)
+async def process_image(req: OCRRequest):
     """ Process image function """
-    image = await image.read()
+    images = [await image.read() for image in req.images]
 
-    # preprocess
-    image = io.BytesIO(image)
-    image = Image.open(image)
-    image = pp.pil_to_numpy(image)
+    # convert to numpy arrays
+    images = [pp.byte2numpy(image) for image in images]
 
-    outputs = model([image])
+    # use model
+    outputs = model(images)
 
-    return [ OCRResponse(
-        text=output['rec_texts'],
-        bboxes=output['det_polygons']
-    ) for output in outputs]
+    response = OCRResponse()
+    for i, output in outputs:
+        response.results[req.ids[i]] = Result(
+            tags=["None"],
+            text=output['rec_texts'],
+            bboxes=output['det_polygons']
+        )
+
+    return response
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -56,12 +64,18 @@ async def root():
     <body>
         <h1>OCR Image Processing Service</h1>
         <form action="/process-image/" method="post" enctype="multipart/form-data">
-            <input type="file" name="image" accept="image/*">
-            <input type="submit" value="Process Image">
+            <label for="ids">Image IDs (comma-separated):</label>
+            <input type="text" id="ids" name="ids">
+            <br>
+            <label for="images">Choose image files:</label>
+            <input type="file" id="images" name="images" multiple accept="image/*">
+            <br>
+            <input type="submit" value="Process Images">
         </form>
     </body>
     </html>
     '''
+
 
 if __name__ == "__main__":
     import uvicorn

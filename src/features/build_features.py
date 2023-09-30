@@ -3,12 +3,22 @@
 This module contains utility functions for image processing tasks.
 You can see an example of usage in 'notebooks/preprocessing-example.ipynb'
 """
+import io
 
 # pylint: disable=W,R,E
 
 from PIL import Image
 import cv2
 import numpy as np
+
+
+def byte2numpy(image) -> np.ndarray:
+    """ Read image bytes and return numpy array"""
+    image = io.BytesIO(image)
+    image = Image.open(image)
+    image = pil2numpy(image)
+
+    return image
 
 
 def cut_image(image: Image.Image, k=1.4142) -> Image.Image:
@@ -61,7 +71,7 @@ def open_image(url: str) -> Image.Image:
     return image
 
 
-def pil_to_numpy(image: Image.Image) -> np.ndarray:
+def pil2numpy(image: Image.Image) -> np.ndarray:
     """ Convert a PIL image to a NumPy array.
 
     :param image: An Image.Image object representing the input image.
