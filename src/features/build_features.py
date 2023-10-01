@@ -3,13 +3,24 @@
 This module contains utility functions for image processing tasks.
 You can see an example of usage in 'notebooks/preprocessing.ipynb'
 """
-import io
 
 # pylint: disable=W,R,E
 
+import io
 from PIL import Image
 import cv2
 import numpy as np
+import mmcv
+
+
+def preprocess_image(image: np.ndarray) -> np.ndarray:
+    """ Main function to preprocess image """
+    image = cut_image(image)
+    image = mmcv.bgr2gray(image)
+    image = adaptive_threshold(image)
+    image = mmcv.gray2rgb(image)
+
+    return image
 
 
 def byte2numpy(image) -> np.ndarray:
@@ -21,7 +32,7 @@ def byte2numpy(image) -> np.ndarray:
     return image
 
 
-def cut_image(image: Image.Image, k=1.4142) -> Image.Image:
+def cut_image(image: np.ndarray, k=1.4142) -> np.ndarray:
     """ Changing size of the image from (w, h) to (new_w, k * new_w) where new_w equals to min(w, h)
 
     :param image: An Image.Image object representing input image
@@ -29,12 +40,12 @@ def cut_image(image: Image.Image, k=1.4142) -> Image.Image:
     :return: An Image.Image object
     """
 
-    assert len(image.size) == 2, \
-        f"image dim has to be equal to 2, but image.shape has {len(image.size)} dim."
+    assert image.shape[2] == 3, \
+        f"image shape has to be equal to (:, :, 3), but image.shape has {len(image.shape)}."
 
-    width, height = image.size
+    height, width = image.shape[0], image.shape[1]
     height = int(min(k * width, height))
-    image = image.crop((0, 0, width, height))
+    image = image[0:width, 0:height, :]
 
     return image
 
@@ -79,17 +90,6 @@ def pil2numpy(image: Image.Image) -> np.ndarray:
     """
 
     return np.array(image, dtype=np.uint8)
-
-
-def grayscale(image: Image.Image) -> Image.Image:
-    """ Converting image from _ to GRAY
-
-    :param image: image (Image.Image): The input image.
-    :return: A grayscale version of the input image.
-    """
-
-    image = image.convert('L')
-    return image
 
 
 def blur(image: np.ndarray,
@@ -163,8 +163,8 @@ def adaptive_threshold(image: np.ndarray,
                        maxval: int = 255,
                        adaptive_method: int = cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
                        threshold_type: int = cv2.THRESH_BINARY,
-                       block_size: int = 11,
-                       c_var: float = 2) -> np.ndarray:
+                       block_size: int = 501,
+                       c_var: float = 15) -> np.ndarray:
     """ Apply adaptive thresholding to the input image.
 
     :param image: A NumPy array representing the input image.
