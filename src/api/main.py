@@ -62,48 +62,6 @@ async def process_image(ids: List[str] = Form(...), images: List[UploadFile] = F
 async def root():
     """ Init website """
     return '''
-    <html>
-    <head>
-        <title>OCR Image Processing</title>
-    </head>
-    <body>
-        <h1>OCR Image Processing Service</h1>
-        <form action="/process-image/" method="post" enctype="multipart/form-data">
-            <label for="ids">Image IDs (comma-separated):</label>
-            <input type="text" id="ids" name="ids" placeholder="0,1">
-            <br>
-            <label for="images">Choose image files:</label>
-            <input type="file" id="images" name="images" multiple accept="image/*">
-            <br>
-            <input type="submit" value="Process Images">
-        </form>
-        <script>
-            const form = document.querySelector('form');
-            const idsInput = document.querySelector('#ids');
-        
-            form.addEventListener('submit', (event) => {
-                event.preventDefault();
-        
-                // Get the comma-separated values and add them to FormData
-                const ids = idsInput.value.trim();
-                const formData = new FormData(form);
-                formData.set('ids', ids);
-        
-                // Create a fetch request
-                fetch('/process-image/', {
-                    method: 'POST',
-                    body: formData,
-                })
-                .then((response) => {
-                    // Handle the response as needed
-                })
-                .catch((error) => {
-                    // Handle errors if any
-                });
-            });
-        </script>
-    </body>
-    </html>
     
     '''
 
