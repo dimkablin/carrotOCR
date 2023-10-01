@@ -163,7 +163,7 @@ def adaptive_threshold(image: np.ndarray,
                        maxval: int = 255,
                        adaptive_method: int = cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
                        threshold_type: int = cv2.THRESH_BINARY,
-                       block_size: int = 501,
+                       block_size: int = 101,
                        c_var: float = 15) -> np.ndarray:
     """ Apply adaptive thresholding to the input image.
 
