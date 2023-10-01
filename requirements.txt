@@ -8,6 +8,7 @@ coverage
 awscli
 flake8
 python-dotenv~=1.0.0
+
 torch
 torchvision
 torchaudio
