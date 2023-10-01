@@ -1,7 +1,7 @@
 """ Image Processing Utilities
 
 This module contains utility functions for image processing tasks.
-You can see an example of usage in 'notebooks/preprocessing-example.ipynb'
+You can see an example of usage in 'notebooks/preprocessing.ipynb'
 """
 import io
 
