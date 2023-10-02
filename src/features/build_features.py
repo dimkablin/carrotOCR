@@ -3,7 +3,7 @@
 This module contains utility functions for image processing tasks.
 You can see an example of usage in 'notebooks/preprocessing.ipynb'
 """
-
+import asyncio
 # pylint: disable=W,R,E
 
 import io
@@ -69,17 +69,23 @@ def check_exif(image: Image.Image) -> Image.Image:
     return image
 
 
-def open_image(url: str) -> Image.Image:
-    """ Open an image
+async def read_image(path: str):
+    """ Async open an image
 
-    :param url: A string object representing the path to the image file
+    :param path: A string object representing the path to the image file
     :return: An Image.Image object representing the output image.
     """
 
-    image = Image.open(url)
-    image = check_exif(image)
+    return await asyncio.to_thread(mmcv.imread, path)
 
-    return image
+
+async def read_images(paths):
+    """ Async read all images
+
+    :param paths:
+    :return:
+    """
+    return await asyncio.gather(*[read_image(path) for path in paths])
 
 
 def pil2numpy(image: Image.Image) -> np.ndarray:

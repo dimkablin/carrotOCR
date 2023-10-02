@@ -1,6 +1,7 @@
 """ FastAPI connection """
 from typing import List
-from fastapi import FastAPI, UploadFile, Form, File
+
+from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 
@@ -14,6 +15,8 @@ model = OCRModelFactory.create("pytesseract")
 
 class Result(BaseModel):
     """ OCR model result type """
+    id: int  # Image ID
+    path: str
     tags: List[str]
     text: List[str]
     bboxes: List[List[int]]
@@ -22,38 +25,41 @@ class Result(BaseModel):
 # create structures
 class OCRResponse(BaseModel):
     """ Response of the OCR model """
-    results: dict[str, Result]
+    id: int  # Chunk ID
+    results: List[Result]
 
 
 class OCRRequest(BaseModel):
     """ Request to the OCR model """
-    ids: List[int]
-    images: List[UploadFile]
+    id: int  # Chunk ID
+    paths: List[str]
 
 
 @app.post("/process-image/", response_model=OCRResponse)
-async def process_image(ids: List[str] = Form(...), images: List[UploadFile] = File(...)):
+async def process_image(req: OCRRequest):
     """ Process image function """
-    images = [await image.read() for image in images]
-    ids = [j for i in ids for j in i.split(',')]
+    response = OCRResponse(
+        id=req.id,
+        results=[]
+    )
 
-    print(type(ids), type(ids[0]), print(ids))
-    assert len(images) == len(ids), \
-        f"Length of ids: {len(ids)} and images: {len(images)} should be equal."
+    try:
+        images = await pp.read_images(req.paths)
 
-    # convert to numpy arrays
-    images = [pp.byte2numpy(image) for image in images]
+        # use model
+        outputs = model(images)
 
-    # use model
-    outputs = model(images)
+        for i, output in enumerate(outputs):
+            response.results.append(Result(
+                id=i,
+                path=req.paths[i],
+                tags=["None"],
+                text=output['rec_texts'],
+                bboxes=output['det_polygons']
+            ))
 
-    response = OCRResponse(results={})
-    for i, output in enumerate(outputs):
-        response.results[ids[i]] = Result(
-            tags=["None"],
-            text=output['rec_texts'],
-            bboxes=output['det_polygons']
-        )
+    except FileNotFoundError as err:
+        print(err)
 
     return response
 
@@ -61,9 +67,7 @@ async def process_image(ids: List[str] = Form(...), images: List[UploadFile] = F
 @app.get("/", response_class=HTMLResponse)
 async def root():
     """ Init website """
-    return '''
-    
-    '''
+    return ''' '''
 
 
 if __name__ == "__main__":
