@@ -53,6 +53,33 @@ Project Organization
 
 
 --------
+## PostgreSQL Setup
+Before running the project, make sure that PostgreSQL is up and running, and a database has been created.
+```bash
+# Ensure that it's running
+sudo systemctl status postgresql
+
+# If it is not
+sudo systemctl start postgresql
+```
+**_NOTE_**: A pre-existing database is required in order to create a connection to PostgreSQL.
+```bash
+sudo -u postgres psql
+```
+Once you're connected to PostgreSQL, you can create a new database and grant privileges to a user using the following SQL statements:
+```bash
+CREATE DATABASE database_name;
+CREATE USER user_name with encrypted password 'user_password';
+GRANT ALL PRIVILEGES ON database_name TO user_name;
+```
+Ensure that `database_name`, `user_name`, `user_password` with the appropriate values, which should also be defined in your .env file.
+
+
+After creating the database and user, you can run a script that will create the necessary databases and tables for the project:
+```bash
+# Run the script that create database and tables
+python3 src/db.py
+```
 
 ## Run project
 It is preferable to run the project on the linux
