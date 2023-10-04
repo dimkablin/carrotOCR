@@ -1,7 +1,7 @@
 """ Functions to work with environment """
 
 import os
-from src.script import project_dir
+from src.env import project_dir
 
 
 def get_abspath(path):

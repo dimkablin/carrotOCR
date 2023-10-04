@@ -1,24 +1,17 @@
 """ Connection to DataBase of Carrot OCR project"""
-import os
 import psycopg2
-from psycopg2 import extensions
 
 
 class DatabaseManager:
     """Database Manager for Carrot OCR project"""
 
-    def __init__(self, user=None, password=None):
-        """
-        Initialize the DatabaseManager.
-
-        :param user: The database user.
-        :param password: The database password.
-        """
-        self.user = user or os.getenv("DB_USER")
-        self.password = password or os.getenv("DB_PASSWORD")
-        self.host = os.getenv("DB_HOST")
-        self.port = os.getenv("DB_PORT")
-        self.database = os.getenv("DB_NAME")
+    def __init__(self, **kwargs):
+        """ Initialize the DatabaseManager """
+        self.user = kwargs.get("user")
+        self.password = kwargs.get("password")
+        self.host = kwargs.get("host")
+        self.port = kwargs.get("port")
+        self.database = kwargs.get("database")
         self.table_name = "processed"
         self.connection = None
 
@@ -30,11 +23,11 @@ class DatabaseManager:
         """
         try:
             self.connection = psycopg2.connect(
+                database=self.database,
                 user=self.user,
                 password=self.password,
                 host=self.host,
-                port=self.port,
-                database=self.database
+                port=self.port
             )
             return True
         except psycopg2.Error as error:
@@ -91,13 +84,3 @@ class DatabaseManager:
     def __exit__(self, exc_type, exc_value, traceback):
         if self.connection:
             self.connection.close()
-
-
-if __name__ == "__main__":
-    with DatabaseManager() as db_manager:
-        if db_manager.connect():
-            db_manager.connection.set_isolation_level(extensions.ISOLATION_LEVEL_AUTOCOMMIT)
-            if db_manager.create_database():
-                print(f"Database '{db_manager.database}' created successfully.")
-            if db_manager.create_table():
-                print(f"Table '{db_manager.table_name}' created successfully.")
