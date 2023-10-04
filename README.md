@@ -78,7 +78,7 @@ Ensure that `database_name`, `user_name`, `user_password` with the appropriate v
 After creating the database and user, you can run a script that will create the necessary databases and tables for the project:
 ```bash
 # Run the script that create database and tables
-python3 src/db.py
+python3 src/database_manager.py
 ```
 
 ## Run project

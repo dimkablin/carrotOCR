@@ -75,6 +75,7 @@ class DatabaseManager:
         """
         create_table_query = f"""
             CREATE TABLE IF NOT EXISTS {self.table_name} (
+                id SERIAL PRIMARY KEY,
                 file_path TEXT,
                 new_file_name TEXT,
                 string_array TEXT[],
@@ -93,11 +94,6 @@ class DatabaseManager:
 
 
 if __name__ == "__main__":
-    db_config = {
-        "user": "admin",
-        "password": "admin"
-    }
-
     with DatabaseManager() as db_manager:
         if db_manager.connect():
             db_manager.connection.set_isolation_level(extensions.ISOLATION_LEVEL_AUTOCOMMIT)
