@@ -70,7 +70,7 @@ Once you're connected to PostgreSQL, you can create a new database and grant pri
 ```bash
 CREATE DATABASE database_name;
 CREATE USER user_name with encrypted password 'user_password';
-GRANT ALL PRIVILEGES ON database_name TO user_name;
+GRANT ALL PRIVILEGES ON DATABSE database_name TO user_name;
 ```
 Ensure that `database_name`, `user_name`, `user_password` with the appropriate values, which should also be defined in your .env file.
 

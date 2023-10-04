@@ -1,27 +1,33 @@
 """ Connection to DataBase of Carrot OCR project"""
+import os
 import psycopg2
+from psycopg2 import extensions
 
 
 class DatabaseManager:
-    """ Database Manager """
-    def __init__(self, user: str, password: str, host: int, port: int):
-        """ Init database
+    """Database Manager for Carrot OCR project"""
 
-        :param user:
-        :param password:
-        :param host:
-        :param port:
+    def __init__(self, user=None, password=None):
         """
-        self.user = user
-        self.password = password
-        self.host = host
-        self.port = port
-        self.database = "CarrotOCR"
+        Initialize the DatabaseManager.
+
+        :param user: The database user.
+        :param password: The database password.
+        """
+        self.user = user or os.getenv("DB_USER")
+        self.password = password or os.getenv("DB_PASSWORD")
+        self.host = os.getenv("DB_HOST")
+        self.port = os.getenv("DB_PORT")
+        self.database = os.getenv("DB_NAME")
         self.table_name = "processed"
         self.connection = None
 
     def connect(self):
-        """ Creating database function """
+        """
+        Connect to the PostgreSQL database.
+
+        :return: True if connection is successful, False otherwise.
+        """
         try:
             self.connection = psycopg2.connect(
                 user=self.user,
@@ -30,36 +36,43 @@ class DatabaseManager:
                 port=self.port,
                 database=self.database
             )
-
             return True
-
         except psycopg2.Error as error:
             print("Error while connecting to PostgreSQL", error)
             return False
 
-    def execute_query(self, query: str) -> bool:
-        """ Creating table """
+    def execute_query(self, query):
+        """
+        Execute a SQL query.
+
+        :param query: The SQL query to execute.
+        :return: True if the query is successful, False otherwise.
+        """
         if self.connection:
             try:
-                cursor = self.connection.cursor()
-                cursor.execute(query)
+                with self.connection.cursor() as cursor:
+                    cursor.execute(query)
                 self.connection.commit()
-                cursor.close()
                 return True
-
             except psycopg2.Error as error:
-                print("Error creating table: ", error)
-
+                print("Error executing query: ", error)
         return False
 
-    def create_database(self) -> bool:
-        """ Creating database """
-        create_database_query = f"""CREATE DATABASE {self.database}"""
+    def create_database(self):
+        """
+        Create the database.
 
+        :return: True if database creation is successful, False otherwise.
+        """
+        create_database_query = f"CREATE DATABASE {self.database}"
         return self.execute_query(create_database_query)
 
-    def create_table(self) -> bool:
-        """ Creating table """
+    def create_table(self):
+        """
+        Create the 'processed' table.
+
+        :return: True if table creation is successful, False otherwise.
+        """
         create_table_query = f"""
             CREATE TABLE IF NOT EXISTS {self.table_name} (
                 file_path TEXT,
@@ -68,7 +81,6 @@ class DatabaseManager:
                 single_string TEXT
             );
         """
-
         return self.execute_query(create_table_query)
 
     def __enter__(self):
@@ -83,14 +95,12 @@ class DatabaseManager:
 if __name__ == "__main__":
     db_config = {
         "user": "admin",
-        "password": "admin",
-        "host": "localhost",
-        "port": 5432
+        "password": "admin"
     }
 
-    # Connect to the PostgreSQL server
-    with DatabaseManager(**db_config) as db_manager:
+    with DatabaseManager() as db_manager:
         if db_manager.connect():
+            db_manager.connection.set_isolation_level(extensions.ISOLATION_LEVEL_AUTOCOMMIT)
             if db_manager.create_database():
                 print(f"Database '{db_manager.database}' created successfully.")
             if db_manager.create_table():
