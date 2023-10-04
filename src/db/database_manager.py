@@ -34,7 +34,7 @@ class DatabaseManager:
             print("Error while connecting to PostgreSQL", error)
             return False
 
-    def execute_query(self, query):
+    def execute_query(self, query, data=None):
         """
         Execute a SQL query.
 
@@ -44,9 +44,13 @@ class DatabaseManager:
         if self.connection:
             try:
                 with self.connection.cursor() as cursor:
-                    cursor.execute(query)
+                    if data:
+                        cursor.execute(query, data)
+                    else:
+                        cursor.execute(query)
                 self.connection.commit()
                 return True
+
             except psycopg2.Error as error:
                 print("Error executing query: ", error)
         return False
@@ -70,9 +74,10 @@ class DatabaseManager:
             CREATE TABLE IF NOT EXISTS {self.table_name} (
                 id SERIAL PRIMARY KEY,
                 file_path TEXT,
-                new_file_name TEXT,
-                string_array TEXT[],
-                single_string TEXT
+                new_filename TEXT,
+                tags TEXT[],
+                text TEXT[],
+                bboxes JSONB[]
             );
         """
         return self.execute_query(create_table_query)
