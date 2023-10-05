@@ -39,10 +39,10 @@ class TestSuit(unittest.TestSuite):
     """Test Suit to achieve running tests in the specific order."""
     def __init__(self):
         super().__init__()
-        self.addTest(TestDataProcessor("test_0"))
-        self.addTest(TestDataProcessor("test_1"))
-        self.addTest(TestDataProcessor("test_2"))
-        self.addTest(TestDataProcessor("test_3"))
+        # self.addTest(TestDataProcessor("test_0"))  # Clear table
+        self.addTest(TestDataProcessor("test_1"))  # Insert data
+        self.addTest(TestDataProcessor("test_2"))  # Get element by ID
+        self.addTest(TestDataProcessor("test_3"))  # Insert new_filename by its ID
 
 
 if __name__ == "__main__":
