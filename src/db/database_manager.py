@@ -1,4 +1,7 @@
 """ Connection to DataBase of Carrot OCR project"""
+import json
+from typing import Optional
+
 import psycopg2
 
 
@@ -77,10 +80,23 @@ class DatabaseManager:
                 new_filename TEXT,
                 tags TEXT[],
                 text TEXT[],
-                bboxes JSONB[]
+                bboxes TEXT --in json string
             );
         """
         return self.execute_query(create_table_query)
+
+    @staticmethod
+    def from_db(raw: Optional[tuple]) -> Optional[dict]:
+        """Convert data from db to template"""
+        data = {
+            "id": raw[0],
+            "file_path": raw[1],
+            "new_filename": raw[2],
+            "tags": raw[3],
+            "text": raw[4],
+            "bboxes": json.loads(raw[5])
+        }
+        return data
 
     def __enter__(self):
         self.connect()
