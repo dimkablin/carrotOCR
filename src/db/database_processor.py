@@ -33,7 +33,7 @@ class DataProcessor:
                     RETURNING id
                 """
                 data = (file_path, tags, text, json.dumps(bboxes))
-                return db_manager.execute_query(query, data, fetch=True)
+                return db_manager.execute_query(query, data, fetch=True)[0][0]
 
         except psycopg2.Error as error:
             print("Error inserting data into the database: ", error)
@@ -47,7 +47,7 @@ class DataProcessor:
                 query = f"SELECT * FROM {db_manager.table_name} WHERE id = %s"
                 data = (uid,)
                 result = db_manager.execute_query(query, data, fetch=True)
-                return db_manager.from_db(result)
+                return db_manager.from_db(result[0])
 
         except psycopg2.Error as error:
             print("Error during getting data by id: ", error)
@@ -75,7 +75,7 @@ class DataProcessor:
         """Clear all data from table"""
         try:
             with DatabaseManager(**DataProcessor.db_config) as db_manager:
-                query = f"""DELETE FROM {db_manager.table_name}"""
+                query = f"""TRUNCATE TABLE {db_manager.table_name} RESTART IDENTITY;"""
                 return db_manager.execute_query(query)
 
         except psycopg2.Error as error:

@@ -5,7 +5,8 @@ from src.db.database_processor import DataProcessor
 
 class TestDataProcessor(unittest.TestCase):
     """Class for Unittest of DataProcessor."""
-    last_uid = 0
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     def test_0(self):
         """Unittest for clear_table function."""
@@ -19,19 +20,18 @@ class TestDataProcessor(unittest.TestCase):
         text = ["text1", "text2"]
         bboxes = [[0, 0, 1, 1, 2, 2, 3, 3], [0, 0, 1, 1, 2, 2, 3, 3]]
         result = DataProcessor.insert_data(filepath, tags, text, bboxes)
-        self.last_uid = result[0][0]
-        self.assertIsInstance(self.last_uid, int)
+        self.assertIsInstance(result, int)
 
     def test_2(self):
         """Unittest for get_data_by_id function."""
-        result = DataProcessor.get_data_by_id(self.last_uid)
+        result = DataProcessor.get_data_by_id(uid=1)
         self.assertIsNotNone(result)
         self.assertIsInstance(result, dict)
 
     def test_3(self):
         """Unittest for insert_new_filename function."""
         new_filename = "amma_new_here.jpg"
-        result = DataProcessor.insert_new_filename(new_filename, self.last_uid)
+        result = DataProcessor.insert_new_filename(new_filename, uid=1)
         self.assertTrue(result)
 
 
