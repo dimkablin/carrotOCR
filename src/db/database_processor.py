@@ -1,5 +1,6 @@
 """Data Processor Package."""
-from typing import Optional
+import json
+from typing import Optional, List
 
 import psycopg2
 from src.db.database_manager import DatabaseManager
@@ -17,7 +18,12 @@ class DataProcessor:
     }
 
     @staticmethod
-    def insert_data(file_path: str, tags: list, text: list, bboxes: list) -> Optional[int, None]:
+    def insert_data(
+            file_path: str,
+            tags: List[str],
+            text: List[str],
+            bboxes: List[List[int]]
+    ) -> Optional[int]:
         """Insert data into the database."""
         try:
             with DatabaseManager(**DataProcessor.db_config) as db_manager:
@@ -26,7 +32,7 @@ class DataProcessor:
                     VALUES (%s, %s, %s, %s)
                     RETURNING id
                 """
-                data = (file_path, tags, text, bboxes)
+                data = (file_path, tags, text, json.dumps(bboxes))
                 return db_manager.execute_query(query, data)
 
         except psycopg2.Error as error:
@@ -34,7 +40,7 @@ class DataProcessor:
             return None
 
     @staticmethod
-    def get_data_by_id(uid: int) -> Optional[tuple, None]:
+    def get_data_by_id(uid: int) -> Optional[dict]:
         """Get data from the database by id."""
         try:
             with DatabaseManager(**DataProcessor.db_config) as db_manager:
@@ -42,15 +48,15 @@ class DataProcessor:
                 data = (uid,)
 
                 with db_manager.connection.cursor() as cursor:
-                    if db_manager.execute_query(query, data):
-                        return cursor.fetchone()
+                    cursor.execute(query, data)
+                    return db_manager.from_db(cursor.fetchone())
 
         except psycopg2.Error as error:
-            print("Error inserting data into the database: ", error)
+            print("Error during getting data by id: ", error)
         return None
 
     @staticmethod
-    def insert_new_name_of_file(new_filename: str, uid: int) -> bool:
+    def insert_new_filename(new_filename: str, uid: int) -> bool:
         """Insert new_filename into the database by given ID."""
         try:
             with DatabaseManager(**DataProcessor.db_config) as db_manager:
