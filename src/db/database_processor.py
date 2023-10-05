@@ -23,7 +23,7 @@ class DataProcessor:
             tags: List[str],
             text: List[str],
             bboxes: List[List[int]]
-    ) -> Optional[int]:
+    ) -> Optional[List]:
         """Insert data into the database."""
         try:
             with DatabaseManager(**DataProcessor.db_config) as db_manager:
@@ -33,7 +33,7 @@ class DataProcessor:
                     RETURNING id
                 """
                 data = (file_path, tags, text, json.dumps(bboxes))
-                return db_manager.execute_query(query, data)
+                return db_manager.execute_query(query, data, fetch=True)
 
         except psycopg2.Error as error:
             print("Error inserting data into the database: ", error)
@@ -46,10 +46,8 @@ class DataProcessor:
             with DatabaseManager(**DataProcessor.db_config) as db_manager:
                 query = f"SELECT * FROM {db_manager.table_name} WHERE id = %s"
                 data = (uid,)
-
-                with db_manager.connection.cursor() as cursor:
-                    cursor.execute(query, data)
-                    return db_manager.from_db(cursor.fetchone())
+                result = db_manager.execute_query(query, data, fetch=True)
+                return db_manager.from_db(result)
 
         except psycopg2.Error as error:
             print("Error during getting data by id: ", error)
@@ -67,6 +65,18 @@ class DataProcessor:
                 """
                 data = (new_filename, uid)
                 return db_manager.execute_query(query, data)
+
+        except psycopg2.Error as error:
+            print("Error inserting data into the database: ", error)
+        return False
+
+    @staticmethod
+    def clear_table() -> bool:
+        """Clear all data from table"""
+        try:
+            with DatabaseManager(**DataProcessor.db_config) as db_manager:
+                query = f"""DELETE FROM {db_manager.table_name}"""
+                return db_manager.execute_query(query)
 
         except psycopg2.Error as error:
             print("Error inserting data into the database: ", error)

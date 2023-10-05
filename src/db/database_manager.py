@@ -37,10 +37,11 @@ class DatabaseManager:
             print("Error while connecting to PostgreSQL", error)
             return False
 
-    def execute_query(self, query, data=None):
+    def execute_query(self, query, data=None, fetch=False):
         """
         Execute a SQL query.
 
+        :param data: additional data for query
         :param query: The SQL query to execute.
         :return: True if the query is successful, False otherwise.
         """
@@ -51,8 +52,10 @@ class DatabaseManager:
                         cursor.execute(query, data)
                     else:
                         cursor.execute(query)
-                self.connection.commit()
-                return True
+                    self.connection.commit()
+                    if fetch:
+                        return cursor.fetchall()
+                    return True
 
             except psycopg2.Error as error:
                 print("Error executing query: ", error)
@@ -88,6 +91,9 @@ class DatabaseManager:
     @staticmethod
     def from_db(raw: Optional[tuple]) -> Optional[dict]:
         """Convert data from db to template"""
+        if len(raw) == 0:
+            return None
+
         data = {
             "id": raw[0],
             "file_path": raw[1],
