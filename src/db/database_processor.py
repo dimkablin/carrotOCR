@@ -23,7 +23,7 @@ class DataProcessor:
             tags: List[str],
             text: List[str],
             bboxes: List[List[int]]
-    ) -> Optional[List]:
+    ) -> Optional[int]:
         """Insert data into the database."""
         try:
             with DatabaseManager(**DataProcessor.db_config) as db_manager:

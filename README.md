@@ -107,4 +107,4 @@ outputs = model([image])
 result2show(image, outputs[0])
 ```
 
-<img src="references/output1.png" alt="#">
+<img src="notebooks/references/output1.png" alt="#">

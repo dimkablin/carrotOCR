@@ -5,6 +5,7 @@ from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 
+from src.db.database_processor import DataProcessor
 from src.models.ocr import OCRModelFactory
 import src.features.build_features as pp
 
@@ -15,8 +16,8 @@ model = OCRModelFactory.create("pytesseract")
 
 class Result(BaseModel):
     """ OCR model result type """
-    id: int  # Image ID
-    path: str
+    uid: int  # Image ID
+    file_path: str
     tags: List[str]
     text: List[str]
     bboxes: List[List[int]]
@@ -25,13 +26,13 @@ class Result(BaseModel):
 # create structures
 class OCRResponse(BaseModel):
     """ Response of the OCR model """
-    id: int  # Chunk ID
+    chunk_id: int  # Chunk ID
     results: List[Result]
 
 
 class OCRRequest(BaseModel):
     """ Request to the OCR model """
-    id: int  # Chunk ID
+    chunk_id: int  # Chunk ID
     paths: List[str]
 
 
@@ -39,7 +40,7 @@ class OCRRequest(BaseModel):
 async def process_image(req: OCRRequest):
     """ Process image function """
     response = OCRResponse(
-        id=req.id,
+        chunk_id=req.chunk_id,
         results=[]
     )
 
@@ -50,12 +51,17 @@ async def process_image(req: OCRRequest):
         outputs = model(images)
 
         for i, output in enumerate(outputs):
+            data = {
+                "file_path": req.paths[i],
+                "tags": ["None"],
+                "text": output['rec_texts'],
+                "bboxes": output['det_polygons']
+            }
+
+            uid = DataProcessor.insert_data(**data)
             response.results.append(Result(
-                id=i,
-                path=req.paths[i],
-                tags=["None"],
-                text=output['rec_texts'],
-                bboxes=output['det_polygons']
+                uid=uid,
+                **data
             ))
 
     except FileNotFoundError as err:
