@@ -7,53 +7,44 @@ Project Organization
 ------------
 
     ├── LICENSE
-    ├── Makefile           <- Makefile with commands like `make data` or `make train`
-    ├── README.md          <- The top-level README for developers using this project.
-    ├── data
-    │   ├── external       <- Data from third party sources.
-    │   ├── interim        <- Intermediate data that has been transformed.
-    │   ├── processed      <- The final, canonical data sets for modeling.
-    │   └── raw            <- The original, immutable data dump.
+    ├── Makefile                <- Makefile with commands like `make data` or `make train`
+    ├── README.md               <- The top-level README for developers using this project.
     │
-    ├── docs               <- A default Sphinx project; see sphinx-doc.org for details
+    ├── docs                    <- A default Sphinx project; see sphinx-doc.org for details
     │
-    ├── models             <- Trained and serialized models, model predictions, or model summaries
+    ├── models                  <- Trained and serialized models, model predictions, or model summaries
     │
-    ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-    │                         the creator's initials, and a short `-` delimited description, e.g.
-    │                         `1.0-jqp-initial-data-exploration`.
+    ├── notebooks               <- Jupyter notebooks. Example of the model usage.
     │
-    ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
+    ├── requirements.txt 
     │
-    ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
-    │                         generated with `pip freeze > requirements.txt`
-    │
-    ├── setup.py           <- makes project pip installable (pip install -e .) so src can be imported
-    ├── src                <- Source code for use in this project.
-    │   ├── __init__.py    <- Makes src a Python module
-    │   │
-    │   ├── api           <- FastAPI script
+    ├── setup.py                <- makes project pip installable (pip install -e .) so src can be imported
+    ├── src                     <- Source code for use in this project.
+    │   ├── api                 
+    │   │   ├── controllers     <- Fast API controllers.
+    │   │   ├── models          <- Fast API models.
+    │   │   ├── services        <- Fast API services.
     │   │   └── main.py
     │   │
-    │   ├── data           <- Scripts to download or generate data
-    │   │   └── make_dataset.py
+    │   ├── db                  <- Scripts that using for connect to the database.
+    │   │   ├── database_manager.py
+    │   │   └── database_processor.py
     │   │
-    │   ├── features       <- Scripts to turn raw data into features for modeling
+    │   │
+    │   ├── features            <- Scripts to turn raw data into features for modeling
     │   │   └── build_features.py
     │   │
-    │   ├── models         <- Scripts to train models and then use trained models to make
-    │   │   │                 predictions
-    │   │   ├── predict_model.py
-    │   │   └── train_model.py
+    │   ├── models              <- Scripts with loading trained models.
+    │   │   ├── ocr.py
+    │   │   └── zero_shot_classification.py
     │   │
-    │   └── visualization  <- Scripts to create exploratory and results oriented visualizations
+    │   └── visualization       <- Scripts to create exploratory and results oriented visualizations
     │       └── visualize.py
     │
-    ├── tests              <- Unittest for each class in src. 
-    │   │
-    │   ...
+    ├── tests                   <- Unittest for each class in src. 
+    │   └── ...
     │
-    └── tox.ini            <- tox file with settings for running tox; see tox.readthedocs.io
+    └── tox.ini                 <- tox file with settings for running tox; see tox.readthedocs.io
 
 
 --------
