@@ -1,21 +1,35 @@
 """ FastAPI connection """
-from fastapi import FastAPI
+from fastapi import FastAPI, APIRouter
 
+from src.api.controllers.get_files import get_files_controller
+from src.api.controllers.get_folders import get_folders_controller
 from src.api.controllers.process_image import process_image_controller
-from src.api.models.ocr_request import OCRRequest
-from src.api.models.ocr_response import OCRResponse
-
+from src.api.models.get_f_models import GetFRequest, GetFResponse
+from src.api.models.process_image_models import ProcessImageRequest, ProcessImageResponse
 
 app = FastAPI()
+router = APIRouter()
 
 
-@app.post("/process-image/", response_model=OCRResponse)
-async def process_image(req: OCRRequest):
+@router.post("/process-image/", response_model=ProcessImageResponse)
+async def process_image(req: ProcessImageRequest):
     """ Process image function """
     return await process_image_controller(req)
 
 
+@router.post("/get-files/", response_model=GetFResponse)
+async def get_files(req: GetFRequest):
+    """Returning all directories in path."""
+    return await get_files_controller(req)
+
+
+@router.post("/get-folders/", response_model=GetFResponse)
+async def get_folders(req: GetFRequest):
+    """Returning all directories in path."""
+    return await get_folders_controller(req)
+
+app.include_router(router, prefix="/api")
+
 if __name__ == "__main__":
     import uvicorn
-
     uvicorn.run(app, host='127.0.0.1', port=8000)  # 127.0.0.1:8000/api/..
