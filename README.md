@@ -23,7 +23,6 @@ Project Organization
     │   ├── api                 
     │   │   ├── controllers     <- Fast API controllers.
     │   │   ├── models          <- Fast API models.
-    │   │   ├── services        <- Fast API services.
     │   │   └── main.py
     │   │
     │   ├── db                  <- Scripts that using for connect to the database.
