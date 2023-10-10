@@ -48,14 +48,6 @@ Project Organization
 
 --------
 ## PostgreSQL Setup
-Before running the project, make sure that PostgreSQL is up and running, and a database has been created.
-```bash
-# Ensure that it's running
-sudo systemctl status postgresql
-
-# If it is not
-sudo systemctl start postgresql
-```
 **_NOTE_**: A pre-existing database is required in order to create a connection to PostgreSQL.
 ```bash
 sudo -u postgres psql
