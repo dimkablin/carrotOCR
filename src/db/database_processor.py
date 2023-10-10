@@ -1,6 +1,6 @@
 """Data Processor Package."""
 import json
-from typing import Optional, List
+from typing import Optional, List, Union
 
 import psycopg2
 from src.db.database_manager import DatabaseManager
@@ -80,4 +80,19 @@ class DataProcessor:
 
         except psycopg2.Error as error:
             print("Error inserting data into the database: ", error)
+        return False
+
+    @staticmethod
+    def get_text(uid=None) -> Union[str, List[str]]:
+        """Get text by uid, if uid=-1 return all text."""
+        try:
+            with DatabaseManager(**DataProcessor.db_config) as db_manager:
+                if uid is None:
+                    query = f"""SELECT text FROM {db_manager.table_name}"""
+                else:
+                    query = f"""SELECT text FROM {db_manager.table_name} WHERE id=%s"""
+                return db_manager.execute_query(query, (uid,), fetch=True)
+
+        except psycopg2.Error as error:
+            print("Error getting text from the database: ", error)
         return False

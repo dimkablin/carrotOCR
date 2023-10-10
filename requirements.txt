@@ -30,3 +30,4 @@ uvicorn
 psycopg2-binary
 pydantic~=2.4.2
 matplotlib~=3.8.0
+python-Levenshtein~=0.22.0
