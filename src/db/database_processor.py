@@ -83,7 +83,7 @@ class DataProcessor:
         return False
 
     @staticmethod
-    def get_text(uid=None) -> Union[str, List[str]]:
+    def get_text(uid=None) -> Union[str, List[str], None]:
         """Get text by uid, if uid=-1 return all text."""
         try:
             with DatabaseManager(**DataProcessor.db_config) as db_manager:
@@ -95,4 +95,16 @@ class DataProcessor:
 
         except psycopg2.Error as error:
             print("Error getting text from the database: ", error)
-        return False
+        return None
+
+    @staticmethod
+    def get_all_data() -> Optional[tuple]:
+        """Get all data from db"""
+        try:
+            with DatabaseManager(**DataProcessor.db_config) as db_manager:
+                query = f"""SELECT * FROM {db_manager.table_name}"""
+                return db_manager.execute_query(query, fetch=True)
+
+        except psycopg2.Error as error:
+            print("Error getting text from the database: ", error)
+        return None
