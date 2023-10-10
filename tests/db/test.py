@@ -1,5 +1,7 @@
 """Unittest for DataProcessor"""
 import unittest
+from typing import List
+
 from src.db.database_processor import DataProcessor
 
 
@@ -48,6 +50,11 @@ class TestDataProcessor(unittest.TestCase):
         uid = None
         result = DataProcessor.get_text(uid)
         self.assertIsNotNone(result)
+
+    def test_6(self):
+        """Unittest for get_all_data function."""
+        result = DataProcessor.get_all_data()
+        self.assertIsInstance(result, List)
 
 
 class TestSuit(unittest.TestSuite):

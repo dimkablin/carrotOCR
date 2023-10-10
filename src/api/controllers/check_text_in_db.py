@@ -34,17 +34,17 @@ def find_nearest_text(text1: str):
     return nearest_uid, nearest_text, nearest_distance
 
 
-def check_text_in_db(text: str, thresh: float = 0.1) -> int:
+def check_text_in_db(text: str, thresh: float = 0.5) -> int:
     """Checking file has processed.
 
     :param text: input text
     :param thresh: threshold value
     :return: UID of nearest text or 0 if it has cut by threshold value
     """
-
     nearest_uid, nearest_text, nearest_distance = find_nearest_text(text)
     if nearest_text is not None:
         similarity = nearest_distance / len(text)
+        print(similarity)
         if similarity < thresh:
             return nearest_uid
 
