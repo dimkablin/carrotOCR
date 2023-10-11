@@ -1,6 +1,6 @@
 """ FastAPI connection """
 from fastapi import FastAPI, APIRouter
-from starlette.middleware.cors import CORSMiddleware
+from fastapi.middleware.cors import CORSMiddleware
 
 from src.api.controllers.get_files import get_files_controller
 from src.api.controllers.get_folders import get_folders_controller
