@@ -1,5 +1,6 @@
 """ FastAPI connection """
 from fastapi import FastAPI, APIRouter
+from starlette.middleware.cors import CORSMiddleware
 
 from src.api.controllers.get_files import get_files_controller
 from src.api.controllers.get_folders import get_folders_controller
@@ -9,6 +10,13 @@ from src.api.models.process_image_models import ProcessImageRequest, ProcessImag
 
 app = FastAPI()
 router = APIRouter()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @router.post("/process-image/", response_model=ProcessImageResponse)
