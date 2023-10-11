@@ -16,6 +16,7 @@ class Result(BaseModel):
     tags: List[str]
     text: List[str]
     bboxes: List[List[int]]
+    duplicate_id: int  # Duplicate ID if it is already in database
 
 
 class ProcessImageResponse(BaseModel):

@@ -2,9 +2,9 @@
 from fastapi import FastAPI, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 
-from src.api.controllers.get_files import get_files_controller
-from src.api.controllers.get_folders import get_folders_controller
-from src.api.controllers.process_image import process_image_controller
+from src.api.services.get_files import get_files_controller
+from src.api.services.get_folders import get_folders_controller
+from src.api.services.process_image import process_image_controller
 from src.api.models.get_f_models import GetFRequest, GetFResponse
 from src.api.models.process_image_models import ProcessImageRequest, ProcessImageResponse
 

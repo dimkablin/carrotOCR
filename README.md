@@ -21,7 +21,7 @@ Project Organization
     ├── setup.py                <- makes project pip installable (pip install -e .) so src can be imported
     ├── src                     <- Source code for use in this project.
     │   ├── api                 
-    │   │   ├── controllers     <- Fast API controllers.
+    │   │   ├── services        <- Fast API services.
     │   │   ├── models          <- Fast API models.
     │   │   └── main.py
     │   │

@@ -1,7 +1,7 @@
 """Unittest for src/db/api"""
 import unittest
 
-from src.api.controllers.check_text_in_db import check_text_in_db
+from src.api.services.check_text_in_db import check_text_in_db
 from src.db.database_processor import DataProcessor
 from src.utils.utils import get_abspath
 
