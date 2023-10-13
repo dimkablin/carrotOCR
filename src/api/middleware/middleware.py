@@ -11,6 +11,7 @@ class BackendMiddleware(BaseHTTPMiddleware):
     ERRORS = (RuntimeError, TypeError, Exception)
 
     async def dispatch(self, request: Request, call_next) -> Response:
+        """Redefining dispatch function."""
         start_time = time.time()
         try:
             response = await call_next(request)
