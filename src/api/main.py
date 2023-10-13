@@ -1,10 +1,17 @@
 """ FastAPI connection """
-from fastapi import FastAPI, APIRouter
+from typing import List
+
+from fastapi import FastAPI, APIRouter, UploadFile, Form
 from fastapi.middleware.cors import CORSMiddleware
 
-from src.api.services.get_files import get_files_controller
-from src.api.services.get_folders import get_folders_controller
-from src.api.services.process_image import process_image_controller
+from src.api.services.add_filenames import add_filenames_service
+from src.api.services.get_files import get_files_service
+from src.api.services.get_folders import get_folders_service
+from src.api.services.process_image import process_image_service
+from src.api.services.upload_files import upload_files_service
+
+from src.api.models.add_filenames_models import AddFilenamesRequest
+from src.api.models.upload_files_models import UploadFilesResponse
 from src.api.models.get_f_models import GetFRequest, GetFResponse
 from src.api.models.process_image_models import ProcessImageRequest, ProcessImageResponse
 
@@ -22,19 +29,31 @@ app.add_middleware(
 @router.post("/process-image/", response_model=ProcessImageResponse)
 async def process_image(req: ProcessImageRequest):
     """ Process image function """
-    return await process_image_controller(req)
+    return await process_image_service(req)
 
 
 @router.post("/get-files/", response_model=GetFResponse)
 async def get_files(req: GetFRequest):
     """Returning all directories in path."""
-    return await get_files_controller(req)
+    return await get_files_service(req)
 
 
 @router.post("/get-folders/", response_model=GetFResponse)
 async def get_folders(req: GetFRequest):
     """Returning all directories in path."""
-    return await get_folders_controller(req)
+    return await get_folders_service(req)
+
+
+@router.post("/add-filenames/", response_model=None)
+async def add_filenames(req: AddFilenamesRequest):
+    """Adding new names of files to Database"""
+    return await add_filenames_service(req)
+
+
+@router.post("/upload-files/", response_model=UploadFilesResponse)
+async def upload_files(files: List[UploadFile] = Form(...)):
+    """Uploading files to the server."""
+    return await upload_files_service(files)
 
 app.include_router(router, prefix="/api")
 

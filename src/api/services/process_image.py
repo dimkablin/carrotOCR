@@ -7,7 +7,7 @@ import src.features.build_features as pp
 model = OCRModelFactory.create("pytesseract")
 
 
-async def process_image_controller(req: ProcessImageRequest):
+async def process_image_service(req: ProcessImageRequest):
     """ Controller for process image. """
     response = ProcessImageResponse(
         chunk_id=req.chunk_id,
