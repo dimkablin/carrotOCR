@@ -18,10 +18,11 @@ async def upload_files_service(files) -> UploadFilesResponse:
 
     for file in files:
         filename = file.filename
-        path = os.path.join("", filename)
+        if check_extension(filename):
+            path = os.path.join("", filename)
 
-        with open(path, "wb") as wb_f:
-            wb_f.write(file.file.read())
-            paths.append(path)
+            with open(path, "wb") as wb_f:
+                wb_f.write(file.file.read())
+                paths.append(path)
 
     return UploadFilesResponse(paths=paths)
