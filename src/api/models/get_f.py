@@ -9,6 +9,11 @@ class GetFRequest(BaseModel):
     path: str = "/"
 
 
-class GetFResponse(BaseModel):
+class GetFilesResponse(BaseModel):
     """Get files or folders response."""
-    paths: List[str]
+    files: List[str]
+
+
+class GetFoldersResponse(BaseModel):
+    """Get folders or folders response."""
+    folders: List[str]

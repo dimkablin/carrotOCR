@@ -1,6 +1,6 @@
 """Upload files function service."""
 import os.path
-from src.api.models.upload_files_models import UploadFilesResponse
+from src.api.models.upload_files import UploadFilesResponse
 
 # available extension
 EXTENSIONS = [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".svg", ".webp"]

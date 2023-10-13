@@ -52,7 +52,7 @@ class PyTesseractInited(OCR):
         results = []
         for image in inputs:
             outputs = pytesseract.image_to_data(image,
-                                                lang='tat',
+                                                lang='rus',
                                                 config=self.config,
                                                 output_type=Output.DICT,
                                                 *args,

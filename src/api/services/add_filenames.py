@@ -1,5 +1,5 @@
 """Adding new filenames service."""
-from src.api.models.add_filenames_models import AddFilenamesRequest
+from src.api.models.add_filenames import AddFilenamesRequest
 from src.db.database_processor import DataProcessor
 
 

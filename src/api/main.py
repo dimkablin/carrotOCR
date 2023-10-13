@@ -3,6 +3,7 @@ from typing import List
 
 from fastapi import FastAPI, APIRouter, UploadFile, Form
 from fastapi.middleware.cors import CORSMiddleware
+from src.api.middleware.middleware import BackendMiddleware
 
 from src.api.services.add_filenames import add_filenames_service
 from src.api.services.get_files import get_files_service
@@ -10,14 +11,15 @@ from src.api.services.get_folders import get_folders_service
 from src.api.services.process_image import process_image_service
 from src.api.services.upload_files import upload_files_service
 
-from src.api.models.add_filenames_models import AddFilenamesRequest
-from src.api.models.upload_files_models import UploadFilesResponse
-from src.api.models.get_f_models import GetFRequest, GetFResponse
-from src.api.models.process_image_models import ProcessImageRequest, ProcessImageResponse
+from src.api.models.add_filenames import AddFilenamesRequest
+from src.api.models.upload_files import UploadFilesResponse
+from src.api.models.get_f import GetFRequest, GetFilesResponse, GetFoldersResponse
+from src.api.models.process_image import ProcessImageRequest, ProcessImageResponse
 
 app = FastAPI()
 router = APIRouter()
 
+app.add_middleware(BackendMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -32,13 +34,13 @@ async def process_image(req: ProcessImageRequest):
     return await process_image_service(req)
 
 
-@router.post("/get-files/", response_model=GetFResponse)
+@router.post("/get-files/", response_model=GetFilesResponse)
 async def get_files(req: GetFRequest):
     """Returning all directories in path."""
     return await get_files_service(req)
 
 
-@router.post("/get-folders/", response_model=GetFResponse)
+@router.post("/get-folders/", response_model=GetFoldersResponse)
 async def get_folders(req: GetFRequest):
     """Returning all directories in path."""
     return await get_folders_service(req)

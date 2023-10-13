@@ -1,7 +1,9 @@
 """Unittest for src/db/api"""
 import unittest
 
+from src.api.models.get_f import GetFRequest
 from src.api.services.check_text_in_db import check_text_in_db
+from src.api.services.get_folders import get_folders_service
 from src.db.database_processor import DataProcessor
 from src.utils.utils import get_abspath
 
@@ -28,6 +30,12 @@ class TestAPI(unittest.TestCase):
         # And now we can check this function out
         result = check_text_in_db(text2)
         print(result)
+
+    async def test_2(self):
+        """unittest for get_folders_service."""
+        req = GetFRequest(path='/mnt/c/')
+        result = await get_folders_service(req)
+        self.assertIsNotNone(result)
 
 
 class TestSuit(unittest.TestSuite):

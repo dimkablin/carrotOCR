@@ -1,5 +1,5 @@
 """process-image function according to the MVC pattern."""
-from src.api.models.process_image_models import ProcessImageRequest, ProcessImageResponse, Result
+from src.api.models.process_image import ProcessImageRequest, ProcessImageResponse, Result
 from src.db.database_processor import DataProcessor
 from src.models.ocr import OCRModelFactory
 import src.features.build_features as pp
