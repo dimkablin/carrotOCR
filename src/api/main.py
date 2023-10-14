@@ -1,7 +1,7 @@
 """ FastAPI connection """
 from typing import List
 
-from fastapi import FastAPI, APIRouter, UploadFile, Form
+from fastapi import FastAPI, APIRouter, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from src.api.middleware.middleware import BackendMiddleware
 
@@ -58,7 +58,7 @@ async def add_filenames(req: AddFilenamesRequest):
 
 
 @router.post("/upload-files/", tags=["Backend API"], response_model=UploadFilesResponse)
-async def upload_files(files: List[UploadFile] = Form(...)):
+async def upload_files(files: List[UploadFile] = File(...)):
     """Uploading files to the server."""
     return await upload_files_service(files)
 

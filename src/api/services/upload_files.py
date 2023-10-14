@@ -17,7 +17,6 @@ async def upload_files_service(files) -> UploadFilesResponse:
     """Upload files to the server"""
     paths = []
     save_path = get_abspath("LOCAL_DATA")
-
     for file in files:
         filename = file.filename
         if check_extension(filename):
