@@ -16,7 +16,12 @@ from src.api.models.upload_files import UploadFilesResponse
 from src.api.models.get_f import GetFRequest, GetFilesResponse, GetFoldersResponse
 from src.api.models.process_image import ProcessImageRequest, ProcessImageResponse
 
-app = FastAPI()
+app = FastAPI(
+    openapi_tags=[{
+        "name": "Backend API",
+        "description": "Backend API router."
+    }]
+)
 router = APIRouter()
 
 app.add_middleware(BackendMiddleware)
@@ -28,31 +33,31 @@ app.add_middleware(
 )
 
 
-@router.post("/process-image/", response_model=ProcessImageResponse)
+@router.post("/process-image/", tags=["Backend API"], response_model=ProcessImageResponse)
 async def process_image(req: ProcessImageRequest):
     """ Process image function """
     return await process_image_service(req)
 
 
-@router.post("/get-files/", response_model=GetFilesResponse)
+@router.post("/get-files/", tags=["Backend API"], response_model=GetFilesResponse)
 async def get_files(req: GetFRequest):
     """Returning all directories in path."""
     return await get_files_service(req)
 
 
-@router.post("/get-folders/", response_model=GetFoldersResponse)
+@router.post("/get-folders/", tags=["Backend API"], response_model=GetFoldersResponse)
 async def get_folders(req: GetFRequest):
     """Returning all directories in path."""
     return await get_folders_service(req)
 
 
-@router.post("/add-filenames/", response_model=None)
+@router.post("/add-filenames/", tags=["Backend API"], response_model=None)
 async def add_filenames(req: AddFilenamesRequest):
     """Adding new names of files to Database"""
     return await add_filenames_service(req)
 
 
-@router.post("/upload-files/", response_model=UploadFilesResponse)
+@router.post("/upload-files/", tags=["Backend API"], response_model=UploadFilesResponse)
 async def upload_files(files: List[UploadFile] = Form(...)):
     """Uploading files to the server."""
     return await upload_files_service(files)
