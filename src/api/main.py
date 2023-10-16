@@ -4,10 +4,12 @@ from typing import List
 from fastapi import FastAPI, APIRouter, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from src.api.middleware.middleware import BackendMiddleware
+from src.api.models.get_ocr_models import GetOCRModelsResponse
 
 from src.api.services.add_filenames import add_filenames_service
 from src.api.services.get_files import get_files_service
 from src.api.services.get_folders import get_folders_service
+from src.api.services.get_ocr_models import get_ocr_models_service
 from src.api.services.process_image import process_image_service
 from src.api.services.upload_files import upload_files_service
 
@@ -61,6 +63,12 @@ async def add_filenames(req: AddFilenamesRequest):
 async def upload_files(files: List[UploadFile] = File(...)):
     """Uploading files to the server."""
     return await upload_files_service(files)
+
+
+@router.get("/get-models/", tags=["Backend API"], response_model=GetOCRModelsResponse)
+async def get_ocr_models():
+    """Return OCR Models ids ans names."""
+    return await get_ocr_models_service()
 
 app.include_router(router, prefix="/api")
 

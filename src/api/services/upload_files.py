@@ -4,7 +4,7 @@ from src.api.models.upload_files import UploadFilesResponse
 from src.utils.utils import get_abspath
 
 # available extension
-EXTENSIONS = [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".svg", ".webp"]
+EXTENSIONS = [".jpg", ".jpeg", ".png", ".bmp", ".webp"]
 
 
 def check_extension(filename) -> bool:
