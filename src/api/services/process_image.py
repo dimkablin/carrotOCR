@@ -1,10 +1,11 @@
 """process-image function according to the MVC pattern."""
 from src.api.models.process_image import ProcessImageRequest, ProcessImageResponse, Result
 from src.db.database_processor import DataProcessor
-from src.models.ocr import OCRModelFactory
+from src.models.ocr.ocr import OCRModelFactoryProcessor
 import src.features.build_features as pp
 
-model = OCRModelFactory.create("pytesseract")
+
+MODEL = OCRModelFactoryProcessor("pytesseract")
 
 
 async def process_image_service(req: ProcessImageRequest):
@@ -14,26 +15,22 @@ async def process_image_service(req: ProcessImageRequest):
         results=[]
     )
 
-    try:
-        # read images and use model
-        images = await pp.read_images(req.paths)
-        outputs = model(images)
+    # read images and use model
+    images = await pp.read_images(req.paths)
+    outputs = MODEL(images)
 
-        for i, output in enumerate(outputs):
-            data = {
-                "file_path": req.paths[i],
-                "tags": ["None"],
-                "text": output['rec_texts'],
-                "bboxes": output['det_polygons']
-            }
+    for i, output in enumerate(outputs):
+        data = {
+            "file_path": req.paths[i],
+            "tags": ["None"],
+            "text": output['rec_texts'],
+            "bboxes": output['det_polygons']
+        }
 
-            # insert data to Database and get UID
-            uid = DataProcessor.insert_data(**data)
+        # insert data to Database and get UID
+        uid = DataProcessor.insert_data(**data)
 
-            # fill response
-            response.results.append(Result(uid=uid, **data))
-
-    except FileNotFoundError as err:
-        print(err)
+        # fill response
+        response.results.append(Result(uid=uid, **data))
 
     return response

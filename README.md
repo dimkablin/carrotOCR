@@ -79,7 +79,7 @@ where you can choose --host and --port
 ```python
 import mmcv
 from src.visualization.visualize import *
-from src.models.ocr import OCRModelFactory
+from src.models.ocr.ocr import OCRModelFactory
 
 url = 'data/raw/example1.jpg'
 image = mmcv.imread(url)

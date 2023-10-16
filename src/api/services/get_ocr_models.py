@@ -1,9 +1,9 @@
 """Get OCR Models service."""
 from src.api.models.get_ocr_models import GetOCRModelsResponse
-from src.models.ocr import OCRModelFactory
+from src.models.ocr.ocr import OCRModelFactory
 
 
 async def get_ocr_models_service() -> GetOCRModelsResponse:
     """Get OCR Models service function."""
-    models = OCRModelFactory.MODEL_MAPPING.keys()
+    models = OCRModelFactory.get_models()
     return GetOCRModelsResponse(models=models)

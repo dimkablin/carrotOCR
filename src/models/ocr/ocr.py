@@ -26,3 +26,20 @@ class OCRModelFactory:
     def get_models():
         """ Getter of models name """
         return OCRModelFactory.MODEL_MAPPING.keys()
+
+
+class OCRModelFactoryProcessor:
+    """OCR Model Processor."""
+    def __init__(self, model_type):
+        self.model = OCRModelFactory.create(model_type)
+
+    def __call__(self, *args, **kwargs):
+        return self.model(*args, **kwargs)
+
+    def change_ocr_model(self, model_type: str):
+        """Change OCR model function"""
+        self.model = OCRModelFactory.create(model_type)
+
+    def get_current_model(self) -> str:
+        """Return the current running model."""
+        return self.model.get_model_type()
