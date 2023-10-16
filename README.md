@@ -34,8 +34,8 @@ Project Organization
     │   │   └── build_features.py
     │   │
     │   ├── models              <- Scripts with loading trained models.
-    │   │   ├── ocr
-    │   │   |   ├── ocr.py      <- Factory Method pattern.
+    │   │   ├── ocr             <- Factory Method pattern.
+    │   │   |   ├── ocr.py      
     │   │   |   ├── mmocr.py    
     │   │   |   ├── easyocr.py  
     │   │   |   └── pytesseract.py 
@@ -53,11 +53,13 @@ Project Organization
 
 --------
 ## Run project
+#### Building Docker Image
 It is preferable to run the project on the linux
 ```bash
  docker build -t carrot-ocr . --no-cache  2>&1 | tee build_log.txt
 ```
-
+#### Hosting Docker Image
+In progress...
 ## FastAPI Swagger
 Now you can open locally this site http://127.0.0.1:8000/docs.
 <img src="notebooks/references/backend.jpg" alt="#">
