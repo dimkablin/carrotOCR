@@ -34,7 +34,12 @@ Project Organization
     │   │   └── build_features.py
     │   │
     │   ├── models              <- Scripts with loading trained models.
-    │   │   ├── ocr.py
+    │   │   ├── ocr
+    │   │   |   ├── ocr.py      <- Factory Method pattern.
+    │   │   |   ├── mmocr.py    
+    │   │   |   ├── easyocr.py  
+    │   │   |   └── pytesseract.py 
+    │   │   |   
     │   │   └── zero_shot_classification.py
     │   │
     │   └── visualization       <- Scripts to create exploratory and results oriented visualizations
@@ -47,32 +52,15 @@ Project Organization
 
 
 --------
-## PostgreSQL Setup
-**_NOTE_**: A pre-existing database is required in order to create a connection to PostgreSQL.
-```bash
-sudo -u postgres psql
-```
-Once you're connected to PostgreSQL, you can create a new database and grant privileges to a user using the following SQL statements:
-```bash
-CREATE DATABASE database_name;
-CREATE USER user_name with encrypted password 'user_password';
-GRANT ALL PRIVILEGES ON DATABSE database_name TO user_name;
-```
-Ensure that `database_name`, `user_name`, `user_password` with the appropriate values, which should also be defined in your .env file.
-
-
-After creating the database and user, you can run a script that will create the necessary databases and tables for the project:
-```bash
-# Run the script that create database and tables
-python3 db_script.py
-```
-
 ## Run project
 It is preferable to run the project on the linux
 ```bash
-uvicorn src.api.main:app --reload --host 127.0.0.1 --port 8000
+ docker build -t carrot-ocr . --no-cache  2>&1 | tee build_log.txt
 ```
-where you can choose --host and --port 
+
+## FastAPI Swagger
+Now you can open locally this site http://127.0.0.1:8000/docs.
+<img src="notebooks/references/backend.jpg" alt="#">
 
 ## Example of usage
 
