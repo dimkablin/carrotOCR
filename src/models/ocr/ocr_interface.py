@@ -19,6 +19,10 @@ class OCR(ABC):
             - 'det_scores': List of floats
         """
 
+    @staticmethod
+    def get_model_type() -> str:
+        """Return model type."""
+
     @abstractmethod
     def __str__(self) -> str:
-        pass
+        """Return model description."""
