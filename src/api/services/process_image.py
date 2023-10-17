@@ -1,6 +1,6 @@
 """process-image function according to the MVC pattern."""
 from src.api.models.process_image import ProcessImageRequest, ProcessImageResponse, Result
-from src.db.database_processor import DataProcessor
+from src.db.processed_manager import ProcessedManager, ProcessedStructure
 from src.models.ocr.ocr import OCRModelFactoryProcessor
 import src.features.build_features as pp
 
@@ -20,17 +20,17 @@ async def process_image_service(req: ProcessImageRequest):
     outputs = MODEL(images)
 
     for i, output in enumerate(outputs):
-        data = {
-            "file_path": req.paths[i],
-            "tags": ["None"],
-            "text": output['rec_texts'],
-            "bboxes": output['det_polygons']
-        }
+        data = ProcessedStructure(
+            old_filename=req.paths[i],
+            tags=["None"],
+            text=output['rec_texts'],
+            bboxes=output['det_polygons']
+        )
 
         # insert data to Database and get UID
-        uid = DataProcessor.insert_data(**data)
+        uid = ProcessedManager.insert_data(data)
 
         # fill response
-        response.results.append(Result(uid=uid, **data))
+        response.results.append(Result(uid=uid, **data.to_db()))
 
     return response

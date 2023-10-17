@@ -1,14 +1,13 @@
 """Checking file existing."""
 import Levenshtein
 
-from src.db.database_manager import DatabaseManager
-from src.db.database_processor import DataProcessor
+from src.db.processed_manager import ProcessedManager, ProcessedStructure
 
 
 def find_nearest_text(text1: str):
     """ Finding nearest document in database."""
 
-    datas = DataProcessor.get_all_data()
+    datas = ProcessedManager.get_all_data()
 
     nearest_uid = 0
     nearest_text = None
@@ -17,14 +16,14 @@ def find_nearest_text(text1: str):
     # find min data with minimal distance
     for data in datas:
         # get all data
-        data = DatabaseManager.from_db(data)
+        data = ProcessedStructure().from_db(data)
 
         # determine the Levenshtein distance
-        text2 = " ".join(data["text"])
+        text2 = " ".join(data.text)
         distance = Levenshtein.distance(text1, text2)
 
         if distance < nearest_distance:
-            nearest_uid = data["id"]
+            nearest_uid = data.uid
             nearest_text = text2
             nearest_distance = distance
 
