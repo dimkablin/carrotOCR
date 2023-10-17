@@ -25,9 +25,10 @@ Project Organization
     │   │   ├── models          <- Fast API models.
     │   │   └── main.py
     │   │
-    │   ├── db                  <- Scripts that using for connect to the database.
+    │   ├── db                  <- Scripts that using for connect to the database, 'processed' table manager.
     │   │   ├── database_manager.py
-    │   │   └── database_processor.py
+    │   │   ├── processed_structure.py
+    │   │   └── processed_manager.py
     │   │
     │   │
     │   ├── features            <- Scripts to turn raw data into features for modeling
