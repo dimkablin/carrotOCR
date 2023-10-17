@@ -13,10 +13,18 @@ def check_extension(filename) -> bool:
     return file_extension in EXTENSIONS
 
 
+def create_dir_if_not_exist(path_: str) -> None:
+    """Creating directory if it doesn't exist."""
+    if not os.path.exists(path_):
+        os.mkdir(path_)
+
+
 async def upload_files_service(files) -> UploadFilesResponse:
     """Upload files to the server"""
     paths = []
     save_path = get_abspath("LOCAL_DATA")
+    create_dir_if_not_exist(save_path)
+
     for file in files:
         filename = file.filename
         if check_extension(filename):
