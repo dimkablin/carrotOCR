@@ -25,8 +25,7 @@ class TestAPI(unittest.TestCase):
         data = ProcessedStructure(
             directory="/mnt/c/LOCAL_DATA",
             old_filename="example.jpg",
-            text=text1.split(" "),
-            bboxes=[[0, 0, 1, 1, 2, 2, 3, 3], [0, 0, 1, 1, 2, 2, 3, 3]]
+            text=text1.split(" ")
         )
 
         result = ProcessedManager.insert_data(data)

@@ -41,7 +41,6 @@ def check_text_in_db(text: str, thresh: float = 0.5) -> int:
     nearest_uid, nearest_text, nearest_distance = find_nearest_text(text)
     if nearest_text is not None:
         similarity = nearest_distance / len(text)
-        print(similarity)
         if similarity < thresh:
             return nearest_uid
 
