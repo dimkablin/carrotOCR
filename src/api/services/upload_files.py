@@ -26,7 +26,7 @@ async def upload_files_service(files) -> UploadFilesResponse:
     create_dir_if_not_exist(save_path)
 
     for file in files:
-        filename = file.filename
+        filename = file.filename.split()[-1]
         if check_extension(filename):
             path = os.path.join(save_path, filename)
 

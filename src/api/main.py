@@ -3,11 +3,13 @@ from typing import List
 
 from fastapi import FastAPI, APIRouter, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from src.api.middleware.middleware import BackendMiddleware
-from src.api.models.get_ocr_models import GetOCRModelsResponse
+from src.utils.utils import get_abspath
 
 from src.api.services.add_filenames import add_filenames_service
 from src.api.services.get_files import get_files_service
+from src.api.services.get_file import get_file_service
 from src.api.services.get_folders import get_folders_service
 from src.api.services.get_ocr_models import get_ocr_models_service
 from src.api.services.process_image import process_image_service
@@ -17,6 +19,8 @@ from src.api.models.add_filenames import AddFilenamesRequest
 from src.api.models.upload_files import UploadFilesResponse
 from src.api.models.get_f import GetFRequest, GetFilesResponse, GetFoldersResponse
 from src.api.models.process_image import ProcessImageRequest, ProcessImageResponse
+from src.api.models.get_ocr_models import GetOCRModelsResponse
+
 
 app = FastAPI(
     openapi_tags=[{
@@ -33,6 +37,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.mount("/LOCAL_DATA", StaticFiles(directory=get_abspath("LOCAL_DATA")), name="LOCAL_DATA")
 
 
 @router.post("/process-image/", tags=["Backend API"], response_model=ProcessImageResponse)
@@ -69,6 +74,12 @@ async def upload_files(files: List[UploadFile] = File(...)):
 async def get_ocr_models():
     """Return OCR Models ids and its names."""
     return await get_ocr_models_service()
+
+
+@router.get("/get-file/{file_name}", tags=["Backend API"])
+async def get_file(filename: str):
+    """Return file from static directory."""
+    return await get_file_service(filename)
 
 app.include_router(router, prefix="/api")
 
