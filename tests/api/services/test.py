@@ -4,7 +4,8 @@ import unittest
 from src.api.models.get_f import GetFRequest
 from src.api.services.check_text_in_db import check_text_in_db
 from src.api.services.get_folders import get_folders_service
-from src.db.database_processor import DataProcessor
+from src.db.processed_manager import ProcessedManager
+from src.db.processed_structure import ProcessedStructure
 from src.utils.utils import get_abspath
 
 
@@ -21,10 +22,14 @@ class TestAPI(unittest.TestCase):
             text2 = file.readline()
 
         # Firstly we should insert simular text into the DB
-        data = ("another_example.jpg", [], text1.split(" "),
-                [[0, 0, 1, 1, 2, 2, 3, 3], [0, 0, 1, 1, 2, 2, 3, 3]])
+        data = ProcessedStructure(
+            directory="/mnt/c/LOCAL_DATA",
+            old_filename="example.jpg",
+            text=text1.split(" "),
+            bboxes=[[0, 0, 1, 1, 2, 2, 3, 3], [0, 0, 1, 1, 2, 2, 3, 3]]
+        )
 
-        result = DataProcessor.insert_data(*data)
+        result = ProcessedManager.insert_data(data)
         self.assertIsNotNone(result)
 
         # And now we can check this function out

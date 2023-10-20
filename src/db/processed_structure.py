@@ -16,7 +16,7 @@ class ProcessedStructure:
 
     def __init__(self, **kwargs):
         if "directory" in kwargs:
-            self.dir = kwargs.get("directory")
+            self.directory = kwargs.get("directory")
         if "old_filename" in kwargs:
             self.old_filename = kwargs.get("old_filename")
         if "new_filename" in kwargs:
@@ -48,4 +48,10 @@ class ProcessedStructure:
             if value is not None:
                 result[attr] = value
 
+        return result
+
+    def __str__(self):
+        result = ""
+        for attr, value in self.__dict__.items():
+            result += f"{attr}: " + str(value) + "\n"
         return result

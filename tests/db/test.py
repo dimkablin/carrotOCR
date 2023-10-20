@@ -2,7 +2,8 @@
 import unittest
 from typing import List
 
-from src.db.database_processor import DataProcessor
+from src.db.processed_manager import ProcessedManager
+from src.db.processed_structure import ProcessedStructure
 
 
 class TestDataProcessor(unittest.TestCase):
@@ -12,48 +13,56 @@ class TestDataProcessor(unittest.TestCase):
 
     def test_0(self):
         """Unittest for clear_table function."""
-        result = DataProcessor.clear_table()
+        result = ProcessedManager.clear_table()
         self.assertTrue(result)
 
     def test_1(self):
         """Unittest for insert_data function"""
-        filepath = "example.jpg"
-        tags = ["tag1", "tag 2"]
-        text = ["text1", "text2"]
-        bboxes = [[0, 0, 1, 1, 2, 2, 3, 3], [0, 0, 1, 1, 2, 2, 3, 3]]
-        result = DataProcessor.insert_data(filepath, tags, text, bboxes)
+        data = ProcessedStructure(
+            directory="/mnt/c/LOCAL_DATA",
+            old_filename="example.jpg",
+            tags=["tag1", "tag 2"],
+            text=["text1", "text2"],
+            bboxes=[[0, 0, 1, 1, 2, 2, 3, 3], [0, 0, 1, 1, 2, 2, 3, 3]]
+        )
+        result = ProcessedManager.insert_data(data)
         self.assertIsInstance(result, int)
 
     def test_2(self):
         """Another unittest for insert_data function"""
-        filepath = "another_example.jpg"
-        tags = []
-        text = ["text1", "text2", "text2", "", "", "1909"]
-        bboxes = [[0, 0, 1, 1, 2, 2, 3, 3], [0, 0, 1, 1, 2, 2, 3, 3]]
-        result = DataProcessor.insert_data(filepath, tags, text, bboxes)
+        data = ProcessedStructure(
+            directory="/mnt/c/LOCAL_DATA",
+            old_filename="another_example.jpg",
+            new_filename="ama_new_here.jpg",
+            tags=None,
+            text=["text1", "text2", "text2", "", "", "1909"],
+            bboxes=[[0, 0, 1, 1, 2, 2, 3, 3], [0, 0, 1, 1, 2, 2, 3, 3]]
+        )
+        result = ProcessedManager.insert_data(data)
         self.assertIsInstance(result, int)
 
     def test_3(self):
         """Unittest for get_data_by_id function."""
-        result = DataProcessor.get_data_by_id(uid=1)
+        result = ProcessedManager.get_data_by_id(uid=1)
+        print(result)
         self.assertIsNotNone(result)
-        self.assertIsInstance(result, dict)
+        self.assertIsInstance(result, ProcessedStructure)
 
     def test_4(self):
         """Unittest for insert_new_filename function."""
         new_filename = "amma_new_here.jpg"
-        result = DataProcessor.insert_new_filename(new_filename, uid=1)
+        result = ProcessedManager.insert_new_filename(new_filename, uid=1)
         self.assertTrue(result)
 
     def test_5(self):
         """Unittest for get_text function."""
         uid = None
-        result = DataProcessor.get_text(uid)
+        result = ProcessedManager.get_text(uid)
         self.assertIsNotNone(result)
 
     def test_6(self):
         """Unittest for get_all_data function."""
-        result = DataProcessor.get_all_data()
+        result = ProcessedManager.get_all_data()
         self.assertIsInstance(result, List)
 
 

@@ -67,7 +67,7 @@ async def upload_files(files: List[UploadFile] = File(...)):
 
 @router.get("/get-models/", tags=["Backend API"], response_model=GetOCRModelsResponse)
 async def get_ocr_models():
-    """Return OCR Models ids ans names."""
+    """Return OCR Models ids and its names."""
     return await get_ocr_models_service()
 
 app.include_router(router, prefix="/api")
