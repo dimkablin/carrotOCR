@@ -6,6 +6,7 @@ from typing import List
 import cv2
 import numpy as np
 
+from src.api.models.get_processed import TBox
 from src.env import project_dir
 
 
@@ -14,19 +15,21 @@ def get_abspath(path):
     return os.path.join(project_dir, path)
 
 
-def bbox2rect(bbox: List[int]) -> List[int]:
+def bbox2rect(bbox: List[int]) -> TBox:
     """Convert from 4 points represent a model output's bbox to Point Width High."""
-    (center_x, center_y), (width, height), angle = cv2.minAreaRect(np.array(bbox).reshape(-1, 2))
-    result = [
-        center_x - width//2,
-        center_y - height//2,
-        width,
-        height
-    ]
+    min_xy = (min(bbox[::2]),min(bbox[1::2]))
+    max_xy = (max(bbox[::2]),max(bbox[1::2]))
+
+    result = TBox(
+        x=min_xy[0],
+        y=min_xy[1],
+        w=max_xy[0]-min_xy[0],
+        h=max_xy[1]-min_xy[1]
+    )
     return result
 
 
-def bboxes2rect(bboxes: List[List[int]]) -> List[List[int]]:
+def bboxes2rect(bboxes: List[List[int]]) -> List[TBox]:
     """Convert list of bboxes to rectangles."""
     result = []
     for bbox in bboxes:
