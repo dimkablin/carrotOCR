@@ -16,7 +16,6 @@ pytesseract~=0.3.10
 easyocr~=1.7.1
 opencv-python~=4.8.0.76
 Pillow~=10.0.0
-mmocr~=1.0.1
 setuptools~=60.2.0
 fastapi~=0.103.1
 uvicorn~=0.23.2
