@@ -21,8 +21,7 @@ async def process_image_service(model: OCRModelFactoryProcessor, req: ProcessIma
     )
 
     # read images and use model
-    paths = [get_path_to_image(path) for path in req.paths]
-    images = await pp.read_images(paths)
+    images = await pp.read_images(req.paths)
     outputs = model(images)
 
     for i, output in enumerate(outputs):
@@ -31,8 +30,8 @@ async def process_image_service(model: OCRModelFactoryProcessor, req: ProcessIma
 
         # insert data to Database and get UID
         data = ProcessedStructure(
-            path=paths[i],
-            old_filename=req.paths[i],
+            path=req.paths[i],
+            old_filename=os.path.split(req.paths[i])[-1],
             tags=["None"],
             text=output['rec_texts'],
             bboxes=output['det_polygons']

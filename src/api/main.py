@@ -72,7 +72,7 @@ async def add_filenames(req: AddFilenamesRequest):
 @router.post("/upload-files/", tags=["Backend API"], response_model=UploadFilesResponse)
 async def upload_files(files: List[UploadFile] = File(...)):
     """Uploading files to the server."""
-    return await upload_files_service(files, cut_image_flag=True)
+    return await upload_files_service(files)
 
 
 @router.get("/get-models/", tags=["Backend API"], response_model=GetOCRModelsResponse)
