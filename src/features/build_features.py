@@ -10,15 +10,14 @@ import io
 from PIL import Image
 import cv2
 import numpy as np
-import mmcv
 
 
-def preprocess_image(image: np.ndarray) -> np.ndarray:
+async def preprocess_image(image: np.ndarray) -> np.ndarray:
     """ Main function to preprocess image """
     image = cut_image(image)
-    image = mmcv.bgr2gray(image)
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     image = adaptive_threshold(image)
-    image = mmcv.gray2rgb(image)
+    image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
 
     return image
 
@@ -32,7 +31,7 @@ def byte2numpy(image) -> np.ndarray:
     return image
 
 
-def cut_image(image: np.ndarray, k=1.4142) -> np.ndarray:
+def cut_image(image: np.ndarray, k=1.4142, min_wh = 1200) -> np.ndarray:
     """ Changing size of the image from (w, h) to (new_w, k * new_w) where new_w equals to min(w, h)
 
     :param image: An Image.Image object representing input image
@@ -42,9 +41,12 @@ def cut_image(image: np.ndarray, k=1.4142) -> np.ndarray:
 
     assert image.shape[2] == 3, \
         f"image shape has to be equal to (:, :, 3), but image.shape has {len(image.shape)}."
-
     height, width = image.shape[0], image.shape[1]
     height = int(min(k * width, height))
+
+    height = height if height > min_wh else min_wh
+    width = width if width > min_wh else min_wh
+
     image = image[0:width, 0:height, :]
 
     return image
@@ -76,7 +78,7 @@ async def read_image(path: str):
     :return: An Image.Image object representing the output image.
     """
 
-    return await asyncio.to_thread(mmcv.imread, path)
+    return await asyncio.to_thread(cv2.imread, path)
 
 
 async def read_images(paths):
