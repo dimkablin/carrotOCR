@@ -5,10 +5,12 @@ from pydantic import BaseModel
 
 
 class GetProcessedRequest(BaseModel):
+    """get_processed function request"""
     uid: int
 
 
 class GetProcessedResponse(BaseModel):
+    """get_processed function response"""
     path: str
     old_filename: str
     new_filename: Optional[str]
