@@ -10,4 +10,6 @@ async def get_files_service(req: GetFRequest) -> GetFilesResponse:
 
     files = [file for file in os.listdir(req.path) if os.path.isfile(os.path.join(req.path, file))]
 
-    return GetFilesResponse(files=files[:req.count])
+    if req.count != -1:
+        files = files[:min(req.count, len(files))]
+    return GetFilesResponse(files=files)

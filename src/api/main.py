@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from src.api.middleware.middleware import BackendMiddleware
 from src.utils.utils import get_abspath
+from src.models.ocr.ocr import OCRModelFactoryProcessor
 
 from src.api.services.add_filenames import add_filenames_service
 from src.api.services.get_files import get_files_service
@@ -22,6 +23,7 @@ from src.api.models.process_image import ProcessImageRequest, ProcessImageRespon
 from src.api.models.get_ocr_models import GetOCRModelsResponse
 
 
+MODEL = OCRModelFactoryProcessor("pytesseract")
 app = FastAPI(
     openapi_tags=[{
         "name": "Backend API",
@@ -43,7 +45,7 @@ app.mount("/LOCAL_DATA", StaticFiles(directory=get_abspath("LOCAL_DATA")), name=
 @router.post("/process-image/", tags=["Backend API"], response_model=ProcessImageResponse)
 async def process_image(req: ProcessImageRequest):
     """ Process image function """
-    return await process_image_service(req)
+    return await process_image_service(MODEL, req)
 
 
 @router.post("/get-files/", tags=["Backend API"], response_model=GetFilesResponse)
@@ -67,7 +69,7 @@ async def add_filenames(req: AddFilenamesRequest):
 @router.post("/upload-files/", tags=["Backend API"], response_model=UploadFilesResponse)
 async def upload_files(files: List[UploadFile] = File(...)):
     """Uploading files to the server."""
-    return await upload_files_service(files)
+    return await upload_files_service(files, cut_image_flag=True)
 
 
 @router.get("/get-models/", tags=["Backend API"], response_model=GetOCRModelsResponse)

@@ -12,5 +12,5 @@ async def get_folders_service(req: GetFRequest) -> GetFoldersResponse:
             if dir_.startswith(dirname):
                 folders.append(dir_)
     if req.count != -1:
-        folders = folders[:min(req.count+1, len(folders))]
+        folders = folders[:min(req.count, len(folders))]
     return GetFoldersResponse(folders=folders)
