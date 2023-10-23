@@ -1,5 +1,5 @@
 """get_processed function models."""
-from typing import List
+from typing import List, Optional
 
 from pydantic import BaseModel
 
@@ -11,7 +11,7 @@ class GetProcessedRequest(BaseModel):
 class GetProcessedResponse(BaseModel):
     path: str
     old_filename: str
-    new_filename: str
-    tags: List[str]
+    new_filename: Optional[str]
+    tags: Optional[List[str]]
     text: List[str]
     bboxes: List[List[int]]

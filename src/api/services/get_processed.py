@@ -6,8 +6,9 @@ from src.utils.utils import bboxes2rect
 
 async def get_processed_service(
         req: GetProcessedRequest,
-        bbox2rect_flag=True) -> GetProcessedResponse:
+        bbox2rect_flag=False) -> GetProcessedResponse:
     """get_processed service's main function ."""
+
     data = ProcessedManager.get_data_by_id(req.uid)
     result = GetProcessedResponse(
         path=data.path,

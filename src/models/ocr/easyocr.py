@@ -24,7 +24,7 @@ class EasyOCRInited(OCR):
 
             for bbox, text, conf in outputs:
                 result['det_scores'].append(1)
-                result['det_polygons'].append([coord for xy in bbox for coord in xy])
+                result['det_polygons'].append([int(coord) for xy in bbox for coord in xy])
                 result['rec_scores'].append(conf)
                 result['rec_texts'].append(text)
             results.append(result)

@@ -31,6 +31,7 @@ async def process_image_service(model: OCRModelFactoryProcessor, req: ProcessIma
 
         # insert data to Database and get UID
         data = ProcessedStructure(
+            path=paths[i],
             old_filename=req.paths[i],
             tags=["None"],
             text=output['rec_texts'],
