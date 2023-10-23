@@ -29,7 +29,7 @@ class ProcessedManager:
         create_table_query = f"""
             CREATE TABLE IF NOT EXISTS {ProcessedManager.table_name} (
                 id SERIAL PRIMARY KEY,
-                directory TEXT,
+                path TEXT,
                 old_filename TEXT,
                 new_filename TEXT,
                 tags TEXT[],
@@ -49,11 +49,11 @@ class ProcessedManager:
         """Insert data into the database."""
         with DatabaseManager(**ProcessedManager.db_config) as db_manager:
             query = f"""
-                INSERT INTO {ProcessedManager.table_name} (directory, old_filename, tags, text, bboxes)
+                INSERT INTO {ProcessedManager.table_name} (path, old_filename, tags, text, bboxes)
                 VALUES (%s, %s, %s, %s, %s)
                 RETURNING id
             """
-            data = (raw.directory, raw.old_filename, raw.tags, raw.text, json.dumps(raw.bboxes))
+            data = (raw.path, raw.old_filename, raw.tags, raw.text, json.dumps(raw.bboxes))
             return db_manager.execute_query(query, data, fetch=True)[0][0]
 
     @staticmethod

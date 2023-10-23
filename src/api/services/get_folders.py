@@ -4,7 +4,7 @@ from src.api.models.get_f import GetFRequest, GetFoldersResponse
 
 
 async def get_folders_service(req: GetFRequest) -> GetFoldersResponse:
-    """get_files function service"""
+    """get_folders function service"""
     path, dirname = os.path.split(req.path)
     folders = []
     if os.path.exists(path):

@@ -5,6 +5,8 @@ from fastapi import FastAPI, APIRouter, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from src.api.middleware.middleware import BackendMiddleware
+from src.api.models.get_processed import GetProcessedResponse, GetProcessedRequest
+from src.api.services.get_processed import get_processed_service
 from src.utils.utils import get_abspath
 from src.models.ocr.ocr import OCRModelFactoryProcessor
 
@@ -23,7 +25,8 @@ from src.api.models.process_image import ProcessImageRequest, ProcessImageRespon
 from src.api.models.get_ocr_models import GetOCRModelsResponse
 
 
-MODEL = OCRModelFactoryProcessor("pytesseract")
+MODEL = OCRModelFactoryProcessor("easyocr")
+
 app = FastAPI(
     openapi_tags=[{
         "name": "Backend API",
@@ -82,6 +85,12 @@ async def get_ocr_models():
 async def get_file(filename: str):
     """Return file from static directory."""
     return await get_file_service(filename)
+
+
+@router.post("/get-processed/", tags=["Backend API"], response_model=GetProcessedResponse)
+async def get_processed(req: GetProcessedRequest):
+    """Return data from processed table."""
+    return await get_processed_service(req)
 
 app.include_router(router, prefix="/api")
 

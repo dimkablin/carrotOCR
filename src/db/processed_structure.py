@@ -7,7 +7,7 @@ from typing import List, Optional
 class ProcessedStructure:
     """Data structure for each row for 'Processed' table."""
     uid: int = None
-    directory: str = None
+    path: str = None
     old_filename: str = None
     new_filename: str = None
     tags: List[str] = None
@@ -15,24 +15,15 @@ class ProcessedStructure:
     bboxes: List[List[int]] = None
 
     def __init__(self, **kwargs):
-        if "directory" in kwargs:
-            self.directory = kwargs.get("directory")
-        if "old_filename" in kwargs:
-            self.old_filename = kwargs.get("old_filename")
-        if "new_filename" in kwargs:
-            self.new_filename = kwargs.get("new_filename")
-        if "tags" in kwargs:
-            self.tags = kwargs.get("tags")
-        if "text" in kwargs:
-            self.text = kwargs.get("text")
-        if "bboxes" in kwargs:
-            self.bboxes = kwargs.get("bboxes")
+        for attr_name in dir(self):
+            if not attr_name.startswith("__") and attr_name in kwargs:
+                setattr(self, attr_name, kwargs[attr_name])
 
     def from_db(self, raw: Optional[tuple]):
         """Convert data from db to template"""
         if not len(raw) == 0:
             self.uid = raw[0]
-            self.directory = raw[1]
+            self.path = raw[1]
             self.old_filename = raw[2]
             self.new_filename = raw[3]
             self.tags = raw[4]

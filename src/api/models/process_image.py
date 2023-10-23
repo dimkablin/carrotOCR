@@ -12,10 +12,6 @@ class ProcessImageRequest(BaseModel):
 class Result(BaseModel):
     """ OCR model result type """
     uid: int  # Image ID
-    file_path: str
-    tags: List[str]
-    text: List[str]
-    bboxes: List[List[int]]
     duplicate_id: int  # Duplicate ID if it is already in database
 
 
