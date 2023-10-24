@@ -7,6 +7,8 @@ import asyncio
 # pylint: disable=W,R,E
 
 import io
+from typing import List
+
 from PIL import Image
 import cv2
 import numpy as np
@@ -14,12 +16,19 @@ import numpy as np
 
 async def preprocess_image(image: np.ndarray) -> np.ndarray:
     """ Main function to preprocess image """
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image = cut_image(image)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     image = adaptive_threshold(image)
     image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
 
     return image
+
+
+async def preprocess_images(images: List[np.ndarray]) -> List[np.ndarray]:
+    """ Main function to preprocess images """
+    images = await asyncio.gather(*[preprocess_image(image) for image in images])
+    return images
 
 
 def byte2numpy(image) -> np.ndarray:
