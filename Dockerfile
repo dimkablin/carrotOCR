@@ -13,7 +13,6 @@ RUN sudo apt install -y uvicorn
 
 RUN sudo apt-get install -y postgresql
 
-
 RUN pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 RUN pip3 install albumentations==1.3.1
 RUN pip3 install requirements.txt
