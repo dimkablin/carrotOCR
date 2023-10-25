@@ -81,10 +81,10 @@ async def get_ocr_models():
     return await get_ocr_models_service()
 
 
-@router.get("/get-file/{file_name}", tags=["Backend API"])
-async def get_file(filename: str):
+@router.get("/get-file/", tags=["Backend API"])
+async def get_file(uid: int):
     """Return file from static directory."""
-    return await get_file_service(filename)
+    return await get_file_service(uid)
 
 
 @router.post("/get-processed/", tags=["Backend API"], response_model=GetProcessedResponse)
