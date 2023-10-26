@@ -17,5 +17,7 @@ RUN pip3 install torch torchvision torchaudio --index-url https://download.pytor
 RUN pip3 install albumentations==1.3.1
 RUN pip3 install requirements.txt
 
+RUN sudo apt-get install -y libleptonica-dev tesseract-ocr libtesseract-dev python3-pil tesseract-ocr-eng tesseract-ocr-script-latn
+
 EXPOSE 8000
 CMD ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8000"]

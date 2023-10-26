@@ -1,19 +1,13 @@
 """ Zero Shot Classification model """
-from typing import List
-from transformers import pipeline
+import Levenshtein
 
 
-class ZeroShotClassificationModel:
+class FindTags:
     """ Zero Shot Classification init class"""
     def __init__(self):
-        self.task = "zero-shot-classification"
-        self.model = "cointegrated/rubert-base-cased-nli-threeway"
-
         self.path_to_classes = "models/zero-shot-classification/classes.txt"
         self.classes = []
         self.read_classes(self.path_to_classes)
-
-        self.pipe = pipeline(self.task, self.model)
 
     def read_classes(self, path) -> None:
         """ Read text classes from file
@@ -25,25 +19,24 @@ class ZeroShotClassificationModel:
 
         self.classes = [cls.rstrip('\n') for cls in classes]
 
-    def __call__(self, inputs: List[str], n_out: int = 5):
-        """ Perform zero-shot classification on a list of input texts.
+    def __call__(self, n_out: int, texts: list[str]) -> list[str]:
+        """Find n: number classes that are closest to the text.
 
-        :param inputs: List of input texts to classify.
-        :param n_out: Number of top classification results to return (default is 5).
-        :return: List of dictionaries containing classification results.
-                 Each dictionary includes "labels" and "scores".
-        """
+       :param n_out: Number of returning classes.
+       :param texts: List of text strings.
+       :return: The n classes closest to the text.
+       """
 
-        outputs = self.pipe(inputs, candidate_labels=self.classes)
+        if not self.classes or not texts:
+            return []
 
-        results = []
-        for output in outputs:
-            results.append({
-                "labels": output["labels"][:n_out],
-                "scores": output["scores"][:n_out]
-            })
+        class_distances = {}
 
-        return results
+        for cls in self.classes:
+            for text in texts:
+                distance = Levenshtein.distance(cls, text)
+                if cls not in class_distances or distance < class_distances[cls]:
+                    class_distances[cls] = distance
 
-    def __str__(self):
-        return f"Task {self.task}, Model {self.model}"
+        sorted_classes = sorted(self.classes, key=lambda cls: class_distances[cls])
+        return sorted_classes[:min(n_out, len(self.classes))]
