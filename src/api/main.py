@@ -7,6 +7,7 @@ from fastapi.staticfiles import StaticFiles
 from src.api.middleware.middleware import BackendMiddleware
 from src.api.models.get_processed import GetProcessedResponse, GetProcessedRequest
 from src.api.services.get_processed import get_processed_service
+from src.models.zero_shot_classification import FindTags
 from src.utils.utils import get_abspath
 from src.models.ocr.ocr import OCRModelFactoryProcessor
 
@@ -25,7 +26,8 @@ from src.api.models.process_image import ProcessImageRequest, ProcessImageRespon
 from src.api.models.get_ocr_models import GetOCRModelsResponse
 
 
-MODEL = OCRModelFactoryProcessor("easyocr")
+OCR_MODEL = OCRModelFactoryProcessor("pytesseract")
+FIND_TAGS_MODEL = FindTags()
 
 app = FastAPI(
     openapi_tags=[{
@@ -48,7 +50,7 @@ app.mount("/LOCAL_DATA", StaticFiles(directory=get_abspath("LOCAL_DATA")), name=
 @router.post("/process-image/", tags=["Backend API"], response_model=ProcessImageResponse)
 async def process_image(req: ProcessImageRequest):
     """ Process image function """
-    return await process_image_service(MODEL, req)
+    return await process_image_service(OCR_MODEL, FIND_TAGS_MODEL, req)
 
 
 @router.post("/get-files/", tags=["Backend API"], response_model=GetFilesResponse)
