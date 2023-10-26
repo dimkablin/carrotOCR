@@ -7,7 +7,7 @@ from fastapi.staticfiles import StaticFiles
 from src.api.middleware.middleware import BackendMiddleware
 from src.api.models.get_processed import GetProcessedResponse, GetProcessedRequest
 from src.api.services.get_processed import get_processed_service
-from src.models.zero_shot_classification import FindTags
+from src.models.find_tags import FindTags
 from src.utils.utils import get_abspath
 from src.models.ocr.ocr import OCRModelFactoryProcessor
 

@@ -6,7 +6,7 @@ from src.db.processed_manager import ProcessedManager, ProcessedStructure
 import src.features.build_features as pp
 from src.models.ocr.ocr import OCRModelFactoryProcessor
 from src.utils.utils import get_abspath
-from src.models.zero_shot_classification import FindTags
+from src.models.find_tags import FindTags
 
 
 def get_path_to_image(filename) -> str:
