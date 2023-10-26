@@ -40,6 +40,9 @@ async def process_image_service(model: OCRModelFactoryProcessor, req: ProcessIma
         uid = ProcessedManager.insert_data(data)
 
         # fill response
-        response.results.append(Result(uid=uid, duplicate_id=duplicate_id))
+        response.results.append(Result(
+            uid=uid,
+            old_filename=data.old_filename,
+            duplicate_id=duplicate_id))
 
     return response
