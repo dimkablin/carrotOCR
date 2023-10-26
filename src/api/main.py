@@ -25,7 +25,7 @@ from src.api.models.process_image import ProcessImageRequest, ProcessImageRespon
 from src.api.models.get_ocr_models import GetOCRModelsResponse
 
 
-MODEL = OCRModelFactoryProcessor("easyocr")
+MODEL = OCRModelFactoryProcessor("pytesseract")
 
 app = FastAPI(
     openapi_tags=[{
@@ -38,9 +38,10 @@ router = APIRouter()
 app.add_middleware(BackendMiddleware)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:3000"],
     allow_methods=["*"],
     allow_headers=["*"],
+    allow_credentials=True,
 )
 app.mount("/LOCAL_DATA", StaticFiles(directory=get_abspath("LOCAL_DATA")), name="LOCAL_DATA")
 
