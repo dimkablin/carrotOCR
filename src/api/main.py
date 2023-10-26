@@ -29,6 +29,7 @@ from src.api.models.get_ocr_models import GetOCRModelsResponse
 OCR_MODEL = OCRModelFactoryProcessor("pytesseract")
 FIND_TAGS_MODEL = FindTags()
 
+
 app = FastAPI(
     openapi_tags=[{
         "name": "Backend API",
@@ -40,9 +41,10 @@ router = APIRouter()
 app.add_middleware(BackendMiddleware)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:3000"],
     allow_methods=["*"],
     allow_headers=["*"],
+    allow_credentials=True,
 )
 app.mount("/LOCAL_DATA", StaticFiles(directory=get_abspath("LOCAL_DATA")), name="LOCAL_DATA")
 
