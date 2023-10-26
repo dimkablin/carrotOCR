@@ -12,6 +12,7 @@ class ProcessImageRequest(BaseModel):
 class Result(BaseModel):
     """ OCR model result type """
     uid: int  # Image ID
+    old_filename: str
     duplicate_id: int  # Duplicate ID if it is already in database
 
 
