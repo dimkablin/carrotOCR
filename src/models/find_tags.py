@@ -1,4 +1,4 @@
-""" Zero Shot Classification model """
+""" Find Tags model """
 import Levenshtein
 
 
