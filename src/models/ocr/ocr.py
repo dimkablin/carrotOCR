@@ -38,6 +38,7 @@ class OCRModelFactoryProcessor:
 
     def change_ocr_model(self, model_type: str):
         """Change OCR model function"""
+        del self.model
         self.model = OCRModelFactory.create(model_type)
 
     def get_current_model(self) -> str:

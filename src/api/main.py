@@ -6,6 +6,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from src.api.middleware.middleware import BackendMiddleware
 from src.api.models.get_processed import GetProcessedResponse, GetProcessedRequest
+from src.api.services.archive_chunk import archive_chunk_service
+from src.api.services.get_chunk_id import get_chunk_id_service
 from src.api.services.get_processed import get_processed_service
 from src.models.find_tags import FindTags
 from src.utils.utils import get_abspath
@@ -26,7 +28,7 @@ from src.api.models.process_image import ProcessImageRequest, ProcessImageRespon
 from src.api.models.get_ocr_models import GetOCRModelsResponse
 
 
-OCR_MODEL = OCRModelFactoryProcessor("pytessract")
+OCR_MODEL = OCRModelFactoryProcessor("easyocr")
 FIND_TAGS_MODEL = FindTags()
 
 
@@ -42,7 +44,7 @@ router = APIRouter()
 app.add_middleware(BackendMiddleware)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
     allow_credentials=True,
@@ -80,12 +82,6 @@ async def upload_files(files: List[UploadFile] = File(...)):
     return await upload_files_service(files)
 
 
-@router.get("/get-models/", tags=["Backend API"], response_model=GetOCRModelsResponse)
-async def get_ocr_models():
-    """Return OCR Models ids and its names."""
-    return await get_ocr_models_service()
-
-
 @router.get("/get-file/", tags=["Backend API"])
 async def get_file(uid: int):
     """Return file from static directory."""
@@ -97,8 +93,39 @@ async def get_processed(req: GetProcessedRequest):
     """Return data from processed table."""
     return await get_processed_service(req)
 
+
+@router.get('/get-chunk-id/', tags=['Backend API'], response_model=int)
+async def get_chunk_id():
+    """Return chunk id"""
+    return await get_chunk_id_service()
+
+
+@router.get('/archive-chunk/', tags=['Backend API'], response_model=str)
+async def archive_chunk(chunk_id: int):
+    """Archive chunk"""
+    return await archive_chunk_service(chunk_id)
+
+
+@router.get("/get-ocr-models/", tags=["Backend API"], response_model=GetOCRModelsResponse)
+async def get_ocr_models():
+    """Return OCR Models ids and its names."""
+    return await get_ocr_models_service()
+
+
+@router.get('/get-current-ocr-model/', tags=['Backend API'], response_model=str)
+async def get_current_ocr_model():
+    """Return current OCR Model"""
+    return OCR_MODEL.get_current_model()
+
+
+@router.post('/change-ocr-model/', tags=['Backend API'], response_model=None)
+async def change_ocr_model(ocr_model_type: str):
+    """Change OCR Model"""
+    return OCR_MODEL.change_ocr_model(ocr_model_type)
+
+
 app.include_router(router, prefix="/api")
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host='127.0.0.1', port=8000)  # 127.0.0.1:8000/api/..
+    uvicorn.run(app, host='127.0.0.1', port=8000)

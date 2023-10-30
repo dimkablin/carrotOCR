@@ -11,8 +11,7 @@ class EasyOCRInited(OCR):
         self.languages = ['ru']
         self.use_cuda = False
         self.model = easyocr.Reader(self.languages,
-                                    gpu=self.use_cuda,
-                                    recog_network='cyrillic_g2')
+                                    gpu=self.use_cuda)
 
     def __call__(self, inputs, *args, **kwargs) -> list[dict[str, list[Any]]]:
         results = []

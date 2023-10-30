@@ -21,7 +21,7 @@ RUN echo "CREATE USER admin WITH PASSWORD 'admin';" >> init.sql
 RUN echo "GRANT ALL PRIVILEGES ON DATABASE carrotocr TO admin;" >> init.sql
 
 RUN psql -U postgres -f init.sql
-RUN python3 /app/db_script.py
+CMD ["python3", "/app/db_script.py"]
 
 # Install torch
 RUN pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
