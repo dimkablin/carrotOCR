@@ -82,12 +82,6 @@ async def upload_files(files: List[UploadFile] = File(...)):
     return await upload_files_service(files)
 
 
-@router.get("/get-ocr-models/", tags=["Backend API"], response_model=GetOCRModelsResponse)
-async def get_ocr_models():
-    """Return OCR Models ids and its names."""
-    return await get_ocr_models_service()
-
-
 @router.get("/get-file/", tags=["Backend API"])
 async def get_file(uid: int):
     """Return file from static directory."""
@@ -110,6 +104,12 @@ async def get_chunk_id():
 async def archive_chunk(chunk_id: int):
     """Archive chunk"""
     return await archive_chunk_service(chunk_id)
+
+
+@router.get("/get-ocr-models/", tags=["Backend API"], response_model=GetOCRModelsResponse)
+async def get_ocr_models():
+    """Return OCR Models ids and its names."""
+    return await get_ocr_models_service()
 
 
 @router.get('/get-current-ocr-model/', tags=['Backend API'], response_model=str)
