@@ -42,3 +42,4 @@ def save_image(image_path: str, image: np.ndarray) -> None:
     """Save an image."""
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     cv2.imwrite(image_path, image)
+    return None

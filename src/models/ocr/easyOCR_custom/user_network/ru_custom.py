@@ -1,3 +1,4 @@
+# pylint: disable=C
 import torch.nn as nn
 
 class BidirectionalLSTM(nn.Module):

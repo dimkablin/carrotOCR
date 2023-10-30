@@ -9,7 +9,7 @@ from src.utils.utils import get_abspath
 def archive_folder(filepath, filename) -> None:
     """archive_folder function service."""
     with zipfile.ZipFile(filename, "w") as zip_file:
-        for root, dirs, files in os.walk(filepath):
+        for root, _, files in os.walk(filepath):
             for file in files:
                 zip_file.write(os.path.join(root, file))
 
