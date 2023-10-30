@@ -26,7 +26,7 @@ from src.api.models.process_image import ProcessImageRequest, ProcessImageRespon
 from src.api.models.get_ocr_models import GetOCRModelsResponse
 
 
-OCR_MODEL = OCRModelFactoryProcessor("easyocrCustom")
+OCR_MODEL = OCRModelFactoryProcessor("pytessract")
 FIND_TAGS_MODEL = FindTags()
 
 
