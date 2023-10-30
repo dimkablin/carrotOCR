@@ -1,5 +1,6 @@
 """ Factory Method - Design Pattern """
 from src.models.ocr.easyocr import EasyOCRInited
+from src.models.ocr.easyocr import EasyOCRInitedCustom
 from src.models.ocr.pytesseract import PyTesseractInited
 
 
@@ -9,6 +10,7 @@ class OCRModelFactory:
     MODEL_MAPPING = {
         PyTesseractInited.get_model_type(): PyTesseractInited,
         EasyOCRInited.get_model_type(): EasyOCRInited,
+        EasyOCRInitedCustom.get_model_type(): EasyOCRInitedCustom,
     }
 
     @staticmethod
