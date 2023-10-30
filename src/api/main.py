@@ -6,6 +6,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from src.api.middleware.middleware import BackendMiddleware
 from src.api.models.get_processed import GetProcessedResponse, GetProcessedRequest
+from src.api.services.archive_chunk import archive_chunk_service
+from src.api.services.get_chunk_id import get_chunk_id_service
 from src.api.services.get_processed import get_processed_service
 from src.models.find_tags import FindTags
 from src.utils.utils import get_abspath
@@ -26,7 +28,7 @@ from src.api.models.process_image import ProcessImageRequest, ProcessImageRespon
 from src.api.models.get_ocr_models import GetOCRModelsResponse
 
 
-OCR_MODEL = OCRModelFactoryProcessor("pytesseract")
+OCR_MODEL = OCRModelFactoryProcessor("easyocr")
 FIND_TAGS_MODEL = FindTags()
 
 
@@ -96,8 +98,20 @@ async def get_processed(req: GetProcessedRequest):
     """Return data from processed table."""
     return await get_processed_service(req)
 
+
+@router.get('/get-chunk-id/', tags=['Backend API'], response_model=int)
+async def get_chunk_id():
+    """Return chunk id"""
+    return await get_chunk_id_service()
+
+
+@router.get('/archive-chunk/', tags=['Backend API'], response_model=str)
+async def archive_chunk(chunk_id: int):
+    """Archive chunk"""
+    return await archive_chunk_service(chunk_id)
+
 app.include_router(router, prefix="/api")
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host='127.0.0.1', port=8000)  # 127.0.0.1:8000/api/..
+    uvicorn.run(app, host='127.0.0.1', port=8000)
