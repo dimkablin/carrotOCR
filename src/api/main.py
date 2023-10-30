@@ -77,9 +77,9 @@ async def add_filenames(req: AddFilenamesRequest):
 
 
 @router.post("/upload-files/", tags=["Backend API"], response_model=UploadFilesResponse)
-async def upload_files(files: List[UploadFile] = File(...)):
+async def upload_files(chunk_id: int, files: List[UploadFile] = File(...)):
     """Uploading files to the server."""
-    return await upload_files_service(files)
+    return await upload_files_service(chunk_id, files)
 
 
 @router.get("/get-file/", tags=["Backend API"])
