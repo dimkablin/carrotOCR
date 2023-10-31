@@ -3,6 +3,7 @@ from typing import Any
 import easyocr
 
 from src.models.ocr.ocr_interface import OCR
+from src.features.crop_rotate import generalPipeline
 
 
 class EasyOCRInited(OCR):
@@ -16,6 +17,7 @@ class EasyOCRInited(OCR):
     def __call__(self, inputs, *args, **kwargs) -> list[dict[str, list[Any]]]:
         results = []
         for image in inputs:
+            image = generalPipeline(image)
             horizontal_boxes, free_boxes = self.model.detect(image)
             outputs = self.model.recognize(image, horizontal_boxes[0], free_boxes[0])
 
@@ -54,6 +56,7 @@ class EasyOCRInitedCustom(OCR):
     def __call__(self, inputs, *args, **kwargs) -> list[dict[str, list[Any]]]:
         results = []
         for image in inputs:
+            image = generalPipeline(image)
             horizontal_boxes, free_boxes = self.model.detect(image)
             outputs = self.model.recognize(image, horizontal_boxes[0], free_boxes[0])
 
