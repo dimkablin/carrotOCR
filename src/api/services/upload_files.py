@@ -20,10 +20,10 @@ def create_dir_if_not_exist(path_: str) -> None:
         os.mkdir(path_)
 
 
-async def upload_files_service(files) -> UploadFilesResponse:
+async def upload_files_service(chunk_id, files) -> UploadFilesResponse:
     """Upload files to the server"""
     paths = []
-    save_path = get_abspath("LOCAL_DATA")
+    save_path = get_abspath("LOCAL_DATA", str(chunk_id))
     create_dir_if_not_exist(save_path)
 
     for file in files:

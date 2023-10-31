@@ -3,7 +3,7 @@ from typing import Any
 from pytesseract import Output
 import pytesseract
 from src.models.ocr.ocr_interface import OCR
-
+from src.features.crop_rotate import generalPipeline
 
 class PyTesseractInited(OCR):
     """ Initialized PyTesseract model """
@@ -17,6 +17,7 @@ class PyTesseractInited(OCR):
     def __call__(self, inputs, *args, **kwargs) -> list[dict[str, list[Any]]]:
         results = []
         for image in inputs:
+            image = generalPipeline(image)
             outputs = pytesseract.image_to_data(image,
                                                 lang='rus',
                                                 config=self.config,
