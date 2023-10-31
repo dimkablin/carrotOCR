@@ -2,10 +2,14 @@
 
 - дописать докерфайл для развертывания бд
 
-- [DONE] сделать теги через расстояние левенштейна
-
 - Обновить нотебуки большая часть работает на mmcv
 
-- [DONE] Отрефакторить функцию get_all_data через новую структуру ProcessedStructure
+- исправить preprocess_image
 
-- [DONE] поменять process_image response model
+- добавить logger
+
+- [DONE] добавить функцию выгрузки файлов по chunk_id
+
+- [DONE] написать функцию get_chunk_id
+
+- добавить в upload_files параметр chunk_id

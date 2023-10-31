@@ -2,7 +2,7 @@
 import unittest
 
 from src.api.models.get_f import GetFRequest
-from src.api.services.check_text_in_db import check_text_in_db
+from src.api.services.find_duplicate import find_duplicate_service
 from src.api.services.get_folders import get_folders_service
 from src.db.processed_manager import ProcessedManager
 from src.db.processed_structure import ProcessedStructure
@@ -32,7 +32,7 @@ class TestAPI(unittest.TestCase):
         self.assertIsNotNone(result)
 
         # And now we can check this function out
-        result = check_text_in_db(text2)
+        result = find_duplicate_service(text2)
         print(result)
 
     async def test_2(self):

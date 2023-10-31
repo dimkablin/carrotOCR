@@ -3,13 +3,16 @@
 import os
 from typing import List
 
+import cv2
+import numpy as np
+
 from src.api.models.get_processed import TBox
 from src.env import project_dir
 
 
-def get_abspath(path):
+def get_abspath(*path):
     """ Get the absolute path from this file and add the argument path"""
-    return os.path.join(project_dir, path)
+    return os.path.join(project_dir, *path)
 
 
 def bbox2rect(bbox: List[int]) -> TBox:
@@ -33,3 +36,10 @@ def bboxes2rect(bboxes: List[List[int]]) -> List[TBox]:
         result.append(bbox2rect(bbox))
 
     return result
+
+
+def save_image(image_path: str, image: np.ndarray) -> None:
+    """Save an image."""
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    cv2.imwrite(image_path, image)
+    return None
