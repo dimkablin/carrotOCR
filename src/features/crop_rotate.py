@@ -7,19 +7,19 @@ from scipy.stats import mode
 from skimage import io
 from skimage.filters import threshold_otsu, sobel
 
-def binarizeImage(RGB_image):
+async def binarizeImage(RGB_image):
     image = rgb2gray(RGB_image)
     threshold = threshold_otsu(image)
     bina_image = image < threshold
     return bina_image
 
 
-def findEdges(bina_image):
+async def findEdges(bina_image):
     image_edges = sobel(bina_image)
     return image_edges
 
 
-def findTiltAngle(image_edges):
+async def findTiltAngle(image_edges):
     h, theta, d = hough_line(image_edges)
     accum, angles, dists = hough_line_peaks(h, theta, d)
     angle = np.rad2deg(mode(angles)[0][0])
@@ -36,12 +36,12 @@ def findTiltAngle(image_edges):
     return r_angle
 
   
-def rotateImage(RGB_image, angle):
+async def rotateImage(RGB_image, angle):
     fixed_image = rotate(RGB_image, angle)
     return fixed_image
 
 
-def cropped(img_path):
+async def cropped(img_path):
     img = cv2.imdecode(np.fromfile(img_path, dtype=np.int32), 1)
     h, w = img.shape[:2]
     if w >= h:
@@ -52,7 +52,7 @@ def cropped(img_path):
     return img
 
 
-def generalPipeline(img):
+async def generalPipeline(img):
     image = cropped(img)
     bina_image = binarizeImage(image)
     image_edges = findEdges(bina_image)
