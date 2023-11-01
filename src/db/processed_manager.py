@@ -29,7 +29,7 @@ class ProcessedManager:
         create_table_query = f"""
             CREATE TABLE IF NOT EXISTS {ProcessedManager.table_name} (
                 id SERIAL PRIMARY KEY,
-                path TEXT,
+                chunk_id INTEGER NOT NULL,
                 old_filename TEXT,
                 new_filename TEXT,
                 tags TEXT[],
@@ -49,11 +49,11 @@ class ProcessedManager:
         """Insert data into the database."""
         with DatabaseManager(**ProcessedManager.db_config) as db_manager:
             query = f"""
-                INSERT INTO {ProcessedManager.table_name} (path, old_filename, tags, text, bboxes)
+                INSERT INTO {ProcessedManager.table_name} (chunk_id, old_filename, tags, text, bboxes)
                 VALUES (%s, %s, %s, %s, %s)
                 RETURNING id
             """
-            data = (raw.path, raw.old_filename, raw.tags, raw.text, json.dumps(raw.bboxes))
+            data = (raw.chunk_id, raw.old_filename, raw.tags, raw.text, json.dumps(raw.bboxes))
             return db_manager.execute_query(query, data, fetch=True)[0][0]
 
     @staticmethod
@@ -64,6 +64,15 @@ class ProcessedManager:
             data = (uid,)
             result = db_manager.execute_query(query, data, fetch=True)
             return ProcessedStructure().from_db(result[0])
+
+    @staticmethod
+    def get_data_by_chunk_id(chunk_id: int) -> ProcessedStructure:
+        """Get data from the database by chunk_id."""
+        with DatabaseManager(**ProcessedManager.db_config) as db_manager:
+            query = f"SELECT * FROM {ProcessedManager.table_name} WHERE chunk_id = %s"
+            data = (chunk_id,)
+            result = db_manager.execute_query(query, data, fetch=True)
+            return result
 
     @staticmethod
     def insert_new_filename(new_filename: str, uid: int) -> bool:

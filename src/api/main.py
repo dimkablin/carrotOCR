@@ -33,7 +33,8 @@ FIND_TAGS_MODEL = FindTags()
 
 
 app = FastAPI(
-    docs_url="/api",
+    docs_url="/api/docs",
+    openapi_url="/api/openapi.json",
     openapi_tags=[{
         "name": "Backend API",
         "description": "Backend API router."
@@ -44,7 +45,7 @@ router = APIRouter()
 app.add_middleware(BackendMiddleware)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
     allow_credentials=True,
@@ -101,9 +102,9 @@ async def get_chunk_id():
 
 
 @router.get('/archive-chunk/', tags=['Backend API'], response_model=str)
-async def archive_chunk(chunk_id: int):
+async def archive_chunk(chunk_id: int, filename: str):
     """Archive chunk"""
-    return await archive_chunk_service(chunk_id)
+    return await archive_chunk_service(chunk_id, filename)
 
 
 @router.get("/get-ocr-models/", tags=["Backend API"], response_model=GetOCRModelsResponse)
