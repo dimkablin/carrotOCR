@@ -33,7 +33,8 @@ FIND_TAGS_MODEL = FindTags()
 
 
 app = FastAPI(
-    docs_url="/api",
+    docs_url="/api/docs",
+    openapi_url="/api/openapi.json",
     openapi_tags=[{
         "name": "Backend API",
         "description": "Backend API router."
