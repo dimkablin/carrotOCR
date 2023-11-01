@@ -15,6 +15,11 @@ def get_abspath(*path):
     return os.path.join(project_dir, *path)
 
 
+def read_paths(dir_: str) -> List[str]:
+    """Return the paths from the dir"""
+    return [get_abspath(dir_, f) for f in os.listdir(dir_)]
+
+
 def bbox2rect(bbox: List[int]) -> TBox:
     """Convert from 4 points represent a model output's bbox to Point Width High."""
     min_xy = (min(bbox[::2]),min(bbox[1::2]))

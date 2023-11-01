@@ -9,7 +9,7 @@ async def get_processed_service(req: GetProcessedRequest) -> GetProcessedRespons
 
     data = ProcessedManager.get_data_by_id(req.uid)
     result = GetProcessedResponse(
-        path=data.path,
+        path=data.chunk_id,
         old_filename=data.old_filename,
         new_filename=data.new_filename,
         tags=data.tags,

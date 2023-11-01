@@ -6,6 +6,6 @@ from src.db.processed_manager import ProcessedManager
 
 async def get_file_service(uid: int):
     """get file service's main function."""
-    path = ProcessedManager.get_data_by_id(uid).path
+    path = ProcessedManager.get_data_by_id(uid).chunk_id
     if os.path.exists(path):
         return FileResponse(path)

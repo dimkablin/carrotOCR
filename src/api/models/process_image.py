@@ -6,7 +6,6 @@ from pydantic import BaseModel
 class ProcessImageRequest(BaseModel):
     """ Request to the OCR model """
     chunk_id: int  # Chunk ID
-    paths: List[str]
 
 
 class Result(BaseModel):
