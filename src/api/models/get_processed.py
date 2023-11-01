@@ -19,7 +19,7 @@ class GetProcessedRequest(BaseModel):
 
 class GetProcessedResponse(BaseModel):
     """get_processed function response"""
-    path: str
+    chunk_id: str
     old_filename: str
     new_filename: Optional[str]
     tags: Optional[List[str]]

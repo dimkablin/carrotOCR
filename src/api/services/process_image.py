@@ -23,7 +23,6 @@ async def process_image_service(
 
     # read images and use model
     images = await pp.read_images(paths)
-    # images = await pp.preprocess_images(images)
     outputs = ocr_model(images)
 
     for i, output in enumerate(outputs):

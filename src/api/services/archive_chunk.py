@@ -6,6 +6,10 @@ import os
 from src.utils.utils import get_abspath
 
 
+def rename_files(dir_path: str) -> None:
+    """rename_files function service."""
+    return None
+
 def archive_folder(filepath, filename) -> None:
     """archive_folder function service."""
     with zipfile.ZipFile(filename, "w") as zip_file:
@@ -18,6 +22,7 @@ async def archive_chunk_service(chunk_id: int, remove_folder=False) -> Optional[
     """archive_chunk_service function service."""
     dirname = str(chunk_id)
     path = get_abspath("LOCAL_DATA", dirname)
+    rename_files(path)
 
     if os.path.exists(path):
         archive_path = path + ".zip"

@@ -7,6 +7,7 @@ from scipy.stats import mode
 from skimage import io
 from skimage.filters import threshold_otsu, sobel
 
+
 def binarizeImage(RGB_image):
     image = rgb2gray(RGB_image)
     threshold = threshold_otsu(image)
