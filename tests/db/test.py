@@ -19,7 +19,7 @@ class TestDataProcessor(unittest.TestCase):
     def test_1(self):
         """Unittest for insert_data function"""
         data = ProcessedStructure(
-            path="/mnt/c/LOCAL_DATA",
+            chunk_id="1",
             old_filename="example.jpg",
             tags=["tag1", "tag 2"],
             text=["text1", "text2"],
@@ -31,7 +31,7 @@ class TestDataProcessor(unittest.TestCase):
     def test_2(self):
         """Another unittest for insert_data function"""
         data = ProcessedStructure(
-            path="/mnt/c/LOCAL_DATA",
+            chunk_id="77",
             old_filename="another_example.jpg",
             new_filename="ama_new_here.jpg",
             tags=None,
