@@ -34,13 +34,12 @@ def archive_folder(folder_path, archive_path):
                 zipf.write(file_path, arcname)
 
 
-async def archive_chunk_service(chunk_id: int, 
-                                remove_folder: bool = False, 
-                                filename: str="DATA") -> Optional[str]:
+async def archive_chunk_service(chunk_id: int,
+                                filename: str = "DATA") -> Optional[str]:
     """archive_chunk_service function service."""
 
     folder_path = get_abspath("LOCAL_DATA", str(chunk_id))
-    archive_path = filename + ".zip"
+    archive_path = get_abspath("LOCAL_DATA", str(chunk_id), filename + ".zip")
 
     # Rename files in LCOAL_DATA/chunk_id folder
     rename_files(chunk_id)
@@ -48,10 +47,6 @@ async def archive_chunk_service(chunk_id: int,
     if os.path.exists(folder_path):
         # Archive files in LCOAL_DATA/chunk_id folder
         archive_folder(folder_path, archive_path)
-
-        # Remove LCOAL_DATA/chunk_id folder if it needs
-        if remove_folder:
-            os.remove(folder_path)
-
         return archive_path
+
     return None

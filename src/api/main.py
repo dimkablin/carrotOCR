@@ -102,9 +102,9 @@ async def get_chunk_id():
 
 
 @router.get('/archive-chunk/', tags=['Backend API'], response_model=str)
-async def archive_chunk(chunk_id: int):
+async def archive_chunk(chunk_id: int, filename: str):
     """Archive chunk"""
-    return await archive_chunk_service(chunk_id)
+    return await archive_chunk_service(chunk_id, filename)
 
 
 @router.get("/get-ocr-models/", tags=["Backend API"], response_model=GetOCRModelsResponse)
