@@ -51,8 +51,8 @@ class EasyOCRInitedCustom(OCR):
         self.use_cuda = False
         self.model = easyocr.Reader(self.languages,
                                     gpu=self.use_cuda,
-                                    model_storage_directory='./easyOCR_custom/model',
-                                    user_network_directory='./easyOCR_custom/user_network',
+                                    model_storage_directory='./src/models/ocr/easyOCR_custom/model',
+                                    user_network_directory='./src/models/ocr/easyOCR_custom/user_network',
                                     recog_network='ru_custom')
 
     def __call__(self, inputs, *args, **kwargs) -> list[dict[str, list[Any]]]:
