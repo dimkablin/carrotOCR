@@ -32,7 +32,8 @@ async def process_image_service(
         origin_paths=origin_paths,
         edited_path=edited_paths,
         image_names=[data.old_filename],
-        chunk_id=data.chunk_id
+        chunk_id=data.chunk_id,
+        rotate_angle=req.angle_to_rotate
     ))[0]
 
     response = ProcessImageResponse(

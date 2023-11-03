@@ -15,7 +15,8 @@ async def process_chunk(
         origin_paths: str,
         edited_path: str,
         image_names: List[str], 
-        chunk_id: int) -> List[ProcessImageResponse]:
+        chunk_id: int,
+        rotate_angle=0) -> List[ProcessImageResponse]:
     """ Main function to process a chunk of data
 
     Args:
@@ -31,15 +32,12 @@ async def process_chunk(
     """
 
     # read images and use model
-    paths_to_images = read_paths(origin_paths)
-    images = await pp.pipeline_async(paths_to_images)
+    paths_to_images = [origin_paths+"/"+i for i in image_names]
+    images = await pp.read_images(paths_to_images)
+    images = await pp.pipeline_async(images)
 
     # save images
-    save_images(
-        images=images,
-        image_names=image_names,
-        path=edited_path
-    )
+    save_images(images, image_names, edited_path)
 
     # use model
     outputs = ocr_model(images)

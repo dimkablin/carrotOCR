@@ -5,6 +5,7 @@ from pydantic import BaseModel
 class ProcessImageRequest(BaseModel):
     """ Request to the OCR model """
     uid: int  # Image ID
+    angle_to_rotate: int  # Angle to rotate the image
 
 
 class ProcessImageResponse(BaseModel):
