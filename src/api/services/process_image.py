@@ -7,7 +7,7 @@ import src.features.build_features as pp
 from src.models.ocr.ocr import OCRModelFactoryProcessor
 from src.utils.utils import get_abspath, read_paths
 from src.models.find_tags import FindTags
-
+import cv2
 
 async def process_image_service(
         ocr_model: OCRModelFactoryProcessor,
@@ -23,6 +23,8 @@ async def process_image_service(
 
     # read images and use model
     images = await pp.read_images(paths)
+    # images = pp.pipeline_async(paths)
+
     outputs = ocr_model(images)
 
     for i, output in enumerate(outputs):
