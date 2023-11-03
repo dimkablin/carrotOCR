@@ -12,12 +12,18 @@ def create_chunk_id_dir(dirname: str) -> None:
 
 
 async def get_chunk_id_service() -> int:
-    """get chunk id service's main function."""
-    folders_in_local_data = []
-    for dir_ in os.listdir(get_abspath("LOCAL_DATA")):
-        if os.path.isdir(os.path.join(get_abspath("LOCAL_DATA"), dir_)):
-            folders_in_local_data.append(dir_)
+    """Get the next chunk ID."""
+    # Получение списка каталогов и фильтрация только числовых
+    local_data_path = get_abspath("LOCAL_DATA")
+    numeric_dirs = [dir_ for dir_ in os.listdir(local_data_path)
+                    if dir_.isdigit() and os.path.isdir(os.path.join(local_data_path, dir_))]
 
-    uid = int(folders_in_local_data[-1]) + 1 if len(folders_in_local_data) != 0 else 1
-    create_chunk_id_dir(str(uid))
-    return uid
+    # Сортировка числовых каталогов и получение следующего ID
+    if numeric_dirs:
+        next_uid = max(map(int, numeric_dirs)) + 1
+    else:
+        next_uid = 1
+
+    # Создание каталога для нового chunk ID
+    create_chunk_id_dir(str(next_uid))
+    return next_uid

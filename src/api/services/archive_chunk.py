@@ -4,26 +4,49 @@ from typing import Optional
 import zipfile
 import os
 from src.utils.utils import get_abspath
+from src.db.processed_manager import ProcessedManager
+from src.db.processed_structure import ProcessedStructure
 
 
-def archive_folder(filepath, filename) -> None:
-    """archive_folder function service."""
-    with zipfile.ZipFile(filename, "w") as zip_file:
-        for root, _, files in os.walk(filepath):
+def rename_files(chunk_id: int) -> None:
+    """rename_files function service."""
+    datas = ProcessedManager.get_data_by_chunk_id(chunk_id)
+    for data in datas:
+        data = ProcessedStructure().from_db(data)
+        if data.new_filename is not None:
+            old_path = get_abspath("LOCAL_DATA", str(chunk_id), data.old_filename)
+
+            new_filename = data.new_filename + "." + data.old_filename.split(".")[-1]
+            new_path = get_abspath("LOCAL_DATA", str(chunk_id), new_filename)
+
+            os.rename(old_path, new_path)
+
+            
+    return None
+
+def archive_folder(folder_path, archive_path):
+    """Archive the contents of a folder into a zip file."""
+    with zipfile.ZipFile(archive_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
+        for root, _, files in os.walk(folder_path):
             for file in files:
-                zip_file.write(os.path.join(root, file))
+                file_path = os.path.join(root, file)
+                arcname = os.path.relpath(file_path, folder_path)
+                zipf.write(file_path, arcname)
 
 
-async def archive_chunk_service(chunk_id: int, remove_folder=False) -> Optional[str]:
+async def archive_chunk_service(chunk_id: int,
+                                filename: str = "DATA") -> Optional[str]:
     """archive_chunk_service function service."""
-    dirname = str(chunk_id)
-    path = get_abspath("LOCAL_DATA", dirname)
 
-    if os.path.exists(path):
-        archive_path = path + ".zip"
-        archive_folder(path, archive_path)
+    folder_path = get_abspath("LOCAL_DATA", str(chunk_id))
+    archive_path = get_abspath("LOCAL_DATA", str(chunk_id), filename + ".zip")
 
-        if remove_folder:
-            os.remove(path)
+    # Rename files in LCOAL_DATA/chunk_id folder
+    rename_files(chunk_id)
+
+    if os.path.exists(folder_path):
+        # Archive files in LCOAL_DATA/chunk_id folder
+        archive_folder(folder_path, archive_path)
         return archive_path
+
     return None

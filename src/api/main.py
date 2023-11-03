@@ -33,7 +33,8 @@ FIND_TAGS_MODEL = FindTags()
 
 
 app = FastAPI(
-    docs_url="/api",
+    docs_url="/api/docs",
+    openapi_url="/api/openapi.json",
     openapi_tags=[{
         "name": "Backend API",
         "description": "Backend API router."
@@ -49,10 +50,22 @@ app.add_middleware(
     allow_headers=["*"],
     allow_credentials=True,
 )
-app.mount("/LOCAL_DATA", StaticFiles(directory=get_abspath("LOCAL_DATA")), name="LOCAL_DATA")
+app.mount("/api/LOCAL_DATA", StaticFiles(directory=get_abspath("LOCAL_DATA")), name="LOCAL_DATA")
 
 
-@router.post("/process-image/", tags=["Backend API"], response_model=ProcessImageResponse)
+@router.get('/get-chunk-id/', tags=["Pipeline"], response_model=int)
+async def get_chunk_id():
+    """Return chunk id"""
+    return await get_chunk_id_service()
+
+
+@router.post("/upload-files/", tags=["Pipeline"], response_model=UploadFilesResponse)
+async def upload_files(chunk_id: int, files: List[UploadFile] = File(...)):
+    """Uploading files to the server."""
+    return await upload_files_service(chunk_id, files)
+
+
+@router.post("/process-image/", tags=["Pipeline"], response_model=ProcessImageResponse)
 async def process_image(req: ProcessImageRequest):
     """ Process image function """
     return await process_image_service(OCR_MODEL, FIND_TAGS_MODEL, req)
@@ -82,55 +95,31 @@ async def get_folders(req: GetFRequest):
     return await get_folders_service(req)
 
 
-@router.post("/add-filenames/", tags=["Backend API"], response_model=None)
-async def add_filenames(req: AddFilenamesRequest):
-    """Adding new names of files to Database"""
-    return await add_filenames_service(req)
-
-
-@router.post("/upload-files/", tags=["Backend API"], response_model=UploadFilesResponse)
-async def upload_files(chunk_id: int, files: List[UploadFile] = File(...)):
-    """Uploading files to the server."""
-    return await upload_files_service(chunk_id, files)
-
-
 @router.get("/get-file/", tags=["Backend API"])
 async def get_file(uid: int):
     """Return file from static directory."""
     return await get_file_service(uid)
 
 
-@router.post("/get-processed/", tags=["Backend API"], response_model=GetProcessedResponse)
-async def get_processed(req: GetProcessedRequest):
-    """Return data from processed table."""
-    return await get_processed_service(req)
-
-
-@router.get('/get-chunk-id/', tags=['Backend API'], response_model=int)
-async def get_chunk_id():
-    """Return chunk id"""
-    return await get_chunk_id_service()
-
-
-@router.get('/archive-chunk/', tags=['Backend API'], response_model=str)
-async def archive_chunk(chunk_id: int):
+@router.get('/archive-chunk/', tags=['Pipeline'], response_model=str)
+async def archive_chunk(chunk_id: int, filename: str):
     """Archive chunk"""
-    return await archive_chunk_service(chunk_id)
+    return await archive_chunk_service(chunk_id, filename)
 
 
-@router.get("/get-ocr-models/", tags=["Backend API"], response_model=GetOCRModelsResponse)
+@router.get("/get-ocr-models/", tags=["OCR"], response_model=GetOCRModelsResponse)
 async def get_ocr_models():
     """Return OCR Models ids and its names."""
     return await get_ocr_models_service()
 
 
-@router.get('/get-current-ocr-model/', tags=['Backend API'], response_model=str)
+@router.get('/get-current-ocr-model/', tags=["OCR"], response_model=str)
 async def get_current_ocr_model():
     """Return current OCR Model"""
     return OCR_MODEL.get_current_model()
 
 
-@router.post('/change-ocr-model/', tags=['Backend API'], response_model=None)
+@router.post('/change-ocr-model/', tags=["OCR"], response_model=None)
 async def change_ocr_model(ocr_model_type: str):
     """Change OCR Model"""
     return OCR_MODEL.change_ocr_model(ocr_model_type)

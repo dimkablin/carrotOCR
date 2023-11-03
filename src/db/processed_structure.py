@@ -7,7 +7,7 @@ from typing import List, Optional
 class ProcessedStructure:
     """Data structure for each row for 'Processed' table."""
     uid: int = None
-    path: str = None
+    chunk_id: str = None
     old_filename: str = None
     new_filename: str = None
     tags: List[str] = None
@@ -23,7 +23,7 @@ class ProcessedStructure:
         """Convert data from db to template"""
         if not len(raw) == 0:
             self.uid = raw[0]
-            self.path = raw[1]
+            self.chunk_id = raw[1]
             self.old_filename = raw[2]
             self.new_filename = raw[3]
             self.tags = raw[4]

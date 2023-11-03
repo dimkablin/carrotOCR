@@ -5,14 +5,8 @@ from src.api.models.process_image import ProcessImageRequest, ProcessImageRespon
 from src.db.processed_manager import ProcessedManager, ProcessedStructure
 import src.features.build_features as pp
 from src.models.ocr.ocr import OCRModelFactoryProcessor
-from src.utils.utils import get_abspath
+from src.utils.utils import get_abspath, read_paths
 from src.models.find_tags import FindTags
-
-
-def get_path_to_image(filename) -> str:
-    """Getting path to the file located in LOCAL_DATA"""
-    return os.path.join(get_abspath("LOCAL_DATA"), filename)
-
 
 async def process_image_service(
         ocr_model: OCRModelFactoryProcessor,
@@ -24,10 +18,12 @@ async def process_image_service(
         chunk_id=req.chunk_id,
         results=[]
     )
+    paths = read_paths(get_abspath("LOCAL_DATA", str(req.chunk_id)))
 
     # read images and use model
-    images = await pp.read_images(req.paths)
-    # images = await pp.preprocess_images(images)
+    # images = await pp.read_images(paths)
+    images = await pp.pipeline_async(paths)
+    
     outputs = ocr_model(images)
 
     for i, output in enumerate(outputs):
@@ -36,8 +32,8 @@ async def process_image_service(
 
         # insert data to Database and get UID
         data = ProcessedStructure(
-            path=req.paths[i],
-            old_filename=os.path.split(req.paths[i])[-1],
+            chunk_id=req.chunk_id,
+            old_filename=os.path.split(paths[i])[-1],
             tags=tags_model(n_out=10, texts=output['rec_texts']),
             text=output['rec_texts'],
             bboxes=output['det_polygons']
