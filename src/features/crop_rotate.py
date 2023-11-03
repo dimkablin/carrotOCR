@@ -32,7 +32,7 @@ def findTiltAngle(image_edges:np.array) -> int:
         r_angle = angle + 90
     else:
         r_angle = - 90 + 180
-
+ 
     return r_angle
 
   
@@ -50,6 +50,7 @@ def cropped(img_path:str) -> np.array:
         img = img[0:h, 0:int(w/(1.1*(w/h)))]
     else:
         img = img[0:int(h/(1.1*(h/w))), 0:w]
+
     return img
 
 
