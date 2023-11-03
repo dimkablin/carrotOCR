@@ -6,9 +6,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from src.api.middleware.middleware import BackendMiddleware
 from src.api.models.get_processed import GetProcessedResponse, GetProcessedRequest
+from src.api.models.process_image import ProcessImageResponse, ProcessImageRequest
 from src.api.services.archive_chunk import archive_chunk_service
+from src.api.services.delete_data_by_id import delete_data_by_id_service
 from src.api.services.get_chunk_id import get_chunk_id_service
 from src.api.services.get_processed import get_processed_service
+from src.api.services.process_image import process_image_service
 from src.models.find_tags import FindTags
 from src.utils.utils import get_abspath
 from src.models.ocr.ocr import OCRModelFactoryProcessor
@@ -18,13 +21,13 @@ from src.api.services.get_files import get_files_service
 from src.api.services.get_file import get_file_service
 from src.api.services.get_folders import get_folders_service
 from src.api.services.get_ocr_models import get_ocr_models_service
-from src.api.services.process_image import process_image_service
+from src.api.services.process_chunk import process_chunk_service
 from src.api.services.upload_files import upload_files_service
 
 from src.api.models.add_filenames import AddFilenameRequest
 from src.api.models.upload_files import UploadFilesResponse
 from src.api.models.get_f import GetFRequest, GetFilesResponse, GetFoldersResponse
-from src.api.models.process_image import ProcessImageRequest, ProcessImageResponse
+from src.api.models.process_chunk import ProcessChunkRequest, ProcessChunkResponse
 from src.api.models.get_ocr_models import GetOCRModelsResponse
 
 
@@ -65,9 +68,15 @@ async def upload_files(chunk_id: int, files: List[UploadFile] = File(...)):
     return await upload_files_service(chunk_id, files)
 
 
-@router.post("/process-image/", tags=["Pipeline"], response_model=ProcessImageResponse)
-async def process_image(req: ProcessImageRequest):
+@router.post("/process-chunk/", tags=["Pipeline"], response_model=ProcessChunkResponse)
+async def process_image(req: ProcessChunkRequest):
     """ Process image function """
+    return await process_chunk_service(OCR_MODEL, FIND_TAGS_MODEL, req)
+
+
+@router.post("/process-image/", tags=["Pipeline"], response_model=ProcessImageResponse)
+async def rotate_and_process_image(req: ProcessImageRequest):
+    """Rotate and process image function."""
     return await process_image_service(OCR_MODEL, FIND_TAGS_MODEL, req)
 
 
@@ -75,6 +84,12 @@ async def process_image(req: ProcessImageRequest):
 async def get_processed(req: GetProcessedRequest):
     """Return data from processed table."""
     return await get_processed_service(req)
+
+
+@router.post("/delte-data-by-id/", tags=["Pipeline"], response_model=None)
+async def delete_data_by_id(uid: int):
+    """Delete data from the database by id."""
+    return await delete_data_by_id_service(uid)
 
 
 @router.post("/add-filename/", tags=["Pipeline"], response_model=None)

@@ -1,54 +1,44 @@
 """process-image function according to the MVC pattern."""
-import os.path
-
-from src.api.models.process_image import ProcessImageRequest, ProcessImageResponse, Result
-from src.db.processed_manager import ProcessedManager, ProcessedStructure
-import src.features.build_features as pp
+from src.api.models.process_image import ProcessImageRequest, ProcessImageResponse
+from src.api.services.process_chunk import process_chunk
+from src.db.processed_manager import ProcessedManager
 from src.models.ocr.ocr import OCRModelFactoryProcessor
-from src.utils.utils import get_abspath, read_paths, save_images
 from src.models.find_tags import FindTags
+from src.utils.utils import get_abspath
+
 
 async def process_image_service(
         ocr_model: OCRModelFactoryProcessor,
         tags_model: FindTags,
-        req: ProcessImageRequest):
-    """ Controller for process image. """
+        req: ProcessImageRequest) -> ProcessImageResponse:
+    """ process a image. 
+
+    Args:
+        ocr_model (OCRModelFactoryProcessor): _description_
+        tags_model (FindTags): _description_
+        req (ProcessImageRequest): _description_
+    
+    Returns:
+        response (ProcessImageResponse): response of process image
+    """
+    data = ProcessedManager.get_data_by_id(req.uid)
+
+    edited_paths = get_abspath("LOCAL_DATA", str(data.chunk_id), "edited")
+    origin_paths = get_abspath("LOCAL_DATA", str(data.chunk_id), "original") 
+
+    res = (await process_chunk(
+        ocr_model=ocr_model,
+        tags_model=tags_model,
+        origin_paths=origin_paths,
+        edited_path=edited_paths,
+        image_names=[data.old_filename],
+        chunk_id=data.chunk_id
+    ))[0]
 
     response = ProcessImageResponse(
-        chunk_id=req.chunk_id,
-        results=[]
+        uid=res.uid,
+        old_filename=res.old_filename,
+        duplicate_id=res.duplicate_id
     )
-    paths = read_paths(get_abspath("LOCAL_DATA", str(req.chunk_id), "original"))
-
-    # read images and use model
-    images = await pp.pipeline_async(paths)
-
-    # save images
-    save_images(images=images, 
-                image_names=[i.split("/")[-1] for i in paths],
-                path=get_abspath("LOCAL_DATA", str(req.chunk_id), "edited"))
-
-    # use model
-    outputs = ocr_model(images)
-
-    for i, output in enumerate(outputs):
-        # Find the duplicate
-        duplicate_id = -1
-
-        # insert data to Database and get UID
-        data = ProcessedStructure(
-            chunk_id=req.chunk_id,
-            old_filename=os.path.split(paths[i])[-1],
-            tags=tags_model(n_out=10, texts=output['rec_texts']),
-            text=output['rec_texts'],
-            bboxes=output['det_polygons']
-        )
-        uid = ProcessedManager.insert_data(data)
-
-        # fill response
-        response.results.append(Result(
-            uid=uid,
-            old_filename=data.old_filename,
-            duplicate_id=duplicate_id))
 
     return response

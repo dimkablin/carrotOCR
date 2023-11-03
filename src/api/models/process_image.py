@@ -1,21 +1,14 @@
-"""Process image models."""
-from typing import List
+"""process image models."""
 from pydantic import BaseModel
 
 
 class ProcessImageRequest(BaseModel):
     """ Request to the OCR model """
-    chunk_id: int  # Chunk ID
+    uid: int  # Image ID
 
 
-class Result(BaseModel):
+class ProcessImageResponse(BaseModel):
     """ OCR model result type """
     uid: int  # Image ID
     old_filename: str
     duplicate_id: int  # Duplicate ID if it is already in database
-
-
-class ProcessImageResponse(BaseModel):
-    """ Response of the OCR model """
-    chunk_id: int  # Chunk ID
-    results: List[Result]
