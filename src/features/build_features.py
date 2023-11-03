@@ -90,13 +90,6 @@ async def read_image(path: str):
     return await asyncio.to_thread(cv2.imread, path)
 
 
-async def pipeline_async(paths):
-    """
-    crop and rotate list of images
-    """
-    return await asyncio.gather(*[generalPipeline(path) for path in paths])
-
-
 async def read_images(paths):
     """ Async read all images
 
@@ -104,6 +97,13 @@ async def read_images(paths):
     :return:
     """
     return await asyncio.gather(*[read_image(path) for path in paths])
+
+
+async def pipeline_async(paths):
+    """
+    crop and rotate list of images
+    """
+    return [generalPipeline(await read_image(path)) for path in paths]
 
 
 def pil2numpy(image: Image.Image) -> np.ndarray:

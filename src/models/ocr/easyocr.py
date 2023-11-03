@@ -8,7 +8,7 @@ class EasyOCRInited(OCR):
     """ Initialized EasyOCR model """
     def __init__(self):
         self.languages = ['ru']
-        self.use_cuda = True
+        self.use_cuda = False
         self.model = easyocr.Reader(self.languages,
                                     gpu=self.use_cuda)
 

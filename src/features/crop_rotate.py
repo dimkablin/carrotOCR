@@ -1,11 +1,12 @@
 import numpy as np
 import cv2
 from skimage.color import rgb2gray
-from skimage.transform import rotate
 from skimage.transform import (hough_line, hough_line_peaks)
 from scipy.stats import mode
+from scipy import ndimage
 from skimage import io
 from skimage.filters import threshold_otsu, sobel
+import matplotlib.pyplot as plt
 
 
 def binarizeImage(RGB_image:np.array) -> np.array:
@@ -35,29 +36,29 @@ def findTiltAngle(image_edges:np.array) -> int:
  
     return r_angle
 
-  
+
 def rotateImage(RGB_image:np.array, angle:int) -> np.array:
     """rotate the image"""
-    fixed_image = rotate(RGB_image, angle)
+    fixed_image = ndimage.rotate(RGB_image, angle)
     return fixed_image
 
 
-def cropped(img_path:str) -> np.array:
+def cropped(img:str) -> np.array:
     """crop the image"""
-    img = cv2.imdecode(np.fromfile(img_path, dtype=np.uint8), 1)
+    # img = cv2.imdecode(np.fromfile(img_path, dtype=np.uint8), 1)
     h, w = img.shape[:2]
     if w >= h:
-        img = img[0:h, 0:int(w/(1.1*(w/h)))]
+        img = img[0:h, 0:int(w/(0.7*(w/h)))]
     else:
-        img = img[0:int(h/(1.1*(h/w))), 0:w]
+        img = img[0:int(h/(0.7*(h/w))), 0:w]
 
     return img
 
 
-def generalPipeline(img_path:str) -> np.array:
+def generalPipeline(img:np.array) -> np.array:
     """final processing of the image"""
-    image = cropped(img_path)
+    image = cropped(img)
     bina_image = binarizeImage(image)
     image_edges = findEdges(bina_image)
     angle = findTiltAngle(image_edges)
-    return rotateImage(cropped(img_path), angle)
+    return rotateImage(image, angle)
