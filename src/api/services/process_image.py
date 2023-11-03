@@ -5,7 +5,7 @@ from src.api.models.process_image import ProcessImageRequest, ProcessImageRespon
 from src.db.processed_manager import ProcessedManager, ProcessedStructure
 import src.features.build_features as pp
 from src.models.ocr.ocr import OCRModelFactoryProcessor
-from src.utils.utils import get_abspath, read_paths
+from src.utils.utils import get_abspath, read_paths, save_images
 from src.models.find_tags import FindTags
 
 async def process_image_service(
@@ -18,12 +18,17 @@ async def process_image_service(
         chunk_id=req.chunk_id,
         results=[]
     )
-    paths = read_paths(get_abspath("LOCAL_DATA", str(req.chunk_id)))
+    paths = read_paths(get_abspath("LOCAL_DATA", str(req.chunk_id), "original"))
 
     # read images and use model
-    # images = await pp.read_images(paths)
     images = await pp.pipeline_async(paths)
-    
+
+    # save images
+    save_images(images=images, 
+                image_names=[i.split("/")[-1] for i in paths],
+                path=get_abspath("LOCAL_DATA", str(req.chunk_id), "edited"))
+
+    # use model
     outputs = ocr_model(images)
 
     for i, output in enumerate(outputs):

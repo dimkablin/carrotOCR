@@ -43,8 +43,22 @@ def bboxes2rect(bboxes: List[List[int]]) -> List[TBox]:
     return result
 
 
+def create_dir_if_not_exist(path_: str) -> None:
+    """Creating directory if it doesn't exist."""
+    if not os.path.exists(path_):
+        os.mkdir(path_)
+
+
 def save_image(image_path: str, image: np.ndarray) -> None:
     """Save an image."""
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     cv2.imwrite(image_path, image)
+    return None
+
+def save_images(images: List[np.ndarray], image_names: List[str], path: str) -> None:
+    """Save images to path/names[i]"""
+    create_dir_if_not_exist(path)
+
+    for i, image in enumerate(images):
+        save_image(path + "/" + image_names[i], image)
     return None
