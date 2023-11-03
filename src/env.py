@@ -14,6 +14,7 @@ DB_PASSWORD = os.getenv("DB_PASSWORD")
 DB_HOST = os.getenv("DB_HOST")
 DB_PORT = os.getenv("DB_PORT")
 DB_NAME = os.getenv("DB_NAME")
+SERVER_PATH = os.getenv("SERVER_PATH")
 
 if __name__ == "__main__":
     print(project_dir)
