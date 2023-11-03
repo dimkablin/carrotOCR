@@ -50,7 +50,7 @@ app.add_middleware(
     allow_headers=["*"],
     allow_credentials=True,
 )
-app.mount("/LOCAL_DATA", StaticFiles(directory=get_abspath("LOCAL_DATA")), name="LOCAL_DATA")
+app.mount("/api/LOCAL_DATA", StaticFiles(directory=get_abspath("LOCAL_DATA")), name="LOCAL_DATA")
 
 
 @router.get('/get-chunk-id/', tags=["Pipeline"], response_model=int)
