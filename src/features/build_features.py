@@ -12,7 +12,7 @@ from typing import List
 from PIL import Image
 import cv2
 import numpy as np
-
+from src.features.crop_rotate import generalPipeline
 
 async def preprocess_image(image: np.ndarray) -> np.ndarray:
     """ Main function to preprocess image """
@@ -88,6 +88,13 @@ async def read_image(path: str):
     """
 
     return await asyncio.to_thread(cv2.imread, path)
+
+
+async def pipeline_async(paths):
+    """
+    crop and rotate list of images
+    """
+    return await asyncio.gather(*[generalPipeline(path) for path in paths])
 
 
 async def read_images(paths):

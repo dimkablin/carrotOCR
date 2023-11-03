@@ -26,17 +26,13 @@ def findTiltAngle(image_edges:np.array) -> int:
     """find the tilt angle"""
     h, theta, d = hough_line(image_edges)
     accum, angles, dists = hough_line_peaks(h, theta, d)
-    angle = np.rad2deg(mode(angles)[0][0])
+    angle = np.rad2deg(mode(angles, keepdims=True)[0][0])
   
     if (angle < 0):
         r_angle = angle + 90
     else:
         r_angle = - 90 + 180
-    origin = np.array((0, image_edges.shape[1]))
-
-    for _, angle, dist in zip(*hough_line_peaks(h, theta, d)):
-        y0, y1 = (dist - origin * np.cos(angle)) / np.sin(angle)
-
+ 
     return r_angle
 
   
@@ -48,7 +44,7 @@ def rotateImage(RGB_image:np.array, angle:int) -> np.array:
 
 def cropped(img_path:str) -> np.array:
     """crop the image"""
-    img = cv2.imdecode(np.fromfile(img_path, dtype=np.int32), 1)
+    img = cv2.imdecode(np.fromfile(img_path, dtype=np.uint8), 1)
     h, w = img.shape[:2]
     if w >= h:
         img = img[0:h, 0:int(w/(1.1*(w/h)))]
