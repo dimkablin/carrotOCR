@@ -21,7 +21,6 @@ def rename_files(chunk_id: int) -> None:
 
             os.rename(old_path, new_path)
 
-            
     return None
 
 def archive_folder(folder_path, archive_path):

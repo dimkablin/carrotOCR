@@ -8,7 +8,7 @@ from src.env import SERVER_PATH
 async def get_file_service(uid: int):
     """get file service's main function."""
     data = ProcessedManager.get_data_by_id(uid)
-    path = get_abspath("LOCAL_DATA", str(data.chunk_id), data.old_filename)
+    path = get_abspath("LOCAL_DATA", str(data.chunk_id), "edited", data.old_filename)
 
     if os.path.exists(path):
         return SERVER_PATH + '/'.join(path.split('/')[-3:None])
