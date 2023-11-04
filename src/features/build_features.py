@@ -99,11 +99,11 @@ async def read_images(paths):
     return await asyncio.gather(*[read_image(path) for path in paths])
 
 
-async def pipeline_async(paths):
+async def pipeline_async(images):
     """
     crop and rotate list of images
     """
-    return [generalPipeline(await read_image(path)) for path in paths]
+    return [generalPipeline(image) for image in images]
 
 
 def pil2numpy(image: Image.Image) -> np.ndarray:

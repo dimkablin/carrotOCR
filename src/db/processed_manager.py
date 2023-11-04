@@ -66,6 +66,14 @@ class ProcessedManager:
             return ProcessedStructure().from_db(result[0])
 
     @staticmethod
+    def delete_data_by_id(uid: int) -> bool:
+        """Delete data from the database by id."""
+        with DatabaseManager(**ProcessedManager.db_config) as db_manager:
+            query = f"DELETE FROM {ProcessedManager.table_name} WHERE id = %s"
+            data = (uid,)
+            return db_manager.execute_query(query, data)
+
+    @staticmethod
     def get_data_by_chunk_id(chunk_id: int) -> ProcessedStructure:
         """Get data from the database by chunk_id."""
         with DatabaseManager(**ProcessedManager.db_config) as db_manager:
