@@ -11,4 +11,4 @@ async def get_file_service(uid: int):
     path = get_abspath("LOCAL_DATA", str(data.chunk_id), "edited", data.old_filename)
 
     if os.path.exists(path):
-        return SERVER_PATH + '/'.join(path.split('/')[-4:])
+        return SERVER_PATH + path[path.find('LOCAL_DATA'):]
