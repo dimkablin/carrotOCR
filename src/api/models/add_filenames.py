@@ -8,7 +8,7 @@ class AddFilenameRequest(BaseModel):
     """Add filename function request"""
     uid: int
     filename: str
-    is_duplicate: bool
+    is_duplicate: bool = False
 
 
 class AddFilenamesRequest(BaseModel):
