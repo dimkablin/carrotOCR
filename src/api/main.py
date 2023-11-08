@@ -8,8 +8,10 @@ from src.api.middleware.middleware import BackendMiddleware
 from src.api.models.get_processed import GetProcessedResponse, GetProcessedRequest
 from src.api.models.process_image import ProcessImageResponse, ProcessImageRequest
 from src.api.services.archive_chunk import archive_chunk_service
+from src.api.services.delete_data_by_chunk_id import delete_data_by_id_chunk_service
 from src.api.services.delete_data_by_id import delete_data_by_id_service
 from src.api.services.get_chunk_id import get_chunk_id_service
+from src.api.services.get_data_by_chunk_id import get_data_by_chunk_id_service
 from src.api.services.get_processed import get_processed_service
 from src.api.services.process_image import process_image_service
 from src.models.find_tags import FindTags
@@ -80,9 +82,9 @@ async def rotate_and_process_image(req: ProcessImageRequest):
     return await process_image_service(OCR_MODEL, FIND_TAGS_MODEL, req)
 
 
-@router.post("/get-processed/", tags=["Pipeline"], response_model=GetProcessedResponse)
+@router.post("/get-data-by-id/", tags=["Pipeline"], response_model=GetProcessedResponse)
 async def get_processed(req: GetProcessedRequest):
-    """Return data from processed table."""
+    """Return data from processed table by id."""
     return await get_processed_service(req)
 
 
@@ -92,7 +94,7 @@ async def delete_data_by_id(uid: int):
     return await delete_data_by_id_service(uid)
 
 
-@router.post("/add-filename/", tags=["Pipeline"], response_model=None)
+@router.post("/add-filename/", tags=["Pipeline"], response_model=bool)
 async def add_filenames(req: AddFilenameRequest):
     """Adding new names of files to Database"""
     return await add_filenames_service(req)
@@ -114,6 +116,17 @@ async def get_folders(req: GetFRequest):
 async def get_file(uid: int):
     """Return file from static directory."""
     return await get_file_service(uid)
+
+@router.get("/get-data-by-chunk-id/", tags=["Backend API"])
+async def get_data_by_chunk_id(chunk_id: int):
+    """Return data by chunk id"""
+    return await get_data_by_chunk_id_service(chunk_id)
+
+
+@router.post("/delete-data-by-chunk-id/", tags=["Backend API"], response_model=bool)
+async def delete_data_by_chunk_id(chunk_id: int):
+    """Clear data by chunk id"""
+    return await delete_data_by_id_chunk_service(chunk_id)
 
 
 @router.get('/archive-chunk/', tags=['Pipeline'], response_model=str)

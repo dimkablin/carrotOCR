@@ -1,5 +1,6 @@
 """Upload files function service."""
 import os.path
+import warnings
 
 from src.api.models.upload_files import UploadFilesResponse
 from src.utils.utils import create_dir_if_not_exist, get_abspath
@@ -22,11 +23,15 @@ async def upload_files_service(chunk_id, files) -> UploadFilesResponse:
 
     for file in files:
         filename = file.filename.split('/')[-1]
-        if check_extension(filename):
-            path = os.path.join(save_path, filename)
 
-            with open(path, "wb") as wb_f:
-                wb_f.write(file.file.read())
-                paths.append(path)
+        if not check_extension(filename):
+            warnings.warn("File extension is not supported.")
+            continue
+
+        path = os.path.join(save_path, filename)
+
+        with open(path, "wb") as wb_f:
+            wb_f.write(file.file.read())
+            paths.append(path)
 
     return UploadFilesResponse(paths=paths)
