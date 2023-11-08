@@ -10,5 +10,7 @@ async def get_file_service(uid: int):
     data = ProcessedManager.get_data_by_id(uid)
     path = get_abspath("LOCAL_DATA", str(data.chunk_id), "edited", data.old_filename)
 
-    if os.path.exists(path):
-        return SERVER_PATH + '/'.join(path.split('/')[-3:None])
+    return path
+
+    # if os.path.exists(path):
+    #     return SERVER_PATH + '/'.join(path.split('/')[-3:None])
