@@ -28,7 +28,7 @@ async def archive_chunk_service(chunk_id: int,
                 warnings.warn("No new filename for data: " + str(data)[:50])
                 continue
 
-            old_path = get_abspath("LOCAL_DATA", str(chunk_id), data.old_filename)
+            old_path = get_abspath("LOCAL_DATA", str(chunk_id), "original", data.old_filename)
             new_filename = data.new_filename + "." + data.old_filename.split(".")[-1]
 
             if not os.path.exists(old_path):
