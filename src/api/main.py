@@ -16,7 +16,7 @@ from src.api.services.get_processed import get_processed_service
 from src.api.services.process_image import process_image_service
 from src.models.find_tags import FindTags
 from src.utils.utils import get_abspath
-from src.models.ocr.ocr import OCRModelFactoryProcessor
+from src.models.ocr.ocr import OCRModelFactory
 
 from src.api.services.add_filenames import add_filenames_service
 from src.api.services.get_files import get_files_service
@@ -33,7 +33,7 @@ from src.api.models.process_chunk import ProcessChunkRequest, ProcessChunkRespon
 from src.api.models.get_ocr_models import GetOCRModelsResponse
 
 
-OCR_MODEL = OCRModelFactoryProcessor("easyocr")
+OCR_MODEL = OCRModelFactory()
 FIND_TAGS_MODEL = FindTags()
 
 
@@ -73,13 +73,13 @@ async def upload_files(chunk_id: int, files: List[UploadFile] = File(...)):
 @router.post("/process-chunk/", tags=["Pipeline"], response_model=ProcessChunkResponse)
 async def process_image(req: ProcessChunkRequest):
     """ Process image function """
-    return await process_chunk_service(OCR_MODEL, FIND_TAGS_MODEL, req)
+    return await process_chunk_service(OCR_MODEL.get(req.model_type), FIND_TAGS_MODEL, req)
 
 
 @router.post("/process-image/", tags=["Pipeline"], response_model=ProcessImageResponse)
 async def rotate_and_process_image(req: ProcessImageRequest):
     """Rotate and process image function."""
-    return await process_image_service(OCR_MODEL, FIND_TAGS_MODEL, req)
+    return await process_image_service(OCR_MODEL.get(req.model_type), FIND_TAGS_MODEL, req)
 
 
 @router.post("/get-data-by-id/", tags=["Pipeline"], response_model=GetProcessedResponse)
@@ -139,18 +139,6 @@ async def archive_chunk(chunk_id: int, filename: str):
 async def get_ocr_models():
     """Return OCR Models ids and its names."""
     return await get_ocr_models_service()
-
-
-@router.get('/get-current-ocr-model/', tags=["OCR"], response_model=str)
-async def get_current_ocr_model():
-    """Return current OCR Model"""
-    return OCR_MODEL.get_current_model()
-
-
-@router.post('/change-ocr-model/', tags=["OCR"], response_model=None)
-async def change_ocr_model(ocr_model_type: str):
-    """Change OCR Model"""
-    return OCR_MODEL.change_ocr_model(ocr_model_type)
 
 
 app.include_router(router, prefix="/api")

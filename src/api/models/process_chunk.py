@@ -8,6 +8,7 @@ from src.api.models.process_image import ProcessImageResponse
 class ProcessChunkRequest(BaseModel):
     """ Request to the OCR model """
     chunk_id: int  # Chunk ID
+    model_type: str  # Model type
 
 
 class ProcessChunkResponse(BaseModel):

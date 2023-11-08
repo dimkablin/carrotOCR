@@ -4,13 +4,13 @@ from src.api.models.process_chunk import ProcessChunkRequest, ProcessChunkRespon
 from src.api.models.process_image import ProcessImageResponse
 from src.db.processed_manager import ProcessedManager, ProcessedStructure
 import src.features.build_features as pp
-from src.models.ocr.ocr import OCRModelFactoryProcessor
+from src.models.ocr.ocr_interface import OCR
 from src.utils.utils import get_abspath, read_paths, save_images
 from src.models.find_tags import FindTags
 
 
 async def process_chunk(
-        ocr_model: OCRModelFactoryProcessor,
+        ocr_model: OCR,
         tags_model: FindTags,
         origin_paths: str,
         edited_path: str,
@@ -68,7 +68,7 @@ async def process_chunk(
 
 
 async def process_chunk_service(
-        ocr_model: OCRModelFactoryProcessor,
+        ocr_model: OCR,
         tags_model: FindTags,
         req: ProcessChunkRequest) -> ProcessChunkResponse:
     """ process a chunk of data. 
