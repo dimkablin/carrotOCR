@@ -71,15 +71,15 @@ async def upload_files(chunk_id: int, files: List[UploadFile] = File(...)):
 
 
 @router.post("/process-chunk/", tags=["Pipeline"], response_model=ProcessChunkResponse)
-async def process_image(req: ProcessChunkRequest, model_type: str):
+async def process_image(req: ProcessChunkRequest):
     """ Process image function """
-    return await process_chunk_service(OCR_MODEL.get(model_type), FIND_TAGS_MODEL, req)
+    return await process_chunk_service(OCR_MODEL.get(req.model_type), FIND_TAGS_MODEL, req)
 
 
 @router.post("/process-image/", tags=["Pipeline"], response_model=ProcessImageResponse)
-async def rotate_and_process_image(req: ProcessImageRequest, model_type: str):
+async def rotate_and_process_image(req: ProcessImageRequest):
     """Rotate and process image function."""
-    return await process_image_service(OCR_MODEL.get(model_type), FIND_TAGS_MODEL, req)
+    return await process_image_service(OCR_MODEL.get(req.model_type), FIND_TAGS_MODEL, req)
 
 
 @router.post("/get-data-by-id/", tags=["Pipeline"], response_model=GetProcessedResponse)

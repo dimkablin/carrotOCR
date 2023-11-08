@@ -2,13 +2,13 @@
 from src.api.models.process_image import ProcessImageRequest, ProcessImageResponse
 from src.api.services.process_chunk import process_chunk
 from src.db.processed_manager import ProcessedManager
-from src.models.ocr.ocr import OCRModelFactoryProcessor
 from src.models.find_tags import FindTags
+from src.models.ocr.ocr_interface import OCR
 from src.utils.utils import get_abspath
 
 
 async def process_image_service(
-        ocr_model: OCRModelFactoryProcessor,
+        ocr_model: OCR,
         tags_model: FindTags,
         req: ProcessImageRequest) -> ProcessImageResponse:
     """ process a image. 
