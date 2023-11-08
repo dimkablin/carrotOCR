@@ -26,12 +26,12 @@ async def archive_chunk_service(chunk_id: int,
             data = ProcessedStructure().from_db(data)
 
             if data.new_filename is None:
-                warnings.warn("No new filename for data: " + str(data)[:50])
-                continue
+                warnings.warn("No new filename for data: " + str(data)[:100])
+                new_filename = data.old_filename
+            else:
+                new_filename = data.new_filename + "." + data.old_filename.split(".")[-1]
 
             old_path = get_abspath("LOCAL_DATA", str(chunk_id), "original", data.old_filename)
-            new_filename = data.new_filename + "." + data.old_filename.split(".")[-1]
-
             if not os.path.exists(old_path):
                 warnings.warn(f"File {old_path} not found.")
                 continue
