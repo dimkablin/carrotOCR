@@ -38,4 +38,6 @@ async def archive_chunk_service(chunk_id: int,
 
             zip_file.write(old_path, arcname=new_filename)
 
-    return SERVER_PATH + '/'.join(archive_path.split('/')[-4:])
+    index = path.find('LOCAL_DATA')
+
+    return SERVER_PATH + path[index:]
