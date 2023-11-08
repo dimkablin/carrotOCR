@@ -28,7 +28,9 @@ def findTiltAngle(image_edges:np.array) -> int:
     h, theta, d = hough_line(image_edges)
     accum, angles, dists = hough_line_peaks(h, theta, d)
     angle = np.rad2deg(mode(angles, keepdims=True)[0][0])
-  
+    
+    if abs(angle)==45: angle = angle*2
+
     if (angle < 0):
         r_angle = angle + 90
     else:
