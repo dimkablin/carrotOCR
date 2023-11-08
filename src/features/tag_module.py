@@ -15,7 +15,7 @@ def get_tags(words: list[str]) -> list[str]:
             for index, value in enumerate(values):
                 score = 0
                 for val in value:
-                    if Levenshtein.distance(word.lower(), val.lower()) < 3:
+                    if Levenshtein.distance(word.lower(), val.lower()) < 2:
                         score += 1
                 scores[index] += score
         

@@ -82,7 +82,7 @@ class FindTags:
             for index, value in enumerate(self.values):
                 score = 0
                 for val in value:
-                    if Levenshtein.distance(word.lower(), val.lower()) < 3:
+                    if Levenshtein.distance(word.lower(), val.lower()) < 2:
                         score += 1
                 self.scores[index] += score
         
