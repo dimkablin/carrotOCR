@@ -4,6 +4,7 @@ from typing import Optional
 import warnings
 import zipfile
 import os
+from src.env import SERVER_PATH
 from src.utils.utils import get_abspath
 from src.db.processed_manager import ProcessedManager
 from src.db.processed_structure import ProcessedStructure
@@ -37,4 +38,4 @@ async def archive_chunk_service(chunk_id: int,
 
             zip_file.write(old_path, arcname=new_filename)
 
-    return archive_path
+    return SERVER_PATH + '/'.join(archive_path.split('/')[-4:])
