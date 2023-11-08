@@ -12,5 +12,7 @@ async def get_file_service(uid: int):
 
     index = path.find('LOCAL_DATA')
 
+    return SERVER_PATH + path[index:]
+
     if os.path.exists(path):
         return SERVER_PATH + path[index:]
