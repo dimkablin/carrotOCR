@@ -49,10 +49,13 @@ def cropped(img:str) -> np.array:
     """crop the image"""
     # img = cv2.imdecode(np.fromfile(img_path, dtype=np.uint8), 1)
     h, w = img.shape[:2]
+
     if w >= h:
-        img = img[0:h, 0:int(w/(0.7*(w/h)))]
+        if w > 1920: img = img[0:h, 0:h] 
+        # img = img[0:h, 0:int(w/(0.75*(w/h)))] 
     else:
-        img = img[0:int(h/(0.7*(h/w))), 0:w]
+        # img = img[0:int(h/(0.75*(h/w))), 0:w]
+        if h > 1920: img = img[0:w, 0:w]
 
     return img
 
