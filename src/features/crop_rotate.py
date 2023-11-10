@@ -51,18 +51,19 @@ def cropped(img:str) -> np.array:
     h, w = img.shape[:2]
 
     if w >= h:
-        if w > 1920: img = img[0:h, 0:h] 
+        if w > 5000: img = img[0:h, 0:h] 
         # img = img[0:h, 0:int(w/(0.75*(w/h)))] 
     else:
-        # img = img[0:int(h/(0.75*(h/w))), 0:w]
         if h > 1920: img = img[0:w, 0:w]
+        # img = img[0:int(h/(0.75*(h/w))), 0:w]
 
     return img
 
 
-def generalPipeline(img:np.array) -> np.array:
+def generalPipeline(img:np.array) -> (np.array, np.array):
     """final processing of the image"""
     image = cropped(img)
+    base_image = image.copy()
     bina_image = binarizeImage(image)
     image_edges = findEdges(bina_image)
     angle = findTiltAngle(image_edges)
