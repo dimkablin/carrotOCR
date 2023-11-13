@@ -1,6 +1,6 @@
 """ Find Tags model """
-import Levenshtein
 import json
+import Levenshtein
 
 # class FindTags:
 #     """ Zero Shot Classification init class"""
@@ -85,10 +85,10 @@ class FindTags:
                     if Levenshtein.distance(word.lower(), val.lower()) < 3:
                         score += 1
                 self.scores[index] += score
-        
+
         result = []
-        for id, value in self.scores.items():
+        for i, value in self.scores.items():
             if value > 0:
-                result.append(self.keys[id])
+                result.append(self.keys[i])
 
         return result

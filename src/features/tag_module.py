@@ -1,3 +1,5 @@
+"""SOME DOCUMENTATION for tag_module.py"""
+
 import json
 import Levenshtein
 
@@ -18,10 +20,10 @@ def get_tags(words: list[str]) -> list[str]:
                     if Levenshtein.distance(word.lower(), val.lower()) < 3:
                         score += 1
                 scores[index] += score
-        
+
         result = []
-        for id, value in scores.items():
+        for i, value in scores.items():
             if value > 0:
-                result.append(keys[id])
+                result.append(keys[i])
 
         return result

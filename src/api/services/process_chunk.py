@@ -1,3 +1,4 @@
+# pylint: disable=R
 """process-image function according to the MVC pattern."""
 from typing import List
 from src.api.models.process_chunk import ProcessChunkRequest, ProcessChunkResponse
@@ -14,7 +15,7 @@ async def process_chunk(
         tags_model: FindTags,
         origin_paths: str,
         edited_path: str,
-        image_names: List[str], 
+        image_names: List[str],
         chunk_id: int,
         rotate_angle=0) -> List[ProcessImageResponse]:
     """ Main function to process a chunk of data
@@ -34,6 +35,7 @@ async def process_chunk(
     # read images and use model
     paths_to_images = [origin_paths+"/"+i for i in image_names]
     images = await pp.read_images(paths_to_images)
+    print(rotate_angle)
     images = await pp.pipeline_async(images)
 
     # save images

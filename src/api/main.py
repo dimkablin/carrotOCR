@@ -4,7 +4,7 @@ from typing import List
 from fastapi import FastAPI, APIRouter, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi import WebSocket, WebSocketDisconnect
+from fastapi import WebSocket
 
 from src.api.middleware.middleware import BackendMiddleware
 from src.api.models.get_processed import GetProcessedResponse, GetProcessedRequest
@@ -81,8 +81,8 @@ async def process_chunk(req: ProcessChunkRequest, websocket: WebSocket):
 
     try:
         result = await process_chunk_service(
-            OCR_MODEL.get(req.ocr_model_type), 
-            FIND_TAGS_MODEL, 
+            OCR_MODEL.get(req.ocr_model_type),
+            FIND_TAGS_MODEL,
             req
         )
         await connection_manager.send_result(result, websocket)
@@ -94,7 +94,7 @@ async def process_chunk(req: ProcessChunkRequest, websocket: WebSocket):
 @router.post("/process-image/", tags=["Pipeline"], response_model=ProcessImageResponse)
 async def process_image(req: ProcessImageRequest):
     """Rotate and process image function."""
-    return await process_image_service(OCR_MODEL.get(req.model_type), FIND_TAGS_MODEL, req)
+    return await process_image_service(OCR_MODEL.get(req.ocr_model_type), FIND_TAGS_MODEL, req)
 
 
 @router.post("/get-data-by-id/", tags=["Pipeline"], response_model=GetProcessedResponse)
