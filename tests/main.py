@@ -1,3 +1,4 @@
+# pylint: disable=W
 """Tests fro the API"""
 import unittest
 import requests
@@ -55,7 +56,7 @@ class APITestCasePipeline(unittest.TestCase):
         url = BASE_URL
         response = requests.get(url)
         self.assertEqual(response.status_code, 200)
-    
+
     def test_process_image(self):
         """/api/process-image/"""
         url = BASE_URL
