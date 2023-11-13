@@ -1,11 +1,11 @@
 """ FastAPI connection """
 from typing import List
+import logging
 
 from fastapi import FastAPI, APIRouter, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi import WebSocket
-import logging
 
 from src.api.middleware.middleware import BackendMiddleware
 from src.api.models.get_processed import GetProcessedResponse, GetProcessedRequest
