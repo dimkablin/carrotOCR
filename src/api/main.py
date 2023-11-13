@@ -5,6 +5,7 @@ from fastapi import FastAPI, APIRouter, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi import WebSocket
+import logging
 
 from src.api.middleware.middleware import BackendMiddleware
 from src.api.models.get_processed import GetProcessedResponse, GetProcessedRequest
@@ -17,6 +18,7 @@ from src.api.services.get_data_by_chunk_id import get_data_by_chunk_id_service
 from src.api.services.get_processed import get_processed_service
 from src.api.services.process_image import process_image_service
 from src.utils.utils import get_abspath
+
 from src.models.ocr.ocr import OCRModelFactory
 from src.models.find_tags import FindTags
 from src.api.router import ConnectionManager
@@ -39,6 +41,14 @@ from src.api.models.get_ocr_models import GetOCRModelsResponse
 OCR_MODEL = OCRModelFactory()
 FIND_TAGS_MODEL = FindTags()
 
+connection_manager = ConnectionManager()
+
+# LOGGING CONFIG SETTING
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+)
+logging.info("Running server.")
 
 app = FastAPI(
     docs_url="/api/docs",
@@ -49,7 +59,7 @@ app = FastAPI(
     }]
 )
 router = APIRouter()
-connection_manager = ConnectionManager()
+
 
 app.add_middleware(BackendMiddleware)
 app.add_middleware(
@@ -157,7 +167,3 @@ async def get_ocr_models():
 
 
 app.include_router(router, prefix="/api")
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host='127.0.0.1', port=8000)
