@@ -36,7 +36,7 @@ from src.api.models.upload_files import UploadFilesResponse
 from src.api.models.get_f import GetFRequest, GetFilesResponse, GetFoldersResponse
 from src.api.models.process_chunk import ProcessChunkRequest, ProcessChunkResponse
 from src.api.models.get_ocr_models import GetOCRModelsResponse
-
+from src.api.models.tags import GetTagsResponse, RemoveTagsResponse
 
 OCR_MODEL = OCRModelFactory()
 FIND_TAGS_MODEL = FindTags()
@@ -112,6 +112,24 @@ async def process_image(req: ProcessImageRequest):
 async def get_processed(req: GetProcessedRequest):
     """Return data from processed table by id."""
     return await get_processed_service(req)
+
+
+
+@router.get("/get-permatags/", tags=["Tags"], response_model=GetTagsResponse)
+async def get_permatags():
+    # TODO:
+    pass
+
+@router.get("/rm-permatag/", tags=["Tags"], response_model=RemoveTagsResponse)
+async def rm_permatags(tag:str):
+    # TODO:
+    pass
+
+@router.post("/set-permatag/", tags=["Tags"])
+async def set_permatag(tag:str):
+    #TODO
+    pass
+
 
 
 @router.post("/delte-data-by-id/", tags=["Pipeline"], response_model=None)

@@ -1,10 +1,8 @@
 """ Find Tags model """
 import json
-from typing import Optional
 
 import Levenshtein
 from src.db.permatags_manager import PermatagsManager, PermatagsStructure
-
 
 class FindTags:
     """ Zero Shot Classification init class"""
@@ -14,7 +12,6 @@ class FindTags:
         self.keys = []
         self.scores = {}
         self.read_classes(self.path_to_classes)
-
 
     def read_classes(self, path) -> None:
         """ Read text classes from file
@@ -27,35 +24,32 @@ class FindTags:
             self.keys = list(data.keys())
             self.scores = {k:0 for k in range(len(self.values))}
 
-
-    def add_perma_tags(self, tags: list[str]) -> None:
+    def add_perma_tags(self, tag: str) -> None:
         """ Add tags to the database"""
-        for tag in tags:
-            data = PermatagsStructure(
-                tag=tag
-            )
-            PermatagsManager.insert_data(data)
-
+        data = PermatagsStructure(
+            tag=tag
+        )
+        PermatagsManager.insert_data(data)
 
     def rem_perma_tag(self, tag: str) -> bool:
         """ Remove tags from the database"""
         return PermatagsManager.delete_data_by_tag(tag)
 
+    def get_perma_tags(self) -> list[dict]:
+        """ Get tags from the database
+        # Выведет: [(0, 'tag')]
 
-    def get_perma_tags(self) -> Optional[tuple]:
-        """ Get tags from the database"""
+        ["tag1","tag2",...,"tagN"]
+        """
         data = PermatagsManager.get_all_data()
         return data
 
-
     def __call__(self, n_out: int, texts: list[str]) -> list[str]:
         """Find n: number classes that are closest to the text.
-
        :param n_out: Number of returning classes.
        :param texts: List of text strings.
        :return: The n classes closest to the text.
        """
-
         if not texts:
             return []
 
