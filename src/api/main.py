@@ -71,6 +71,8 @@ app.add_middleware(
 )
 app.mount("/api/LOCAL_DATA", StaticFiles(directory=get_abspath("LOCAL_DATA")), name="LOCAL_DATA")
 
+def get_app():
+    return app
 
 @router.get('/get-chunk-id/', tags=["Pipeline"], response_model=int)
 async def get_chunk_id():
