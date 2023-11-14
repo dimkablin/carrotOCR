@@ -1,5 +1,5 @@
 """get_processed function service."""
-from src.api.models.get_processed import GetProcessedResponse, GetProcessedRequest, TBox
+from src.api.models.get_processed import GetProcessedResponse, GetProcessedRequest
 from src.db.processed_manager import ProcessedManager
 from src.utils.utils import bboxes2rect
 

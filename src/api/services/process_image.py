@@ -24,7 +24,7 @@ async def process_image_service(
     data = ProcessedManager.get_data_by_id(req.uid)
 
     edited_paths = get_abspath("LOCAL_DATA", str(data.chunk_id), "edited")
-    origin_paths = get_abspath("LOCAL_DATA", str(data.chunk_id), "original") 
+    origin_paths = get_abspath("LOCAL_DATA", str(data.chunk_id), "original")
 
     res = (await process_chunk(
         ocr_model=ocr_model,

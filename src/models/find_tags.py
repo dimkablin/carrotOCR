@@ -1,9 +1,9 @@
+#pylint: disable=E
 """ Find Tags model """
-import Levenshtein
 import json
-from typing import Optional, List, Union
+from typing import Optional
 
-
+import Levenshtein
 from src.db.permatags_manager import PermatagsManager, PermatagsStructure
 
 
@@ -22,8 +22,8 @@ class FindTags:
         :param path: Path to the file with classes that seperated with new line
         :return: None
         """
-        with open(path, "r", encoding='utf-8') as f:
-            data = json.load(f)
+        with open(path, "r", encoding='utf-8') as file:
+            data = json.load(file)
             self.values = list(data.values())
             self.keys = list(data.keys())
             self.scores = {k:0 for k in range(len(self.values))}
@@ -67,10 +67,10 @@ class FindTags:
                     if Levenshtein.distance(word.lower(), val.lower()) < 2:
                         score += 1
                 self.scores[index] += score
-        
+
         result = []
-        for bbox_id, value in self.scores.items():
+        for i, value in self.scores.items():
             if value > 0:
-                result.append(self.keys[bbox_id])
+                result.append(self.keys[i])
 
         return result
