@@ -113,24 +113,23 @@ async def get_processed(req: GetProcessedRequest):
     """Return data from processed table by id."""
     return await get_processed_service(req)
 
-
-
 @router.get("/get-permatags/", tags=["Tags"], response_model=GetTagsResponse)
 async def get_permatags():
-    # TODO:
-    pass
+    """Return perma tags from database."""
+    obj = FindTags()
+    return GetTagsResponse(tags=await obj.get_perma_tags())
 
 @router.get("/rm-permatag/", tags=["Tags"], response_model=RemoveTagsResponse)
 async def rm_permatags(tag:str):
-    # TODO:
-    pass
+    """Remove perma tag from database."""
+    obj = FindTags()
+    return RemoveTagsResponse(response=await obj.rem_perma_tag(tag))
 
 @router.post("/set-permatag/", tags=["Tags"])
-async def set_permatag(tag:str):
-    #TODO
-    pass
-
-
+async def add_permatag(tag:str):
+    """Add perma tag to database."""
+    obj = FindTags()
+    return await obj.add_perma_tag(tag)
 
 @router.post("/delte-data-by-id/", tags=["Pipeline"], response_model=None)
 async def delete_data_by_id(uid: int):

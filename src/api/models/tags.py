@@ -1,11 +1,10 @@
+# pylint: disable=R,E
 """Upload files function models."""
-from typing import List
 from pydantic import BaseModel
-
 
 class GetTagsResponse(BaseModel):
     """Get Tags function response."""
-    tags: List[str]
+    tags: list[str]
 
 class RemoveTagsResponse(BaseModel):
     """Remove Tags function response."""
