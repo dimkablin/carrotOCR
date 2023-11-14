@@ -1,8 +1,6 @@
-# pylint: disable=R0902
+# pylint: disable=R
 """Structure of permatags table."""
-import json
-from typing import List, Optional
-
+from typing import Optional
 
 class PermatagsStructure:
     """Data structure for each row for 'permatags' table."""

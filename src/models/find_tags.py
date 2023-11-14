@@ -18,27 +18,26 @@ class FindTags:
         :param path: Path to the file with classes that seperated with new line
         :return: None
         """
-        with open(path, "r", encoding='utf-8') as f:
-            data = json.load(f)
+        with open(path, "r", encoding='utf-8') as file:
+            data = json.load(file)
             self.values = list(data.values())
             self.keys = list(data.keys())
             self.scores = {k:0 for k in range(len(self.values))}
 
-    def add_perma_tags(self, tag: str) -> None:
+    async def add_perma_tag(self, tag: str) -> None:
         """ Add tags to the database"""
         data = PermatagsStructure(
             tag=tag
         )
         PermatagsManager.insert_data(data)
 
-    def rem_perma_tag(self, tag: str) -> bool:
+    async def rem_perma_tag(self, tag: str) -> bool:
         """ Remove tags from the database"""
         return PermatagsManager.delete_data_by_tag(tag)
 
-    def get_perma_tags(self) -> list[dict]:
+    async def get_perma_tags(self) -> list[dict]:
         """ Get tags from the database
-        # Выведет: [(0, 'tag')]
-
+        # Выведет:
         ["tag1","tag2",...,"tagN"]
         """
         data = PermatagsManager.get_all_data()

@@ -1,3 +1,4 @@
+#pylint: disable=R
 """permatags table manager"""
 from typing import Optional
 from psycopg2 import extensions
@@ -43,7 +44,8 @@ class PermatagsManager:
         with DatabaseManager(**PermatagsManager.db_config) as db_manager:
             check_query = f"SELECT * FROM {PermatagsManager.table_name} WHERE tag = %s"
             check_data = (raw.tag,)
-            if not db_manager.execute_query(check_query, check_data, fetch=True):#Если не нашли в бд тэг
+            #Если не нашли в бд тэг
+            if not db_manager.execute_query(check_query, check_data, fetch=True):
                 query = f"""
                     INSERT INTO {PermatagsManager.table_name} (tag)
                     VALUES (%s)
@@ -88,5 +90,5 @@ class PermatagsManager:
     def get_all_data() -> Optional[tuple]:
         """Get all data from db"""
         with DatabaseManager(**PermatagsManager.db_config) as db_manager:
-            query = f"""SELECT * FROM {PermatagsManager.table_name}"""
-            return db_manager.execute_query(query, fetch=True)
+            query = f"""SELECT tag FROM {PermatagsManager.table_name}"""
+            return [i[0] for i in db_manager.execute_query(query, fetch=True)]

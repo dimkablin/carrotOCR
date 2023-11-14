@@ -23,8 +23,8 @@ def find_edges(bina_image: np.array) -> np.array:
 
 def find_tilt_angle(image_edges: np.array) -> int:
     """find the tilt angle"""
-    h, theta, d = hough_line(image_edges)
-    _, angles, _ = hough_line_peaks(h, theta, d)
+    hspace, theta, distances = hough_line(image_edges)
+    _, angles, _ = hough_line_peaks(hspace, theta, distances)
     angle = np.rad2deg(mode(angles, keepdims=True)[0][0])
 
     if abs(angle) == 45:
