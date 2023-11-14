@@ -1,13 +1,15 @@
 # pylint: disable=R
 """process-image function according to the MVC pattern."""
 import time
+import logging
+
 from src.api.models.process_chunk import ProcessChunkRequest, ProcessChunkResponse
 from src.api.services.process_image import process_image
 import src.features.build_features as pp
 from src.models.ocr.ocr_interface import OCR
 from src.utils.utils import create_dir_if_not_exist, get_abspath, read_paths
 from src.models.find_tags import FindTags
-import logging
+
 
 
 async def process_chunk_service(
@@ -43,9 +45,10 @@ async def process_chunk_service(
     images = await pp.read_images(paths_to_images)
     images = await pp.pipeline_images(images, edited_paths)
 
-    logging.debug(
-        "Pipeline images executed in %s seconds", 
-        str(time.time() - start_time)
+    logging.info(
+        "Pipeline executed %d images in %.3f seconds",
+        len(image_names),
+        time.time() - start_time
     )
     start_time = time.time()
 
@@ -58,9 +61,10 @@ async def process_chunk_service(
             chunk_id=req.chunk_id
         ))
 
-    logging.debug(
-        "Processed image with %s model in %s seconds.", 
+    logging.info(
+        "Processed %d images with %s model in %.3f seconds.",
+        len(image_names),
         ocr_model.get_model_type(),
-        str(time.time() - start_time)
+        time.time() - start_time
     )
     return response

@@ -45,7 +45,7 @@ connection_manager = ConnectionManager()
 
 # LOGGING CONFIG SETTING
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
 )
 logging.info("Running server.")

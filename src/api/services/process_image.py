@@ -1,4 +1,7 @@
 """process-image function according to the MVC pattern."""
+import time
+import logging
+
 import numpy as np
 from src.api.models.process_image import ProcessImageRequest, ProcessImageResponse
 from src.db.processed_manager import ProcessedManager
@@ -66,6 +69,8 @@ async def process_image_service(
     Returns:
         response (ProcessImageResponse): response of process image
     """
+    start_time = time.time()
+
     # get data from database
     data = ProcessedManager.get_data_by_id(req.uid)
 
@@ -73,29 +78,32 @@ async def process_image_service(
     edited_paths = get_abspath("LOCAL_DATA", str(data.chunk_id), "edited")
     origin_paths = get_abspath("LOCAL_DATA", str(data.chunk_id), "original")
 
-    image = pp.read_image(origin_paths + "/" + data.old_filename)
-    image = pp.pipeline_image(
+    image = await pp.read_image(origin_paths + "/" + data.old_filename)
+    image = await pp.pipeline_image(
         image,
         path=edited_paths + "/" + data.old_filename,
         angle=req.angle_to_rotate
     )
 
-    # fill response
-    response = ProcessImageResponse(
-        uid=req.uid,
-        old_filename=req.old_filename,
-        duplicate_id=req.duplicate_id
-    )
+    logging.info("Pipeline images executed in %.3s seconds", time.time() - start_time)
+    start_time = time.time()
 
-    response.result.append(process_image(
+    # fill response
+    response = process_image(
         image=image,
         ocr_model=ocr_model,
         tags_model=tags_model,
         image_name=data.old_filename,
-        chunk_id=req.chunk_id
-    ))
+        chunk_id=data.chunk_id
+    )
+
+    logging.info(
+        "Processed image with %s model in %.3f seconds.", 
+        ocr_model.get_model_type(),
+        time.time() - start_time
+    )
 
     # delete old data from dabase
-    # ProcessedManager.delete_data_by_id(req.uid)
+    ProcessedManager.delete_data_by_id(req.uid)
 
     return response
