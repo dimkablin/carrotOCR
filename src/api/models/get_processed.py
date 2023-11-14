@@ -2,7 +2,6 @@
 from typing import List, Optional
 from pydantic import BaseModel
 
-
 class TBox(BaseModel):
     """Part of GetProcessed Response represented bbox."""
     x: int
