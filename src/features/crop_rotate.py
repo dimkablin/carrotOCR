@@ -59,6 +59,7 @@ def cropped(img:str) -> np.array:
 
 def general_pipeline(img:np.array, path:str, angle:int=None) -> np.array:
     """final processing of the image"""
+    print(path)
     image = cropped(img)
     save_image(path, image)
     bina_image = binarize_image(image)
@@ -66,3 +67,4 @@ def general_pipeline(img:np.array, path:str, angle:int=None) -> np.array:
     if angle is None:
         angle = find_tilt_angle(image_edges)
     return rotate_image(image, angle)
+

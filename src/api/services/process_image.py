@@ -1,10 +1,56 @@
 """process-image function according to the MVC pattern."""
+import numpy as np
 from src.api.models.process_image import ProcessImageRequest, ProcessImageResponse
-from src.api.services.process_chunk import process_chunk
 from src.db.processed_manager import ProcessedManager
+from src.db.processed_structure import ProcessedStructure
 from src.models.find_tags import FindTags
 from src.models.ocr.ocr_interface import OCR
+import src.features.build_features as pp
 from src.utils.utils import get_abspath
+
+
+
+def process_image(
+        image: np.ndarray,
+        ocr_model: OCR,
+        tags_model: FindTags,
+        image_name: str,
+        chunk_id: int) -> ProcessImageResponse:
+    """ Main function to process a chunk of data
+
+    Args:
+        ocr_model (OCRModelFactoryProcessor): ocr model 
+        tags_model (FindTags): model to find tags
+        origin_paths (list[str]): paths of original images LOCAL_DATA/chunk_id/original
+        edited_path (str): path to save edited images LOCAL_DATA/chunk_id/edited
+        image_names (list[str]): names of images
+        chunk_id (int): chunk ID
+
+    Returns:
+        ProcessChunkResponse: response of process chunk
+    """
+
+    # use model
+    output = ocr_model([image])[0]
+    print("output")
+    # Find the duplicate
+    duplicate_id = -1
+
+    # insert data to Database and get UID
+    data = ProcessedStructure(
+        chunk_id=chunk_id,
+        old_filename=image_name,
+        tags=tags_model(n_out=10, texts=output['rec_texts']),
+        text=output['rec_texts'],
+        bboxes=output['det_polygons']
+    )
+    uid = ProcessedManager.insert_data(data)
+
+    return ProcessImageResponse(
+        uid=uid,
+        old_filename=data.old_filename,
+        duplicate_id=duplicate_id
+    )
 
 
 async def process_image_service(
@@ -21,25 +67,36 @@ async def process_image_service(
     Returns:
         response (ProcessImageResponse): response of process image
     """
+    # get data from database
     data = ProcessedManager.get_data_by_id(req.uid)
 
+    # read images and run general_pipeline
     edited_paths = get_abspath("LOCAL_DATA", str(data.chunk_id), "edited")
     origin_paths = get_abspath("LOCAL_DATA", str(data.chunk_id), "original")
 
-    res = (await process_chunk(
+    image = pp.read_image(origin_paths + "/" + data.old_filename)
+    image = pp.general_pipeline(
+        image,
+        path=edited_paths + "/" + data.old_filename,
+        angle=req.angle_to_rotate
+    )
+
+    # fill response
+    response = ProcessImageResponse(
+        uid=req.uid,
+        old_filename=req.old_filename,
+        duplicate_id=req.duplicate_id
+    )
+
+    response.result.append(process_image(
+        image=image,
         ocr_model=ocr_model,
         tags_model=tags_model,
-        origin_paths=origin_paths,
-        edited_path=edited_paths,
-        image_names=[data.old_filename],
-        chunk_id=data.chunk_id,
-        rotate_angle=req.angle_to_rotate
-    ))[0]
+        image_name=data.old_filename,
+        chunk_id=req.chunk_id
+    ))
 
-    response = ProcessImageResponse(
-        uid=res.uid,
-        old_filename=res.old_filename,
-        duplicate_id=res.duplicate_id
-    )
+    # delete old data from dabase
+    # ProcessedManager.delete_data_by_id(req.uid)
 
     return response
