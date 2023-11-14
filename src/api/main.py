@@ -85,20 +85,21 @@ async def upload_files(chunk_id: int, files: List[UploadFile] = File(...)):
 
 
 @router.post("/process-chunk/", tags=["Pipeline"], response_model=ProcessChunkResponse)
-async def process_chunk(req: ProcessChunkRequest, websocket: WebSocket):
+async def process_chunk(req: ProcessChunkRequest): #, websocket: WebSocket):
     """ Process chunk of images function """
-    await connection_manager.connect(websocket)
+    # await connection_manager.connect(websocket)
 
-    try:
-        result = await process_chunk_service(
-            OCR_MODEL.get(req.ocr_model_type),
-            FIND_TAGS_MODEL,
-            req
-        )
-        await connection_manager.send_result(result, websocket)
-    finally:
-        connection_manager.disconnect(websocket)
+    # try:
+    result = await process_chunk_service(
+        OCR_MODEL.get(req.ocr_model_type),
+        FIND_TAGS_MODEL,
+        req
+    )
     return result
+    #     await connection_manager.send_result(result, websocket)
+    # finally:
+    #     connection_manager.disconnect(websocket)
+    # return result
 
 
 @router.post("/process-image/", tags=["Pipeline"], response_model=ProcessImageResponse)
