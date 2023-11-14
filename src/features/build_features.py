@@ -12,7 +12,7 @@ from typing import List
 from PIL import Image
 import cv2
 import numpy as np
-from src.features.crop_rotate import generalPipeline
+from src.features.crop_rotate import general_pipeline
 
 async def preprocess_image(image: np.ndarray) -> np.ndarray:
     """ Main function to preprocess image """
@@ -103,7 +103,7 @@ async def pipeline_async(images):
     """
     crop and rotate list of images
     """
-    return [generalPipeline(image) for image in images]
+    return [general_pipeline(image) for image in images]
 
 
 def pil2numpy(image: Image.Image) -> np.ndarray:
