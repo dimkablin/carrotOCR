@@ -1,7 +1,6 @@
-# pylint: disable=R0902
+# pylint: disable=R
 """Structure of permatags table."""
-import json
-from typing import List, Optional
+from typing import Optional
 
 
 class PermatagsStructure:
@@ -36,3 +35,4 @@ class PermatagsStructure:
         for attr, value in self.__dict__.items():
             result += f"{attr}: " + str(value) + "\n"
         return result
+    

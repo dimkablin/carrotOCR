@@ -1,3 +1,4 @@
+#pylint: disable=E
 """ Find Tags model """
 import json
 from typing import Optional
@@ -21,8 +22,8 @@ class FindTags:
         :param path: Path to the file with classes that seperated with new line
         :return: None
         """
-        with open(path, "r", encoding='utf-8') as f:
-            data = json.load(f)
+        with open(path, "r", encoding='utf-8') as file:
+            data = json.load(file)
             self.values = list(data.values())
             self.keys = list(data.keys())
             self.scores = {k:0 for k in range(len(self.values))}

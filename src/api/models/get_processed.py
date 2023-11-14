@@ -1,6 +1,5 @@
 """get_processed function models."""
 from typing import List, Optional
-
 from pydantic import BaseModel
 
 
@@ -11,11 +10,9 @@ class TBox(BaseModel):
     w: int
     h: int
 
-
 class GetProcessedRequest(BaseModel):
     """get_processed function request"""
     uid: int
-
 
 class GetProcessedResponse(BaseModel):
     """get_processed function response"""

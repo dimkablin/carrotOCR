@@ -1,3 +1,4 @@
+#pylint: disable=E
 """ Connection to the Database of Carrot OCR project"""
 import psycopg2
 

@@ -6,8 +6,8 @@ import Levenshtein
 def get_tags(words: list[str]) -> list[str]:
     """Get tags from words"""
 
-    with open("./models/zero-shot-classification/classes.json", "r", encoding='utf-8') as f:
-        data = json.load(f)
+    with open("./models/zero-shot-classification/classes.json", "r", encoding='utf-8') as file:
+        data = json.load(file)
         values = list(data.values())
         keys = list(data.keys())
 
