@@ -1,9 +1,12 @@
 """ FastAPI connection """
 from typing import List
+import logging
 
 from fastapi import FastAPI, APIRouter, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi import WebSocket
+
 from src.api.middleware.middleware import BackendMiddleware
 from src.api.models.get_processed import GetProcessedResponse, GetProcessedRequest
 from src.api.models.process_image import ProcessImageResponse, ProcessImageRequest
@@ -14,9 +17,11 @@ from src.api.services.get_chunk_id import get_chunk_id_service
 from src.api.services.get_data_by_chunk_id import get_data_by_chunk_id_service
 from src.api.services.get_processed import get_processed_service
 from src.api.services.process_image import process_image_service
-from src.models.find_tags import FindTags
 from src.utils.utils import get_abspath
+
 from src.models.ocr.ocr import OCRModelFactory
+from src.models.find_tags import FindTags
+from src.api.router import ConnectionManager
 
 from src.api.services.add_filenames import add_filenames_service
 from src.api.services.get_files import get_files_service
@@ -36,6 +41,14 @@ from src.api.models.get_ocr_models import GetOCRModelsResponse
 OCR_MODEL = OCRModelFactory()
 FIND_TAGS_MODEL = FindTags()
 
+connection_manager = ConnectionManager()
+
+# LOGGING CONFIG SETTING
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+)
+logging.info("Running server.")
 
 app = FastAPI(
     docs_url="/api/docs",
@@ -46,6 +59,7 @@ app = FastAPI(
     }]
 )
 router = APIRouter()
+
 
 app.add_middleware(BackendMiddleware)
 app.add_middleware(
@@ -71,15 +85,26 @@ async def upload_files(chunk_id: int, files: List[UploadFile] = File(...)):
 
 
 @router.post("/process-chunk/", tags=["Pipeline"], response_model=ProcessChunkResponse)
-async def process_image(req: ProcessChunkRequest):
-    """ Process image function """
-    return await process_chunk_service(OCR_MODEL.get(req.model_type), FIND_TAGS_MODEL, req)
+async def process_chunk(req: ProcessChunkRequest, websocket: WebSocket):
+    """ Process chunk of images function """
+    await connection_manager.connect(websocket)
+
+    try:
+        result = await process_chunk_service(
+            OCR_MODEL.get(req.ocr_model_type),
+            FIND_TAGS_MODEL,
+            req
+        )
+        await connection_manager.send_result(result, websocket)
+    finally:
+        connection_manager.disconnect(websocket)
+    return result
 
 
 @router.post("/process-image/", tags=["Pipeline"], response_model=ProcessImageResponse)
-async def rotate_and_process_image(req: ProcessImageRequest):
+async def process_image(req: ProcessImageRequest):
     """Rotate and process image function."""
-    return await process_image_service(OCR_MODEL.get(req.model_type), FIND_TAGS_MODEL, req)
+    return await process_image_service(OCR_MODEL.get(req.ocr_model_type), FIND_TAGS_MODEL, req)
 
 
 @router.post("/get-data-by-id/", tags=["Pipeline"], response_model=GetProcessedResponse)
@@ -142,7 +167,3 @@ async def get_ocr_models():
 
 
 app.include_router(router, prefix="/api")
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host='127.0.0.1', port=8000)

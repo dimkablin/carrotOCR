@@ -1,3 +1,4 @@
+# pylint: disable=E
 """ Functions to work with environment """
 
 import os
@@ -53,7 +54,6 @@ def save_image(image_path: str, image: np.ndarray) -> None:
     """Save an image."""
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     cv2.imwrite(image_path, image)
-    return None
 
 def save_images(images: List[np.ndarray], image_names: List[str], path: str) -> None:
     """Save images to path/names[i]"""
@@ -61,4 +61,3 @@ def save_images(images: List[np.ndarray], image_names: List[str], path: str) -> 
 
     for i, image in enumerate(images):
         save_image(path + "/" + image_names[i], image)
-    return None
