@@ -1,11 +1,13 @@
 # pylint: disable=R
 """process-image function according to the MVC pattern."""
+import time
 from src.api.models.process_chunk import ProcessChunkRequest, ProcessChunkResponse
 from src.api.services.process_image import process_image
 import src.features.build_features as pp
 from src.models.ocr.ocr_interface import OCR
 from src.utils.utils import create_dir_if_not_exist, get_abspath, read_paths
 from src.models.find_tags import FindTags
+import logging
 
 
 async def process_chunk_service(
@@ -22,6 +24,7 @@ async def process_chunk_service(
     Returns:
         ProcessChunkResponse: response of process chunk
     """
+    start_time = time.time()
 
     origin_paths = get_abspath("LOCAL_DATA", str(req.chunk_id), "original")
     image_names = [i.split("/")[-1] for i in read_paths(origin_paths)]
@@ -37,14 +40,16 @@ async def process_chunk_service(
 
     # read images and use model
     paths_to_images = [origin_paths+"/"+i for i in image_names]
-    print("read_images")
     images = await pp.read_images(paths_to_images)
-    print("pipeline_async")
-    
-    images = await pp.pipeline_async(images, edited_paths)
-    print("process_image")
+    images = await pp.pipeline_images(images, edited_paths)
+
+    logging.debug(
+        "Pipeline images executed in %s seconds", 
+        str(time.time() - start_time)
+    )
+    start_time = time.time()
+
     for i, image in enumerate(images):
-        print("process_image " + str(i))
         response.results.append(process_image(
             image=image,
             ocr_model=ocr_model,
@@ -53,5 +58,9 @@ async def process_chunk_service(
             chunk_id=req.chunk_id
         ))
 
-    print(response)
+    logging.debug(
+        "Processed image with %s model in %s seconds.", 
+        ocr_model.get_model_type(),
+        str(time.time() - start_time)
+    )
     return response

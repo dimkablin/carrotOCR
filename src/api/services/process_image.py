@@ -32,7 +32,6 @@ def process_image(
 
     # use model
     output = ocr_model([image])[0]
-    print("output")
     # Find the duplicate
     duplicate_id = -1
 
@@ -75,7 +74,7 @@ async def process_image_service(
     origin_paths = get_abspath("LOCAL_DATA", str(data.chunk_id), "original")
 
     image = pp.read_image(origin_paths + "/" + data.old_filename)
-    image = pp.general_pipeline(
+    image = pp.pipeline_image(
         image,
         path=edited_paths + "/" + data.old_filename,
         angle=req.angle_to_rotate
