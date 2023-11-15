@@ -165,5 +165,5 @@ async def get_ocr_models():
     return await get_ocr_models_service()
 
 websocket_app = get_websoket_app()
-app.mount("", websocket_app)
+app.mount("/ws", websocket_app)
 app.include_router(router, prefix="/api")
