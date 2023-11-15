@@ -127,7 +127,7 @@ async def rm_permatags(tag:str):
 
 @router.post("/set-permatag/", tags=["Tags"])
 async def add_permatag(tag:str):
-    """Add perma tag to database."""
+    """Add perma tag to database. will return bool"""
     obj = FindTags()
     return await obj.add_perma_tag(tag)
 

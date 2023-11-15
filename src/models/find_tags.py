@@ -29,7 +29,7 @@ class FindTags:
         data = PermatagsStructure(
             tag=tag
         )
-        PermatagsManager.insert_data(data)
+        return PermatagsManager.insert_data(data)
 
     async def rem_perma_tag(self, tag: str) -> bool:
         """ Remove tags from the database"""
