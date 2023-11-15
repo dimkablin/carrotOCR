@@ -40,6 +40,7 @@ from src.api.models.upload_files import UploadFilesResponse
 from src.api.models.get_f import GetFRequest, GetFilesResponse, GetFoldersResponse
 from src.api.models.process_chunk import ProcessChunkRequest, ProcessChunkResponse
 from src.api.models.get_ocr_models import GetOCRModelsResponse
+from src.api.models.tags import GetTagsResponse, RemoveTagsResponse
 
 OCR_MODEL = OCRModelFactory()
 FIND_TAGS_MODEL = FindTags()
@@ -86,20 +87,21 @@ async def upload_files(chunk_id: int, files: List[UploadFile] = File(...)):
 
 
 @router.post("/process-chunk/", tags=["Pipeline"], response_model=ProcessChunkResponse)
-async def process_chunk(req: ProcessChunkRequest, websocket: WebSocket):
+async def process_chunk(req: ProcessChunkRequest): #, websocket: WebSocket):
     """ Process chunk of images function """
-    await connection_manager.connect(websocket)
+    # await connection_manager.connect(websocket)
 
-    try:
-        result = await process_chunk_service(
-            OCR_MODEL.get(req.ocr_model_type),
-            FIND_TAGS_MODEL,
-            req
-        )
-        await connection_manager.send_result(result, websocket)
-    finally:
-        connection_manager.disconnect(websocket)
+    # try:
+    result = await process_chunk_service(
+        OCR_MODEL.get(req.ocr_model_type),
+        FIND_TAGS_MODEL,
+        req
+    )
     return result
+    #     await connection_manager.send_result(result, websocket)
+    # finally:
+    #     connection_manager.disconnect(websocket)
+    # return result
 
 
 @router.post("/process-image/", tags=["Pipeline"], response_model=ProcessImageResponse)
@@ -113,6 +115,23 @@ async def get_processed(req: GetProcessedRequest):
     """Return data from processed table by id."""
     return await get_processed_service(req)
 
+@router.get("/get-permatags/", tags=["Tags"], response_model=GetTagsResponse)
+async def get_permatags():
+    """Return perma tags from database."""
+    obj = FindTags()
+    return GetTagsResponse(tags=await obj.get_perma_tags())
+
+@router.get("/rm-permatag/", tags=["Tags"], response_model=RemoveTagsResponse)
+async def rm_permatags(tag:str):
+    """Remove perma tag from database."""
+    obj = FindTags()
+    return RemoveTagsResponse(response=await obj.rem_perma_tag(tag))
+
+@router.post("/set-permatag/", tags=["Tags"])
+async def add_permatag(tag:str):
+    """Add perma tag to database. will return int"""
+    obj = FindTags()
+    return await obj.add_perma_tag(tag)
 
 @router.post("/delte-data-by-id/", tags=["Pipeline"], response_model=None)
 async def delete_data_by_id(uid: int):

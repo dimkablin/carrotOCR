@@ -6,6 +6,7 @@ from skimage.transform import (hough_line, hough_line_peaks)
 from skimage.filters import threshold_otsu, sobel
 from scipy.stats import mode
 from scipy import ndimage
+from src.utils.utils import save_image
 
 def binarize_image(rgb_image: np.array) -> np.array:
     """biniarize the image"""
@@ -60,10 +61,14 @@ def cropped(img:str) -> np.array:
     return img
 
 
-def general_pipeline(img:np.array) -> np.array:
+async def pipeline_image(img:np.array, path:str, angle:int=None) -> np.array:
     """final processing of the image"""
     image = cropped(img)
     bina_image = binarize_image(image)
     image_edges = find_edges(bina_image)
-    angle = find_tilt_angle(image_edges)
-    return rotate_image(image, angle)
+
+    if angle is None:
+        angle = find_tilt_angle(image_edges)
+    image = rotate_image(image, angle)
+    save_image(path, image)
+    return image

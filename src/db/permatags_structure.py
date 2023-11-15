@@ -2,7 +2,6 @@
 """Structure of permatags table."""
 from typing import Optional
 
-
 class PermatagsStructure:
     """Data structure for each row for 'permatags' table."""
     uid: int = None
@@ -35,4 +34,3 @@ class PermatagsStructure:
         for attr, value in self.__dict__.items():
             result += f"{attr}: " + str(value) + "\n"
         return result
-    

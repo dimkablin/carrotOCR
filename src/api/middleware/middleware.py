@@ -22,7 +22,8 @@ class BackendMiddleware(BaseHTTPMiddleware):
             return response
 
         except self.ERRORS as error:
-            logging.critical("%s", str(error))
+            logging.critical("%s", "Raised error in services.")
+            print(error.with_traceback())
 
     def __str__(self):
         return ""

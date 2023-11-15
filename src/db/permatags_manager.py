@@ -90,5 +90,5 @@ class PermatagsManager:
     def get_all_data() -> Optional[tuple]:
         """Get all data from db"""
         with DatabaseManager(**PermatagsManager.db_config) as db_manager:
-            query = f"""SELECT * FROM {PermatagsManager.table_name}"""
-            return db_manager.execute_query(query, fetch=True)
+            query = f"""SELECT tag FROM {PermatagsManager.table_name}"""
+            return [i[0] for i in db_manager.execute_query(query, fetch=True)]
