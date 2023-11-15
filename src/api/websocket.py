@@ -13,7 +13,7 @@ FIND_TAGS_MODEL = FindTags()
 
 connections: dict[int, list[WebSocket]] = {}
 
-@app.websocket("/process-chunk")
+@app.websocket("")
 async def websocket_endpoint(websocket: WebSocket, chunkId: int, ocr_model_type: str):
     await websocket.accept()
     if chunkId not in connections:
