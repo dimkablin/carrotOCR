@@ -1,6 +1,8 @@
 """ FastAPI connection """
 from typing import List
 import logging
+import json
+import asyncio
 
 from fastapi import FastAPI, APIRouter, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
@@ -164,6 +166,40 @@ async def get_ocr_models():
     """Return OCR Models ids and its names."""
     return await get_ocr_models_service()
 
-websocket_app = get_websoket_app()
-app.mount("/ws", websocket_app)
+connections: dict[int, list[WebSocket]] = {}
+
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket, chunkId: int, ocr_model_type: str):
+    await websocket.accept()
+    if chunkId not in connections:
+        connections[chunkId] = []
+    else:
+        # Если уже существует подключение к этому chunkId, закрыть новое подключение
+        if len(connections[chunkId]) >= 1:
+            await websocket.close()
+            return
+
+    connections[chunkId].append(websocket)
+
+    req = ProcessChunkRequest(chunk_id=chunkId, ocr_model_type=ocr_model_type)
+
+    result = await process_chunk_service(
+            OCR_MODEL.get(ocr_model_type),
+            FIND_TAGS_MODEL,
+            req
+        )
+    await send_message_to_chunk(chunkId, result)
+
+    await websocket.close()
+    connections[chunkId].remove(websocket)
+    if len(connections[chunkId]) == 0:
+        del connections[chunkId]
+
+async def send_message_to_chunk(chunkId: int, message: ProcessChunkResponse):
+    if chunkId in connections:
+        # Сериализуем ProcessChunkResponse в JSON
+        json_message = json.dumps(jsonable_encoder(message))
+        for connection in connections[chunkId]:
+            await connection.send_text(json_message)
+
 app.include_router(router, prefix="/api")

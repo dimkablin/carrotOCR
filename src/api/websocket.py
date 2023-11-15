@@ -13,7 +13,7 @@ FIND_TAGS_MODEL = FindTags()
 
 connections: dict[int, list[WebSocket]] = {}
 
-@app.websocket("")
+@app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket, chunkId: int, ocr_model_type: str):
     await websocket.accept()
     if chunkId not in connections:
@@ -28,12 +28,12 @@ async def websocket_endpoint(websocket: WebSocket, chunkId: int, ocr_model_type:
 
     req = ProcessChunkRequest(chunk_id=chunkId, ocr_model_type=ocr_model_type)
 
-    result = await process_chunk_service(
-            OCR_MODEL.get(ocr_model_type),
-            FIND_TAGS_MODEL,
-            req
-        )
-    await send_message_to_chunk(chunkId, result)
+    # result = await process_chunk_service(
+    #         OCR_MODEL.get(ocr_model_type),
+    #         FIND_TAGS_MODEL,
+    #         req
+    #     )
+    await send_message_to_chunk(chunkId, "work")
 
     await websocket.close()
     connections[chunkId].remove(websocket)
