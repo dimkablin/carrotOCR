@@ -188,37 +188,39 @@ async def get_ocr_models():
 connections: dict[int, list[WebSocket]] = {}
 
 @app.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket, chunkId: int, ocr_model_type: str):
+async def websocket_endpoint(websocket: WebSocket, chunk_id: int, ocr_model_type: str):
+    """websocket"""
     await websocket.accept()
-    if chunkId not in connections:
-        connections[chunkId] = []
+    if chunk_id not in connections:
+        connections[chunk_id] = []
     else:
         # Если уже существует подключение к этому chunkId, закрыть новое подключение
-        if len(connections[chunkId]) >= 1:
+        if len(connections[chunk_id]) >= 1:
             await websocket.close()
             return
 
-    connections[chunkId].append(websocket)
+    connections[chunk_id].append(websocket)
 
-    req = ProcessChunkRequest(chunk_id=chunkId, ocr_model_type=ocr_model_type)
+    req = ProcessChunkRequest(chunk_id=chunk_id, ocr_model_type=ocr_model_type)
 
     result = await process_chunk_service(
             OCR_MODEL.get(ocr_model_type),
             FIND_TAGS_MODEL,
             req
         )
-    await send_message_to_chunk(chunkId, result)
+    await send_message_to_chunk(chunk_id, result)
 
     await websocket.close()
-    connections[chunkId].remove(websocket)
-    if len(connections[chunkId]) == 0:
-        del connections[chunkId]
+    connections[chunk_id].remove(websocket)
+    if len(connections[chunk_id]) == 0:
+        del connections[chunk_id]
 
-async def send_message_to_chunk(chunkId: int, message: ProcessChunkResponse):
-    if chunkId in connections:
+async def send_message_to_chunk(chunk_id: int, message: ProcessChunkResponse):
+    """Send message to chunk"""
+    if chunk_id in connections:
         # Сериализуем ProcessChunkResponse в JSON
         json_message = json.dumps(jsonable_encoder(message))
-        for connection in connections[chunkId]:
+        for connection in connections[chunk_id]:
             await connection.send_text(json_message)
 
 app.include_router(router, prefix="/api")
