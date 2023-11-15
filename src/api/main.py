@@ -6,6 +6,7 @@ from fastapi import FastAPI, APIRouter, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi import WebSocket
+from fastapi.encoders import jsonable_encoder
 
 from src.api.middleware.middleware import BackendMiddleware
 from src.api.models.get_processed import GetProcessedResponse, GetProcessedRequest
@@ -30,13 +31,13 @@ from src.api.services.get_folders import get_folders_service
 from src.api.services.get_ocr_models import get_ocr_models_service
 from src.api.services.process_chunk import process_chunk_service
 from src.api.services.upload_files import upload_files_service
+from src.api.websocket import get_websoket_app
 
 from src.api.models.add_filenames import AddFilenameRequest
 from src.api.models.upload_files import UploadFilesResponse
 from src.api.models.get_f import GetFRequest, GetFilesResponse, GetFoldersResponse
 from src.api.models.process_chunk import ProcessChunkRequest, ProcessChunkResponse
 from src.api.models.get_ocr_models import GetOCRModelsResponse
-
 
 OCR_MODEL = OCRModelFactory()
 FIND_TAGS_MODEL = FindTags()
@@ -60,7 +61,6 @@ app = FastAPI(
 )
 router = APIRouter()
 
-
 app.add_middleware(BackendMiddleware)
 app.add_middleware(
     CORSMiddleware,
@@ -70,9 +70,6 @@ app.add_middleware(
     allow_credentials=True,
 )
 app.mount("/api/LOCAL_DATA", StaticFiles(directory=get_abspath("LOCAL_DATA")), name="LOCAL_DATA")
-
-def get_app():
-    return app
 
 @router.get('/get-chunk-id/', tags=["Pipeline"], response_model=int)
 async def get_chunk_id():
@@ -167,5 +164,6 @@ async def get_ocr_models():
     """Return OCR Models ids and its names."""
     return await get_ocr_models_service()
 
-
+websocket_app = get_websoket_app()
+app.mount("", websocket_app)
 app.include_router(router, prefix="/api")

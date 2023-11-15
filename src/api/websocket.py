@@ -1,5 +1,4 @@
-from fastapi import WebSocket
-from src.api.main import get_app
+from fastapi import WebSocket, FastAPI
 from src.api.services.process_chunk import process_chunk_service
 from src.models.ocr.ocr import OCRModelFactory
 from src.models.find_tags import FindTags
@@ -7,7 +6,7 @@ from src.api.models.process_chunk import ProcessChunkRequest, ProcessChunkRespon
 from fastapi.encoders import jsonable_encoder
 import json
 
-app = get_app()
+app = FastAPI()
 
 OCR_MODEL = OCRModelFactory()
 FIND_TAGS_MODEL = FindTags()
@@ -47,3 +46,6 @@ async def send_message_to_chunk(chunkId: int, message: ProcessChunkResponse):
         json_message = json.dumps(jsonable_encoder(message))
         for connection in connections[chunkId]:
             await connection.send_text(json_message)
+
+def get_websoket_app():
+    return app
