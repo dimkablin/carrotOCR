@@ -64,11 +64,11 @@ def cropped(img:str) -> np.array:
 async def pipeline_image(img:np.array, path:str, angle:int=None) -> np.array:
     """final processing of the image"""
     image = cropped(img)
-    save_image(path, image)
     bina_image = binarize_image(image)
     image_edges = find_edges(bina_image)
 
     if angle is None:
         angle = find_tilt_angle(image_edges)
     image = rotate_image(image, angle)
+    save_image(path, image)
     return image
