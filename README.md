@@ -84,9 +84,3 @@ result2show(image, outputs[0])
 
 uvicorn src.api.main:app --reload --host 127.0.0.1 --port 8000
 nohup uvicorn src.api.main:app --reload --host 127.0.0.1 --port 8000 &
-
-ssh root@213.171.5.243
-kA*2ZbT5v-NJtH
-
-ssh root@217.18.62.178
-jS?Kp-1g8Ak-TY
