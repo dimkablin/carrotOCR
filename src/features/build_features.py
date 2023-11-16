@@ -87,7 +87,7 @@ async def read_image(path: str):
     :return: An Image.Image object representing the output image.
     """
 
-    return await asyncio.to_thread(cv2.imread, path)
+    return await asyncio.to_thread(cv2.imread, (path, cv2.IMREAD_UNCHANGED))
 
 
 async def read_images(paths):
