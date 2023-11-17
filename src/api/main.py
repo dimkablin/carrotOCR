@@ -1,14 +1,10 @@
 """ FastAPI connection """
 from typing import List
 import logging
-import json
-import asyncio
 
 from fastapi import FastAPI, APIRouter, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi import WebSocket
-from fastapi.encoders import jsonable_encoder
 
 from src.api.middleware.middleware import BackendMiddleware
 from src.api.models.get_processed import GetProcessedResponse, GetProcessedRequest
@@ -33,7 +29,7 @@ from src.api.services.get_folders import get_folders_service
 from src.api.services.get_ocr_models import get_ocr_models_service
 from src.api.services.process_chunk import process_chunk_service
 from src.api.services.upload_files import upload_files_service
-from src.api.websocket import get_websoket_app
+from src.api.websocket import get_websoket_router
 
 from src.api.models.add_filenames import AddFilenameRequest
 from src.api.models.upload_files import UploadFilesResponse
@@ -74,6 +70,7 @@ app.add_middleware(
 )
 app.mount("/api/LOCAL_DATA", StaticFiles(directory=get_abspath("LOCAL_DATA")), name="LOCAL_DATA")
 
+
 @router.get('/get-chunk-id/', tags=["Pipeline"], response_model=int)
 async def get_chunk_id():
     """Return chunk id"""
@@ -87,21 +84,14 @@ async def upload_files(chunk_id: int, files: List[UploadFile] = File(...)):
 
 
 @router.post("/process-chunk/", tags=["Pipeline"], response_model=ProcessChunkResponse)
-async def process_chunk(req: ProcessChunkRequest): #, websocket: WebSocket):
+async def process_chunk(req: ProcessChunkRequest):
     """ Process chunk of images function """
-    # await connection_manager.connect(websocket)
-
-    # try:
     result = await process_chunk_service(
         OCR_MODEL.get(req.ocr_model_type),
         FIND_TAGS_MODEL,
         req
     )
     return result
-    #     await connection_manager.send_result(result, websocket)
-    # finally:
-    #     connection_manager.disconnect(websocket)
-    # return result
 
 
 @router.post("/process-image/", tags=["Pipeline"], response_model=ProcessImageResponse)
@@ -115,11 +105,13 @@ async def get_processed(req: GetProcessedRequest):
     """Return data from processed table by id."""
     return await get_processed_service(req)
 
+
 @router.get("/get-permatags/", tags=["Tags"], response_model=GetTagsResponse)
 async def get_permatags():
     """Return perma tags from database."""
     obj = FindTags()
     return GetTagsResponse(tags=await obj.get_perma_tags())
+
 
 @router.get("/rm-permatag/", tags=["Tags"], response_model=RemoveTagsResponse)
 async def rm_permatags(tag:str):
@@ -127,11 +119,13 @@ async def rm_permatags(tag:str):
     obj = FindTags()
     return RemoveTagsResponse(response=await obj.rem_perma_tag(tag))
 
+
 @router.post("/set-permatag/", tags=["Tags"])
 async def add_permatag(tag:str):
     """Add perma tag to database. will return int"""
     obj = FindTags()
     return await obj.add_perma_tag(tag)
+
 
 @router.post("/delte-data-by-id/", tags=["Pipeline"], response_model=None)
 async def delete_data_by_id(uid: int):
@@ -162,6 +156,7 @@ async def get_file(uid: int):
     """Return file from static directory."""
     return await get_file_service(uid)
 
+
 @router.get("/get-data-by-chunk-id/", tags=["Backend API"])
 async def get_data_by_chunk_id(chunk_id: int):
     """Return data by chunk id"""
@@ -185,42 +180,6 @@ async def get_ocr_models():
     """Return OCR Models ids and its names."""
     return await get_ocr_models_service()
 
-connections: dict[int, list[WebSocket]] = {}
-
-@app.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket, chunk_id: int, ocr_model_type: str):
-    """websocket"""
-    await websocket.accept()
-    if chunk_id not in connections:
-        connections[chunk_id] = []
-    else:
-        # Если уже существует подключение к этому chunkId, закрыть новое подключение
-        if len(connections[chunk_id]) >= 1:
-            await websocket.close()
-            return
-
-    connections[chunk_id].append(websocket)
-
-    req = ProcessChunkRequest(chunk_id=chunk_id, ocr_model_type=ocr_model_type)
-
-    result = await process_chunk_service(
-            OCR_MODEL.get(ocr_model_type),
-            FIND_TAGS_MODEL,
-            req
-        )
-    await send_message_to_chunk(chunk_id, result)
-
-    await websocket.close()
-    connections[chunk_id].remove(websocket)
-    if len(connections[chunk_id]) == 0:
-        del connections[chunk_id]
-
-async def send_message_to_chunk(chunk_id: int, message: ProcessChunkResponse):
-    """Send message to chunk"""
-    if chunk_id in connections:
-        # Сериализуем ProcessChunkResponse в JSON
-        json_message = json.dumps(jsonable_encoder(message))
-        for connection in connections[chunk_id]:
-            await connection.send_text(json_message)
 
 app.include_router(router, prefix="/api")
+app.include_router(get_websoket_router(), prefix='/api')
