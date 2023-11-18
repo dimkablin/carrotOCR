@@ -4,16 +4,14 @@ import json
 from fastapi import APIRouter, WebSocket
 from fastapi.encoders import jsonable_encoder
 
-from src.api.services.process_chunk import process_chunk_service
-from src.api.main import OCR_MODEL, FIND_TAGS_MODEL
 from src.api.models.process_chunk import ProcessChunkRequest, ProcessChunkResponse
+from src.api.routers.pipeline_router import process_chunk
 
-router = APIRouter()
-
+websoket_router = APIRouter()
 connections: dict[int, list[WebSocket]] = {}
 
 
-@router.websocket("/ws")
+@websoket_router.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket, chunk_id: int, ocr_model_type: str):
     """websocket"""
     await websocket.accept()
@@ -29,11 +27,7 @@ async def websocket_endpoint(websocket: WebSocket, chunk_id: int, ocr_model_type
 
     req = ProcessChunkRequest(chunk_id=chunk_id, ocr_model_type=ocr_model_type)
 
-    result = await process_chunk_service(
-            OCR_MODEL.get(ocr_model_type),
-            FIND_TAGS_MODEL,
-            req
-        )
+    result = await process_chunk(req)
     await send_message_to_chunk(chunk_id, result)
 
     await websocket.close()
@@ -49,8 +43,3 @@ async def send_message_to_chunk(chunk_id: int, message: ProcessChunkResponse):
         json_message = json.dumps(jsonable_encoder(message))
         for connection in connections[chunk_id]:
             await connection.send_text(json_message)
-
-
-def get_websoket_router() -> APIRouter:
-    """Return websocket app"""
-    return router
