@@ -70,7 +70,7 @@ async def pipeline_image(
     """final processing of the image"""
 
     if pipeline_params is not None:
-        angle = pipeline_params.angle_to_rotate
+        angle = pipeline_params.angle
     else:
         image = cropped(image)
         bina_image = binarize_image(image)

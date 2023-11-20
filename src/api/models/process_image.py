@@ -2,11 +2,19 @@
 from pydantic import BaseModel
 
 
+class Cut(BaseModel):
+    """Area to process"""
+    x1: int
+    y1: int
+    x2: int
+    y2: int
+
+
 class PipelineParams(BaseModel):
     """Pipeline params"""
-    angle_to_rotate: int  # Angle to rotate the image
+    angle: int  # Angle to rotate the image
     w2h_koeff: float # Width to heigth koeff
-    area_to_process: list[int] # [x1 y1 x2 y2]
+    cut: Cut # Area to process
 
 
 class ProcessImageRequest(BaseModel):
