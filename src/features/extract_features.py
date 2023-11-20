@@ -6,7 +6,7 @@ from typing import Optional
 
 import cv2
 import numpy as np
-from src.api.models.process_image import PipelineParams
+from src.api.models.process_image import Cut, PipelineParams
 from src.features.build_features import binarize_image, find_edges, find_tilt_angle, rotate_image
 from src.utils.utils import save_image
 
@@ -34,8 +34,8 @@ def _pipeline_image(
         image: np.ndarray,
         pipeline_params: PipelineParams) -> np.ndarray:
     """Preprocess image"""
-    
-    image = rotate_image(image, pipeline_params.angle_to_rotate)
+
+    image = rotate_image(image, pipeline_params.angle)
     return image
 
 
@@ -61,9 +61,9 @@ async def pipeline_image(
         angle = find_tilt_angle(image_edges)
 
         pipeline_params = PipelineParams(
-            angle_to_rotate=angle,
+            angle=angle,
             w2h_koeff=1,
-            area_to_process=None
+            cut=Cut(x1=0, y1=0, x2=0, y2=0)
         )
 
     _pipeline_image(image, pipeline_params)
