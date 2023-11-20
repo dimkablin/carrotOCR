@@ -8,7 +8,7 @@ from src.db.processed_manager import ProcessedManager
 from src.db.processed_structure import ProcessedStructure
 from src.models.find_tags import FindTags
 from src.models.ocr.ocr_interface import OCR
-import src.features.build_features as pp
+import src.features.extract_features as pp
 from src.utils.utils import get_abspath
 
 
