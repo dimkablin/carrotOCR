@@ -1,5 +1,6 @@
 # pylint: disable=E
 """ SOME DOCUMENTATION """
+from typing import Optional
 import numpy as np
 from skimage.color import rgb2gray
 from skimage.transform import (hough_line, hough_line_peaks)
@@ -7,8 +8,9 @@ from skimage.filters import threshold_otsu, sobel
 from scipy.stats import mode
 from scipy import ndimage
 from src.utils.utils import save_image
+from src.api.models.process_image import PipelineParams
 
-def binarize_image(rgb_image: np.array) -> np.array:
+def binarize_image(rgb_image: np.ndarray) -> np.ndarray:
     """biniarize the image"""
     image = rgb2gray(rgb_image)
     threshold = threshold_otsu(image)
@@ -16,13 +18,13 @@ def binarize_image(rgb_image: np.array) -> np.array:
     return bina_image
 
 
-def find_edges(bina_image: np.array) -> np.array:
+def find_edges(bina_image: np.ndarray) -> np.ndarray:
     """sobel edge detection"""
     image_edges = sobel(bina_image)
     return image_edges
 
 
-def find_tilt_angle(image_edges: np.array) -> int:
+def find_tilt_angle(image_edges: np.ndarray) -> int:
     """find the tilt angle"""
     hspace, theta, distances = hough_line(image_edges)
     _, angles, _ = hough_line_peaks(hspace, theta, distances)
@@ -39,13 +41,13 @@ def find_tilt_angle(image_edges: np.array) -> int:
     return r_angle
 
 
-def rotate_image(rgb_image: np.array, angle: int) -> np.array:
+def rotate_image(rgb_image: np.ndarray, angle: int) -> np.ndarray:
     """rotate the image"""
     fixed_image = ndimage.rotate(rgb_image, angle)
     return fixed_image
 
 
-def cropped(img:str) -> np.array:
+def cropped(img: np.ndarray) -> np.ndarray:
     """crop the image"""
     # img = cv2.imdecode(np.fromfile(img_path, dtype=np.uint8), 1)
     height, width = img.shape[:2]
@@ -61,15 +63,22 @@ def cropped(img:str) -> np.array:
     return img
 
 
-async def pipeline_image(img:np.array, path:str, angle:int=None) -> np.array:
+async def pipeline_image(
+        image: np.ndarray,
+        path: str,
+        pipeline_params: Optional[PipelineParams] = None) -> np.ndarray:
     """final processing of the image"""
-    image = cropped(img)
 
-    if angle is None:
-        # bina_image = binarize_image(image)
-        # image_edges = find_edges(bina_image)
-        angle = 0 # find_tilt_angle(image_edges)
-        
+    if pipeline_params is not None:
+        angle = pipeline_params.angle_to_rotate
+    else:
+        image = cropped(image)
+        bina_image = binarize_image(image)
+        image_edges = find_edges(bina_image)
+        angle = find_tilt_angle(image_edges)
+
+
     image = rotate_image(image, angle)
+
     save_image(path, image)
     return image

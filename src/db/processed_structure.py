@@ -7,7 +7,7 @@ from typing import List, Optional
 class ProcessedStructure:
     """Data structure for each row for 'Processed' table."""
     uid: int = None
-    chunk_id: str = None
+    chunk_id: int = None
     old_filename: str = None
     new_filename: str = None
     tags: List[str] = None

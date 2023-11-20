@@ -82,7 +82,7 @@ async def process_image_service(
     image = await pp.pipeline_image(
         image,
         path=edited_paths + "/" + data.old_filename,
-        angle=req.angle_to_rotate
+        pipeline_params=req.pipeline_params
     )
 
     logging.info("Pipeline images executed in %.3s seconds", time.time() - start_time)
