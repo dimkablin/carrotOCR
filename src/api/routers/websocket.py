@@ -20,7 +20,7 @@ async def websocket_endpoint(websocket: WebSocket, chunk_id: int, ocr_model_type
     else:
         # Если уже существует подключение к этому chunkId, закрыть новое подключение
         if len(connections[chunk_id]) >= 1:
-            await websocket.close()
+            await websocket.close(code=4000, reason="Connection already exists for this chunk_id.")
             return
 
     connections[chunk_id].append(websocket)
@@ -30,7 +30,7 @@ async def websocket_endpoint(websocket: WebSocket, chunk_id: int, ocr_model_type
     result = await process_chunk(req)
     await send_message_to_chunk(chunk_id, result)
 
-    await websocket.close()
+    await websocket.close(code=1000, reason="Connection closed successfully")
     connections[chunk_id].remove(websocket)
     if len(connections[chunk_id]) == 0:
         del connections[chunk_id]
