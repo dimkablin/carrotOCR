@@ -6,8 +6,8 @@ class Cut(BaseModel):
     """Area to process"""
     x1: int
     y1: int
-    x2: int
-    y2: int
+    width: int
+    height: int
 
 
 class PipelineParams(BaseModel):

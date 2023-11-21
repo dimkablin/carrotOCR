@@ -7,7 +7,7 @@ from typing import Optional
 import cv2
 import numpy as np
 from src.api.models.process_image import Cut, PipelineParams
-from src.features.build_features import binarize_image, find_edges, find_tilt_angle, rotate_image
+from src.features import build_features as pp
 from src.utils.utils import save_image
 
 
@@ -35,7 +35,13 @@ def _pipeline_image(
         pipeline_params: PipelineParams) -> np.ndarray:
     """Preprocess image"""
 
-    image = rotate_image(image, pipeline_params.angle)
+    image = pp.rotate_image(image, pipeline_params.angle)
+
+    if pipeline_params.w2h_koeff > 0:
+        image = pp.crop(image, pipeline_params.w2h_koeff)
+    else:
+        image = pp.cut(image, pipeline_params.cut)
+
     return image
 
 
@@ -55,15 +61,15 @@ async def pipeline_image(
     """
 
     if pipeline_params is None:
-        image = cropped(image)
-        bina_image = binarize_image(image)
-        image_edges = find_edges(bina_image)
-        angle = find_tilt_angle(image_edges)
+        # image = cropped(image)
+        # bina_image = binarize_image(image)
+        # image_edges = find_edges(bina_image)
+        # angle = find_tilt_angle(image_edges)
 
         pipeline_params = PipelineParams(
-            angle=angle,
+            angle=0,
             w2h_koeff=1,
-            cut=Cut(x1=0, y1=0, x2=0, y2=0)
+            cut=Cut(x1=0, y1=0, width=0, height=0)
         )
 
     _pipeline_image(image, pipeline_params)

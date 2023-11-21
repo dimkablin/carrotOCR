@@ -14,6 +14,8 @@ from skimage.filters import threshold_otsu, sobel
 from scipy.stats import mode
 from scipy import ndimage
 
+from src.api.models.process_image import Cut
+
 
 def byte2numpy(image) -> np.ndarray:
     """ Read image bytes and return numpy array"""
@@ -260,4 +262,18 @@ def crop(image: np.ndarray,
         np.ndarray: _description_
     """
     height, width = image.shape[:2]
-    
+
+    return image
+
+def cut(image: np.ndarray, cut_: Cut) -> np.ndarray:
+    """ Cut the image
+
+    Args:
+        image (np.ndarray): input
+        cut (Cut): Base FastAPI Model
+
+    Returns:
+        np.ndarray: cuted image
+    """
+
+    return image[cut_.x1: cut_.x1 + cut_.width, cut_.y1: cut_.y1 + cut_.height, :]
