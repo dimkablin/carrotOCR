@@ -72,7 +72,7 @@ async def pipeline_image(
             cut=Cut(x1=0, y1=0, width=0, height=0)
         )
 
-    _pipeline_image(image, pipeline_params)
+    image = _pipeline_image(image, pipeline_params)
     save_image(path, image)
     return image
 

@@ -18,7 +18,7 @@ def process_image(
         ocr_model: OCR,
         tags_model: FindTags,
         image_name: str,
-        chunk_id: int) -> ProcessImageResponse:
+        chunk_id: int) -> ProcessedStructure:
     """ Main function to process a chunk of data
 
     Args:
@@ -35,10 +35,7 @@ def process_image(
 
     # use model
     output = ocr_model([image])[0]
-    # Find the duplicate
-    duplicate_id = -1
 
-    # insert data to Database and get UID
     data = ProcessedStructure(
         chunk_id=chunk_id,
         old_filename=image_name,
@@ -46,13 +43,8 @@ def process_image(
         text=output['rec_texts'],
         bboxes=output['det_polygons']
     )
-    uid = ProcessedManager.insert_data(data)
 
-    return ProcessImageResponse(
-        uid=uid,
-        old_filename=data.old_filename,
-        duplicate_id=duplicate_id
-    )
+    return data
 
 
 async def process_image_service(
@@ -89,7 +81,7 @@ async def process_image_service(
     start_time = time.time()
 
     # fill response
-    response = process_image(
+    data = process_image(
         image=image,
         ocr_model=ocr_model,
         tags_model=tags_model,
@@ -97,13 +89,16 @@ async def process_image_service(
         chunk_id=data.chunk_id
     )
 
+    ProcessedManager.update_data_by_id(data)
+
     logging.info(
         "Processed image with %s model in %.3f seconds.", 
         ocr_model.get_model_type(),
         time.time() - start_time
     )
 
-    # delete old data from dabase
-    ProcessedManager.delete_data_by_id(req.uid)
-
-    return response
+    return ProcessImageResponse(
+        uid=data.uid,
+        old_filename=data.old_filename,
+        duplicate_id=-1
+    )
