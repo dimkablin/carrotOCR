@@ -68,12 +68,14 @@ async def pipeline_image(
 
         pipeline_params = PipelineParams(
             angle=0,
-            w2h_koeff=1,
-            cut=Cut(x1=0, y1=0, width=0, height=0)
+            w2h_koeff=0,
+            cut=Cut(x1=0, y1=0, width=image.shape[0], height=image.shape[1])
         )
 
-    _pipeline_image(image, pipeline_params)
+    image = _pipeline_image(image, pipeline_params)
+
     save_image(path, image)
+
     return image
 
 

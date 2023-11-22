@@ -242,10 +242,10 @@ def find_tilt_angle(image_edges: np.ndarray) -> int:
     return r_angle
 
 
-def rotate_image(rgb_image: np.ndarray, angle: int) -> np.ndarray:
+def rotate_image(image: np.ndarray, angle: int) -> np.ndarray:
     """rotate the image"""
-    fixed_image = ndimage.rotate(rgb_image, angle)
-    return fixed_image
+    image = ndimage.rotate(image, angle, reshape=False)
+    return image
 
 
 def crop(image: np.ndarray,
@@ -262,6 +262,17 @@ def crop(image: np.ndarray,
         np.ndarray: _description_
     """
     height, width = image.shape[:2]
+
+    if height > width:
+        image = cut(
+            image,
+            Cut(x1=0, y1=0, height=int(width*w2h_koeff), width=width)
+        )
+    else:
+        image = cut(
+            image,
+            Cut(x1=0, y1=0, height=height, width=int(height*w2h_koeff))
+        )
 
     return image
 
