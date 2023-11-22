@@ -89,8 +89,8 @@ async def process_image_service(
         chunk_id=data.chunk_id
     )
 
-    ProcessedManager.update_data_by_id(data)
-
+    print(ProcessedManager.update_data_by_id(data))
+    
     logging.info(
         "Processed image with %s model in %.3f seconds.", 
         ocr_model.get_model_type(),
