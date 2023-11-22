@@ -17,9 +17,8 @@ async def read_image(path: str):
     :param path: A string object representing the path to the image file
     :return: An Image.Image object representing the output image.
     """
-
-    return await asyncio.to_thread(cv2.imread, path)
-
+    image = await asyncio.to_thread(cv2.imread, path)
+    return image
 
 async def read_images(paths):
     """ Async read all images
