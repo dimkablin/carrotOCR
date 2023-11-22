@@ -282,5 +282,6 @@ def cut(image: np.ndarray, cut_: Cut) -> np.ndarray:
         np.ndarray: cuted image
     """
 
-    return image[cut_.x1: cut_.x1 + cut_.width,
-                 cut_.y1: cut_.y1 + cut_.height, :]
+    return image[cut_.y1: cut_.y1 + cut_.height,
+                 cut_.x1: cut_.x1 + cut_.width, :]
+
