@@ -244,7 +244,7 @@ def find_tilt_angle(image_edges: np.ndarray) -> int:
 
 def rotate_image(image: np.ndarray, angle: int) -> np.ndarray:
     """rotate the image"""
-    image = ndimage.rotate(image, angle, reshape=False)
+    image = ndimage.rotate(image, angle)
     return image
 
 
