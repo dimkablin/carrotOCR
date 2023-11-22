@@ -242,10 +242,10 @@ def find_tilt_angle(image_edges: np.ndarray) -> int:
     return r_angle
 
 
-def rotate_image(rgb_image: np.ndarray, angle: int) -> np.ndarray:
+def rotate_image(image: np.ndarray, angle: int) -> np.ndarray:
     """rotate the image"""
-    fixed_image = ndimage.rotate(rgb_image, angle)
-    return fixed_image
+    image = ndimage.rotate(image, angle, reshape=False)
+    return image
 
 
 def crop(image: np.ndarray,

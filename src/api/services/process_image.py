@@ -97,8 +97,10 @@ async def process_image_service(
         time.time() - start_time
     )
 
-    return ProcessImageResponse(
-        uid=data.uid,
+    res = ProcessImageResponse(
+        uid=req.uid,
         old_filename=data.old_filename,
         duplicate_id=-1
     )
+
+    return res
