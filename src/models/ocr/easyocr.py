@@ -50,6 +50,7 @@ class EasyOCRInitedCustom(OCR):
             gpu=self.use_cuda,
             model_storage_directory='./src/models/ocr/easyOCR_custom/model',
             user_network_directory='./src/models/ocr/easyOCR_custom/user_network',
+            download_enabled=False,
             recog_network='ru_custom'
         )
 

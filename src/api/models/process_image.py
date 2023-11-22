@@ -2,11 +2,26 @@
 from pydantic import BaseModel
 
 
+class Cut(BaseModel):
+    """Area to process"""
+    x1: int
+    y1: int
+    width: int
+    height: int
+
+
+class PipelineParams(BaseModel):
+    """Pipeline params"""
+    angle: int  # Angle to rotate the image
+    w2h_koeff: float # Width to heigth koeff
+    cut: Cut # Area to process
+
+
 class ProcessImageRequest(BaseModel):
     """ Request to the OCR model """
     uid: int  # Image ID
     ocr_model_type: str # Model type
-    angle_to_rotate: int  # Angle to rotate the image
+    pipeline_params: PipelineParams # how to
 
 
 class ProcessImageResponse(BaseModel):

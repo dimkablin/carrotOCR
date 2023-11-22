@@ -1,16 +1,28 @@
+version: '3'
+networks:
+  database:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
 services:
   postgres:
-    image: postgres:latest
+    image: postgres:14
+    networks:
+        database:
+            ipv4_address: 172.20.0.5
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: carrotocr
-    volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+      POSTGRES_DB: "carrotocr"
+      POSTGRES_USER: "admin"
+      POSTGRES_PASSWORD: "MQcjPndiWW"
+  carrotocr:
+    build: ./
+    networks:
+        database:
+            ipv4_address: 172.20.0.6
+    environment:
+      - PYTHONUNBUFFERED=True
+    ports:
+      - "8000:8000"
+    command: bash -c "python3 db_script.py && uvicorn src.api.main:app --reload --host 0.0.0.0 --port 8000"
     depends_on:
       - postgres

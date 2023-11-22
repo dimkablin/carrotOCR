@@ -8,7 +8,7 @@ from src.db.processed_manager import ProcessedManager
 from src.db.processed_structure import ProcessedStructure
 from src.models.find_tags import FindTags
 from src.models.ocr.ocr_interface import OCR
-import src.features.build_features as pp
+import src.features.extract_features as pp
 from src.utils.utils import get_abspath
 
 
@@ -82,7 +82,7 @@ async def process_image_service(
     image = await pp.pipeline_image(
         image,
         path=edited_paths + "/" + data.old_filename,
-        angle=req.angle_to_rotate
+        pipeline_params=req.pipeline_params
     )
 
     logging.info("Pipeline images executed in %.3s seconds", time.time() - start_time)

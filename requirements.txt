@@ -26,3 +26,8 @@ python-Levenshtein~=0.22.0
 psycopg2~=2.9.8
 Levenshtein~=0.22.0
 starlette~=0.27.0
+websockets
+torch
+torchvision
+torchaudio
+albumentations==1.3.1
