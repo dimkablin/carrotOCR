@@ -127,7 +127,7 @@ class ProcessedManager:
             return db_manager.execute_query(query, fetch=True)
 
     @staticmethod
-    def update_data_by_id(raw: ProcessedStructure) -> bool:
+    def update_data_by_id(raw: ProcessedStructure, uid: int) -> bool:
         """Updating data by id"""
         with DatabaseManager(**ProcessedManager.db_config) as db_manager:
             query = f"""
@@ -135,5 +135,5 @@ class ProcessedManager:
                 SET tags = %s, text = %s, bboxes = %s
                 WHERE id = %s
             """
-            data = (raw.tags, raw.text, json.dumps(raw.bboxes), raw.uid)
+            data = (raw.tags, raw.text, json.dumps(raw.bboxes), uid)
             return db_manager.execute_query(query, data)

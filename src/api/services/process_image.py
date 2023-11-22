@@ -89,7 +89,7 @@ async def process_image_service(
         chunk_id=data.chunk_id
     )
 
-    ProcessedManager.update_data_by_id(data)
+    ProcessedManager.update_data_by_id(data,req.uid)
 
     logging.info(
         "Processed image with %s model in %.3f seconds.", 
