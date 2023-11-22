@@ -135,5 +135,5 @@ class ProcessedManager:
                 SET tags = %s, text = %s, bboxes = %s
                 WHERE id = %s
             """
-            data = (raw.tags, raw.text, json.dumps(raw.bboxes), raw.uid)  # Assuming raw.id is the ID of the record to update
+            data = (raw.tags, raw.text, json.dumps(raw.bboxes), raw.uid)
             return db_manager.execute_query(query, data)
