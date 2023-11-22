@@ -245,7 +245,7 @@ def find_tilt_angle(image_edges: np.ndarray) -> int:
 def rotate_image(image: np.ndarray, angle: int) -> np.ndarray:
     """rotate the image"""
     # ndimage.rotate поворачивает картинку против часой стрелки поэтмоу минус
-    image = ndimage.rotate(image, -angle) 
+    image = ndimage.rotate(image, -angle)
     return image
 
 
