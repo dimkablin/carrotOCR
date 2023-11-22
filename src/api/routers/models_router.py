@@ -17,7 +17,8 @@ async def get_ocr_models():
 async def get_permatags():
     """Return perma tags from database."""
     obj = FindTags()
-    return GetTagsResponse(tags=await obj.get_perma_tags())
+    tags = await obj.get_perma_tags()
+    return GetTagsResponse(tags=tags)
 
 
 @ml_model_router.get("/rm-permatag/", tags=["Tags"], response_model=RemoveTagsResponse)

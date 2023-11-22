@@ -36,7 +36,7 @@ class FindTags:
         """ Remove tags from the database"""
         return PermatagsManager.delete_data_by_tag(tag)
 
-    async def get_perma_tags(self) -> list[dict]:
+    async def get_perma_tags(self) -> list[str]:
         """ Get tags from the database
         # Выведет:
         ["tag1","tag2",...,"tagN"]
