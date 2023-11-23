@@ -4,7 +4,9 @@ import time
 import logging
 
 from src.api.models.process_chunk import ProcessChunkRequest, ProcessChunkResponse
+from src.api.models.process_image import ProcessImageResponse
 from src.api.services.process_image import process_image
+from src.db.processed_manager import ProcessedManager
 import src.features.extract_features as pp
 from src.models.ocr.ocr_interface import OCR
 from src.utils.utils import create_dir_if_not_exist, get_abspath, read_paths
@@ -53,13 +55,23 @@ async def process_chunk_service(
     start_time = time.time()
 
     for i, image in enumerate(images):
-        response.results.append(process_image(
+        data = process_image(
             image=image,
             ocr_model=ocr_model,
             tags_model=tags_model,
             image_name=image_names[i],
             chunk_id=req.chunk_id
-        ))
+        )
+
+        uid = ProcessedManager.insert_data(data)
+
+        response.results.append(
+            ProcessImageResponse(
+                uid=uid,
+                old_filename=data.old_filename,
+                duplicate_id=-1
+            )
+        )
 
     logging.info(
         "Processed %d images with %s model in %.3f seconds.",

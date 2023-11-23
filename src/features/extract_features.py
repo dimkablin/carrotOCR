@@ -17,9 +17,8 @@ async def read_image(path: str):
     :param path: A string object representing the path to the image file
     :return: An Image.Image object representing the output image.
     """
-
-    return await asyncio.to_thread(cv2.imread, path)
-
+    image = await asyncio.to_thread(cv2.imread, path)
+    return image
 
 async def read_images(paths):
     """ Async read all images
@@ -68,12 +67,14 @@ async def pipeline_image(
 
         pipeline_params = PipelineParams(
             angle=0,
-            w2h_koeff=1,
-            cut=Cut(x1=0, y1=0, width=0, height=0)
+            w2h_koeff=0,
+            cut=Cut(x1=0, y1=0, width=image.shape[0], height=image.shape[1])
         )
 
-    _pipeline_image(image, pipeline_params)
+    image = _pipeline_image(image, pipeline_params)
+
     save_image(path, image)
+
     return image
 
 
