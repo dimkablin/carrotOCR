@@ -64,11 +64,11 @@ async def pipeline_image(
         # bina_image = binarize_image(image)
         # image_edges = find_edges(bina_image)
         # angle = find_tilt_angle(image_edges)
-
+        
         pipeline_params = PipelineParams(
             angle=0,
             w2h_koeff=0,
-            cut=Cut(x1=0, y1=0, width=image.shape[0], height=image.shape[1])
+            cut=Cut(x1=0, y1=0, width=image.shape[1], height=image.shape[0])
         )
 
     image = _pipeline_image(image, pipeline_params)
