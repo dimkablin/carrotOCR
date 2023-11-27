@@ -12,5 +12,3 @@ RUN apt-get install -y \
 RUN apt install -y uvicorn
 
 RUN pip3 install -r requirements.txt
-
-EXPOSE 8000
