@@ -264,9 +264,11 @@ def crop(image: np.ndarray,
     """
     height, width = image.shape[:2]
     if height > width:
-        height = min(height, int(width*w2h_koeff))
+        if width > 5000:
+            height = min(height, int(width*w2h_koeff))
     else:
-        width = min(width, int(height*w2h_koeff))
+        if height > 1920:
+            width = min(width, int(height*w2h_koeff))
 
 
     image = cut(
