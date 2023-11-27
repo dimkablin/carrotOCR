@@ -64,7 +64,7 @@ async def pipeline_image(
         # bina_image = binarize_image(image)
         # image_edges = find_edges(bina_image)
         # angle = find_tilt_angle(image_edges)
-        w2h_koeff = 1 if (image.shape[0] > 1920) or (image.shape[1] > 5000) else 0
+        w2h_koeff = 1 if ( 0.4 < image.shape[0]/image.shape[1] < 2.5 ) else 0
         pipeline_params = PipelineParams(
             angle=0,
             w2h_koeff=w2h_koeff,
