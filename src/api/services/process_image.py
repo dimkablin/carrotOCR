@@ -8,7 +8,7 @@ from src.db.processed_manager import ProcessedManager
 from src.db.processed_structure import ProcessedStructure
 from src.models.find_tags import FindTags
 from src.models.ocr.ocr_interface import OCR
-import src.features.build_features as pp
+import src.features.extract_features as pp
 from src.utils.utils import get_abspath
 
 
@@ -18,7 +18,7 @@ def process_image(
         ocr_model: OCR,
         tags_model: FindTags,
         image_name: str,
-        chunk_id: int) -> ProcessImageResponse:
+        chunk_id: int) -> ProcessedStructure:
     """ Main function to process a chunk of data
 
     Args:
@@ -35,10 +35,7 @@ def process_image(
 
     # use model
     output = ocr_model([image])[0]
-    # Find the duplicate
-    duplicate_id = -1
 
-    # insert data to Database and get UID
     data = ProcessedStructure(
         chunk_id=chunk_id,
         old_filename=image_name,
@@ -46,13 +43,8 @@ def process_image(
         text=output['rec_texts'],
         bboxes=output['det_polygons']
     )
-    uid = ProcessedManager.insert_data(data)
 
-    return ProcessImageResponse(
-        uid=uid,
-        old_filename=data.old_filename,
-        duplicate_id=duplicate_id
-    )
+    return data
 
 
 async def process_image_service(
@@ -82,14 +74,14 @@ async def process_image_service(
     image = await pp.pipeline_image(
         image,
         path=edited_paths + "/" + data.old_filename,
-        angle=req.angle_to_rotate
+        pipeline_params=req.pipeline_params
     )
 
     logging.info("Pipeline images executed in %.3s seconds", time.time() - start_time)
     start_time = time.time()
 
     # fill response
-    response = process_image(
+    data = process_image(
         image=image,
         ocr_model=ocr_model,
         tags_model=tags_model,
@@ -97,13 +89,25 @@ async def process_image_service(
         chunk_id=data.chunk_id
     )
 
+    data.angle = req.pipeline_params.angle
+
+    for bbox in data.bboxes:
+        for coord in range(0, 7, 2):
+            bbox[coord] += req.pipeline_params.cut.x1
+            bbox[coord + 1] += req.pipeline_params.cut.y1
+ 
+    ProcessedManager.update_data_by_id(data, req.uid)
+
     logging.info(
         "Processed image with %s model in %.3f seconds.", 
         ocr_model.get_model_type(),
         time.time() - start_time
     )
 
-    # delete old data from dabase
-    ProcessedManager.delete_data_by_id(req.uid)
+    res = ProcessImageResponse(
+        uid=req.uid,
+        old_filename=data.old_filename,
+        duplicate_id=-1
+    )
 
-    return response
+    return res

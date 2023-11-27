@@ -1,4 +1,4 @@
-#pylint: disable=R
+# pylint: disable=R,E
 """permatags table manager"""
 from typing import Optional
 from psycopg2 import extensions

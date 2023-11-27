@@ -3,32 +3,18 @@
 This module contains utility functions for image processing tasks.
 You can see an example of usage in 'notebooks/preprocessing.ipynb'
 """
-import asyncio
-# pylint: disable=W,R,E
-
 import io
-from typing import List
 
 from PIL import Image
 import cv2
 import numpy as np
-from src.features.crop_rotate import pipeline_image
+from skimage.color import rgb2gray
+from skimage.transform import (hough_line, hough_line_peaks)
+from skimage.filters import threshold_otsu, sobel
+from scipy.stats import mode
+from scipy import ndimage
 
-async def preprocess_image(image: np.ndarray) -> np.ndarray:
-    """ Main function to preprocess image """
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    image = cut_image(image)
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    image = adaptive_threshold(image)
-    image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
-
-    return image
-
-
-async def preprocess_images(images: List[np.ndarray]) -> List[np.ndarray]:
-    """ Main function to preprocess images """
-    images = await asyncio.gather(*[preprocess_image(image) for image in images])
-    return images
+from src.api.models.process_image import Cut
 
 
 def byte2numpy(image) -> np.ndarray:
@@ -36,27 +22,6 @@ def byte2numpy(image) -> np.ndarray:
     image = io.BytesIO(image)
     image = Image.open(image)
     image = pil2numpy(image)
-
-    return image
-
-
-def cut_image(image: np.ndarray, k=1.4142, min_wh = 1200) -> np.ndarray:
-    """ Changing size of the image from (w, h) to (new_w, k * new_w) where new_w equals to min(w, h)
-
-    :param image: An Image.Image object representing input image
-    :param k: A coefficient that shows how much longer the length is than the width
-    :return: An Image.Image object
-    """
-
-    assert image.shape[2] == 3, \
-        f"image shape has to be equal to (:, :, 3), but image.shape has {len(image.shape)}."
-    height, width = image.shape[0], image.shape[1]
-    height = int(min(k * width, height))
-
-    height = height if height > min_wh else min_wh
-    width = width if width > min_wh else min_wh
-
-    image = image[0:width, 0:height, :]
 
     return image
 
@@ -78,34 +43,6 @@ def check_exif(image: Image.Image) -> Image.Image:
             image = image.rotate(90, expand=True)
 
     return image
-
-
-async def read_image(path: str):
-    """ Async open an image
-
-    :param path: A string object representing the path to the image file
-    :return: An Image.Image object representing the output image.
-    """
-
-    return await asyncio.to_thread(cv2.imread, path)
-
-
-async def read_images(paths):
-    """ Async read all images
-
-    :param paths:
-    :return:
-    """
-    return await asyncio.gather(*[read_image(path) for path in paths])
-
-
-async def pipeline_images(images, paths):
-    """
-    crop and rotate list of images
-    """
-    return await asyncio.gather(
-        *[pipeline_image(image, path) for image, path in zip(images, paths)]
-    )
 
 
 def pil2numpy(image: Image.Image) -> np.ndarray:
@@ -222,10 +159,12 @@ def contrast_enhancement(image: np.ndarray) -> np.ndarray:
     """
 
     min_val, max_val, _, _ = cv2.minMaxLoc(image)
-    image = cv2.convertScaleAbs(image,
-                                alpha=255.0 / (max_val - min_val),
-                                beta=-min_val * (255.0 / (max_val - min_val))
-                                )
+
+    image = cv2.convertScaleAbs(
+        image,
+        alpha=255.0 / (max_val - min_val),
+        beta=-min_val * (255.0 / (max_val - min_val))
+    )
 
     return image
 
@@ -270,3 +209,85 @@ def blend(image1: np.ndarray,
 
     image = cv2.addWeighted(image1, 1 - alpha, image2, alpha, 0)
     return image
+
+
+def binarize_image(rgb_image: np.ndarray) -> np.ndarray:
+    """biniarize the image"""
+    image = rgb2gray(rgb_image)
+    threshold = threshold_otsu(image)
+    bina_image = image < threshold
+    return bina_image
+
+
+def find_edges(bina_image: np.ndarray) -> np.ndarray:
+    """sobel edge detection"""
+    image_edges = sobel(bina_image)
+    return image_edges
+
+
+def find_tilt_angle(image_edges: np.ndarray) -> int:
+    """find the tilt angle"""
+    hspace, theta, distances = hough_line(image_edges)
+    _, angles, _ = hough_line_peaks(hspace, theta, distances)
+    angle = np.rad2deg(mode(angles, keepdims=True)[0][0])
+
+    if abs(angle) == 45:
+        angle = angle * 2
+
+    if angle < 0:
+        r_angle = angle + 90
+    else:
+        r_angle = 90
+
+    return r_angle
+
+
+def rotate_image(image: np.ndarray, angle: int) -> np.ndarray:
+    """rotate the image"""
+    # ndimage.rotate поворачивает картинку против часой стрелки поэтмоу минус
+    image = ndimage.rotate(image, -angle)
+    return image
+
+
+def crop(image: np.ndarray,
+         w2h_koeff: float) -> np.ndarray:
+    """_summary_
+
+    Args:
+        image (np.ndarray): _description_
+        width (_type_): _description_
+        height (_type_): _description_
+        w2h_koeff (_type_): _description_
+
+    Returns:
+        np.ndarray: _description_
+    """
+    height, width = image.shape[:2]
+    if height > width:
+        if width > 5000:
+            height = min(height, int(width*w2h_koeff))
+    else:
+        if height > 1920:
+            width = min(width, int(height*w2h_koeff))
+
+
+    image = cut(
+        image,
+        Cut(x1=0, y1=0, height=height, width=width)
+    )
+
+    return image
+
+def cut(image: np.ndarray, cut_: Cut) -> np.ndarray:
+    """ Cut the image
+
+    Args:
+        image (np.ndarray): input
+        cut (Cut): Base FastAPI Model
+
+    Returns:
+        np.ndarray: cuted image
+    """
+
+    return image[cut_.y1: cut_.y1 + cut_.height,
+                 cut_.x1: cut_.x1 + cut_.width, :]

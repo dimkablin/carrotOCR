@@ -1,3 +1,4 @@
+#pylint: disable=E
 """ Find Tags model """
 import json
 
@@ -29,13 +30,13 @@ class FindTags:
         data = PermatagsStructure(
             tag=tag
         )
-        PermatagsManager.insert_data(data)
+        return PermatagsManager.insert_data(data)
 
     async def rem_perma_tag(self, tag: str) -> bool:
         """ Remove tags from the database"""
         return PermatagsManager.delete_data_by_tag(tag)
 
-    async def get_perma_tags(self) -> list[dict]:
+    async def get_perma_tags(self) -> list[str]:
         """ Get tags from the database
         # Выведет:
         ["tag1","tag2",...,"tagN"]
