@@ -63,6 +63,7 @@ async def process_chunk_service(
             chunk_id=req.chunk_id
         )
 
+        data.angle = 0
         uid = ProcessedManager.insert_data(data)
 
         response.results.append(
