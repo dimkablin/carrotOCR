@@ -10,6 +10,7 @@ async def get_processed_service(req: GetProcessedRequest) -> GetProcessedRespons
     data = ProcessedManager.get_data_by_id(req.uid)
     result = GetProcessedResponse(
         chunk_id=data.chunk_id,
+        angle=data.angle,
         old_filename=data.old_filename,
         new_filename=data.new_filename,
         tags=data.tags,

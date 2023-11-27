@@ -263,10 +263,10 @@ def crop(image: np.ndarray,
         np.ndarray: _description_
     """
     height, width = image.shape[:2]
-    if height > width:
-        height = min(height, int(width*w2h_koeff))
-    else:
+    if width > height:
         width = min(width, int(height*w2h_koeff))
+    else:
+        height = min(height, int(width/w2h_koeff))
 
 
     image = cut(

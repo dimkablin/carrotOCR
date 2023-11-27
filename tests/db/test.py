@@ -20,6 +20,7 @@ class TestDataProcessor(unittest.TestCase):
         """Unittest for insert_data function"""
         data = ProcessedStructure(
             chunk_id="1",
+            angle=90,
             old_filename="example.jpg",
             tags=["tag1", "tag 2"],
             text=["text1", "text2"],
@@ -32,6 +33,7 @@ class TestDataProcessor(unittest.TestCase):
         """Another unittest for insert_data function"""
         data = ProcessedStructure(
             chunk_id="77",
+            angle=90,
             old_filename="another_example.jpg",
             new_filename="ama_new_here.jpg",
             tags=None,
