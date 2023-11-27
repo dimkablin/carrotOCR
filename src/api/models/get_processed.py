@@ -16,6 +16,7 @@ class GetProcessedRequest(BaseModel):
 class GetProcessedResponse(BaseModel):
     """get_processed function response"""
     chunk_id: int
+    angle: int
     old_filename: str
     new_filename: Optional[str]
     tags: Optional[List[str]]

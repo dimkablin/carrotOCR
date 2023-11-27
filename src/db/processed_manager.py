@@ -30,6 +30,7 @@ class ProcessedManager:
             CREATE TABLE IF NOT EXISTS {ProcessedManager.table_name} (
                 id SERIAL PRIMARY KEY,
                 chunk_id INTEGER NOT NULL,
+                angle INTEGER,
                 old_filename TEXT,
                 new_filename TEXT,
                 tags TEXT[],
@@ -49,11 +50,19 @@ class ProcessedManager:
         """Insert data into the database."""
         with DatabaseManager(**ProcessedManager.db_config) as db_manager:
             query = f"""
-                INSERT INTO {ProcessedManager.table_name} (chunk_id, old_filename, tags, text, bboxes)
-                VALUES (%s, %s, %s, %s, %s)
+                INSERT INTO {ProcessedManager.table_name} (chunk_id, angle, old_filename, tags, text, bboxes)
+                VALUES (%s, %s, %s, %s, %s, %s)
                 RETURNING id
             """
-            data = (raw.chunk_id, raw.old_filename, raw.tags, raw.text, json.dumps(raw.bboxes))
+            data = (
+                raw.chunk_id,
+                raw.angle,
+                raw.old_filename,
+                raw.tags,
+                raw.text,
+                json.dumps(raw.bboxes)
+            )
+
             return db_manager.execute_query(query, data, fetch=True)[0][0]
 
     @staticmethod
@@ -132,8 +141,8 @@ class ProcessedManager:
         with DatabaseManager(**ProcessedManager.db_config) as db_manager:
             query = f"""
                 UPDATE {ProcessedManager.table_name}
-                SET tags = %s, text = %s, bboxes = %s
+                SET angle=%s, tags = %s, text = %s, bboxes = %s
                 WHERE id = %s
             """
-            data = (raw.tags, raw.text, json.dumps(raw.bboxes), uid)
+            data = (raw.angle, raw.tags, raw.text, json.dumps(raw.bboxes), uid)
             return db_manager.execute_query(query, data)
