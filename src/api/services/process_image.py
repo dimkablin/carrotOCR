@@ -89,7 +89,14 @@ async def process_image_service(
         chunk_id=data.chunk_id
     )
 
-    ProcessedManager.update_data_by_id(data,req.uid)
+    data.angle = req.pipeline_params.angle
+
+    for bbox in data.bboxes:
+        for coord in range(0, 7, 2):
+            bbox[coord] += req.pipeline_params.cut.x1
+            bbox[coord + 1] += req.pipeline_params.cut.y1
+
+    ProcessedManager.update_data_by_id(data, req.uid)
 
     logging.info(
         "Processed image with %s model in %.3f seconds.", 

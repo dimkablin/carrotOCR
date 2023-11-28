@@ -8,6 +8,7 @@ class ProcessedStructure:
     """Data structure for each row for 'Processed' table."""
     uid: int = None
     chunk_id: int = None
+    angle: int = None
     old_filename: str = None
     new_filename: str = None
     tags: List[str] = None
@@ -24,11 +25,12 @@ class ProcessedStructure:
         if not len(raw) == 0:
             self.uid = raw[0]
             self.chunk_id = raw[1]
-            self.old_filename = raw[2]
-            self.new_filename = raw[3]
-            self.tags = raw[4]
-            self.text = raw[5]
-            self.bboxes = json.loads(raw[6])
+            self.angle = raw[2]
+            self.old_filename = raw[3]
+            self.new_filename = raw[4]
+            self.tags = raw[5]
+            self.text = raw[6]
+            self.bboxes = json.loads(raw[7])
             return self
         return None
 
