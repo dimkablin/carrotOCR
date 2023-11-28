@@ -14,7 +14,7 @@ from src.models.find_tags import FindTags
 
 
 
-async def process_chunk_service(
+def process_chunk_service(
         ocr_model: OCR,
         tags_model: FindTags,
         req: ProcessChunkRequest) -> ProcessChunkResponse:
@@ -44,8 +44,8 @@ async def process_chunk_service(
 
     # read images and use model
     paths_to_images = [origin_paths+"/"+i for i in image_names]
-    images = await pp.read_images(paths_to_images)
-    images = await pp.pipeline_images(images, edited_paths)
+    images = pp.read_images(paths_to_images)
+    images = pp.pipeline_images(images, edited_paths)
 
     logging.info(
         "Pipeline executed %d images in %.3f seconds",
@@ -53,7 +53,6 @@ async def process_chunk_service(
         time.time() - start_time
     )
     start_time = time.time()
-
     for i, image in enumerate(images):
         data = process_image(
             image=image,

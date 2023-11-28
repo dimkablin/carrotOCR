@@ -27,7 +27,7 @@ async def websocket_endpoint(websocket: WebSocket, chunk_id: int, ocr_model_type
 
     req = ProcessChunkRequest(chunk_id=chunk_id, ocr_model_type=ocr_model_type)
 
-    result = await process_chunk(req)
+    result = process_chunk(req)
     await send_message_to_chunk(chunk_id, result)
 
     await websocket.close(code=1000, reason="Connection closed successfully")

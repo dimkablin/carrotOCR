@@ -27,52 +27,49 @@ pipeline_router = APIRouter()
 
 
 @pipeline_router.get('/get-chunk-id/', tags=["Pipeline"], response_model=int)
-async def get_chunk_id():
+def get_chunk_id():
     """Return chunk id"""
-    return await get_chunk_id_service()
+    return get_chunk_id_service()
 
 
 @pipeline_router.post("/upload-files/", tags=["Pipeline"], response_model=UploadFilesResponse)
-async def upload_files(chunk_id: int, files: List[UploadFile] = File(...)):
+def upload_files(chunk_id: int, files: List[UploadFile] = File(...)):
     """Uploading files to the server."""
-    return await upload_files_service(chunk_id, files)
-
+    return upload_files_service(chunk_id, files)
 
 @pipeline_router.post("/process-chunk/", tags=["Pipeline"], response_model=ProcessChunkResponse)
-async def process_chunk(req: ProcessChunkRequest):
+def process_chunk(req: ProcessChunkRequest):
     """ Process chunk of images function """
-    result = await process_chunk_service(
+    result = process_chunk_service(
         OCR_MODEL.get(req.ocr_model_type),
         FIND_TAGS_MODEL,
         req
     )
     return result
 
-
 @pipeline_router.post("/process-image/", tags=["Pipeline"], response_model=ProcessImageResponse)
-async def process_image(req: ProcessImageRequest):
+def process_image(req: ProcessImageRequest):
     """Rotate and process image function."""
-    return await process_image_service(OCR_MODEL.get(req.ocr_model_type), FIND_TAGS_MODEL, req)
-
+    return process_image_service(OCR_MODEL.get(req.ocr_model_type), FIND_TAGS_MODEL, req)
 
 @pipeline_router.post("/get-data-by-id/", tags=["Pipeline"], response_model=GetProcessedResponse)
-async def get_processed(req: GetProcessedRequest):
+def get_processed(req: GetProcessedRequest):
     """Return data from processed table by id."""
-    return await get_processed_service(req)
+    return get_processed_service(req)
 
 
 @pipeline_router.post("/delte-data-by-id/", tags=["Pipeline"], response_model=None)
-async def delete_data_by_id(uid: int):
+def delete_data_by_id(uid: int):
     """Delete data from the database by id."""
-    return await delete_data_by_id_service(uid)
+    return delete_data_by_id_service(uid)
 
 
 @pipeline_router.post("/add-filename/", tags=["Pipeline"], response_model=bool)
-async def add_filenames(req: AddFilenameRequest):
+def add_filenames(req: AddFilenameRequest):
     """Adding new names of files to Database"""
-    return await add_filenames_service(req)
+    return add_filenames_service(req)
 
 @pipeline_router.get('/archive-chunk/', tags=['Pipeline'], response_model=str)
-async def archive_chunk(chunk_id: int, filename: str):
+def archive_chunk(chunk_id: int, filename: str):
     """Archive chunk"""
-    return await archive_chunk_service(chunk_id, filename)
+    return archive_chunk_service(chunk_id, filename)

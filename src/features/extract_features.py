@@ -11,22 +11,22 @@ from src.features import build_features as pp
 from src.utils.utils import save_image
 
 
-async def read_image(path: str):
+def read_image(path: str):
     """ Async open an image
 
     :param path: A string object representing the path to the image file
     :return: An Image.Image object representing the output image.
     """
-    image = await asyncio.to_thread(cv2.imread, path)
+    image = cv2.imread(path)
     return image
 
-async def read_images(paths):
+def read_images(paths):
     """ Async read all images
 
     :param paths:
     :return:
     """
-    return await asyncio.gather(*[read_image(path) for path in paths])
+    return [read_image(path) for path in paths]
 
 
 def _pipeline_image(
@@ -44,7 +44,7 @@ def _pipeline_image(
     return image
 
 
-async def pipeline_image(
+def pipeline_image(
         image: np.ndarray,
         path: str,
         pipeline_params: Optional[PipelineParams] = None) -> np.ndarray:
@@ -78,13 +78,11 @@ async def pipeline_image(
     return image
 
 
-async def pipeline_images(images, paths):
+def pipeline_images(images, paths):
     """
     crop and rotate list of images
     """
-    return await asyncio.gather(
-        *[pipeline_image(image, path) for image, path in zip(images, paths)]
-    )
+    return [pipeline_image(image, path) for image, path in zip(images, paths)]
 
 
 def cropped(img: np.ndarray) -> np.ndarray:
