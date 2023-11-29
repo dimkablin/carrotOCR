@@ -269,6 +269,8 @@ def crop(image: np.ndarray,
         height = min(height, int(width/w2h_koeff))
 
 
+    print(height, width)
+
     image = cut(
         image,
         Cut(x1=0, y1=0, height=height, width=width)
