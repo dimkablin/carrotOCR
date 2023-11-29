@@ -45,6 +45,7 @@ def process_chunk_service(
 
     # read images and use model
     paths_to_images = [origin_paths+"/"+i for i in image_names]
+    
     images = asyncio.run(pp.read_images(paths_to_images))
     images = asyncio.run(pp.pipeline_images(images, edited_paths))
 
@@ -54,7 +55,6 @@ def process_chunk_service(
         time.time() - start_time
     )
     start_time = time.time()
-
     for i, image in enumerate(images):
         data = process_image(
             image=image,

@@ -3,7 +3,7 @@ import os
 from src.api.models.get_f import GetFRequest, GetFilesResponse
 
 
-async def get_files_service(req: GetFRequest) -> GetFilesResponse:
+def get_files_service(req: GetFRequest) -> GetFilesResponse:
     """get_files function controller"""
     if not os.path.exists(req.path):
         return GetFilesResponse(files=[])

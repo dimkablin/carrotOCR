@@ -4,7 +4,7 @@ from src.db.processed_manager import ProcessedManager
 from src.utils.utils import bboxes2rect
 
 
-async def get_processed_service(req: GetProcessedRequest) -> GetProcessedResponse:
+def get_processed_service(req: GetProcessedRequest) -> GetProcessedResponse:
     """get_processed service's main function ."""
 
     data = ProcessedManager.get_data_by_id(req.uid)

@@ -25,18 +25,18 @@ class FindTags:
             self.keys = list(data.keys())
             self.scores = {k:0 for k in range(len(self.values))}
 
-    async def add_perma_tag(self, tag: str) -> None:
+    def add_perma_tag(self, tag: str) -> None:
         """ Add tags to the database"""
         data = PermatagsStructure(
             tag=tag
         )
         return PermatagsManager.insert_data(data)
 
-    async def rem_perma_tag(self, tag: str) -> bool:
+    def rem_perma_tag(self, tag: str) -> bool:
         """ Remove tags from the database"""
         return PermatagsManager.delete_data_by_tag(tag)
 
-    async def get_perma_tags(self) -> list[str]:
+    def get_perma_tags(self) -> list[str]:
         """ Get tags from the database
         # Выведет:
         ["tag1","tag2",...,"tagN"]
