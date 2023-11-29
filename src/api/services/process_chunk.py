@@ -2,6 +2,7 @@
 """process-image function according to the MVC pattern."""
 import time
 import logging
+import asyncio
 
 from src.api.models.process_chunk import ProcessChunkRequest, ProcessChunkResponse
 from src.api.models.process_image import ProcessImageResponse
@@ -14,7 +15,7 @@ from src.models.find_tags import FindTags
 
 
 
-async def process_chunk_service(
+def process_chunk_service(
         ocr_model: OCR,
         tags_model: FindTags,
         req: ProcessChunkRequest) -> ProcessChunkResponse:
@@ -44,8 +45,8 @@ async def process_chunk_service(
 
     # read images and use model
     paths_to_images = [origin_paths+"/"+i for i in image_names]
-    images = await pp.read_images(paths_to_images)
-    images = await pp.pipeline_images(images, edited_paths)
+    images = asyncio.run(pp.read_images(paths_to_images))
+    images = asyncio.run(pp.pipeline_images(images, edited_paths))
 
     logging.info(
         "Pipeline executed %d images in %.3f seconds",
