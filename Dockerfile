@@ -3,6 +3,8 @@ FROM python:3.10.9
 WORKDIR /carrotocr
 COPY . /carrotocr
 
+RUN mkdir /carrotocr/LOCAL_DATA
+
 RUN apt-get update && apt-get upgrade -y
 
 RUN build-essential git python3 python3-pip wget \
