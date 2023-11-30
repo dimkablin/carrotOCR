@@ -91,4 +91,4 @@ target/
 .mypy_cache/
 /models/ocr/mmocr/dbnet/
 /models/ocr/mmocr/sar/
-/LOCAL_DATA/
+/LOCAL_DATA/*
