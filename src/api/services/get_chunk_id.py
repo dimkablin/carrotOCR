@@ -11,7 +11,7 @@ def create_chunk_id_dir(dirname: str) -> None:
         os.mkdir(get_abspath("LOCAL_DATA", dirname))
 
 
-async def get_chunk_id_service() -> int:
+def get_chunk_id_service() -> int:
     """Get the next chunk ID."""
     # Получение списка каталогов и фильтрация только числовых
     local_data_path = get_abspath("LOCAL_DATA")

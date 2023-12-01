@@ -15,7 +15,7 @@ def check_extension(filename) -> bool:
     return file_extension in EXTENSIONS
 
 
-async def upload_files_service(chunk_id, files) -> UploadFilesResponse:
+def upload_files_service(chunk_id, files) -> UploadFilesResponse:
     """Upload files to the server"""
     paths = []
     save_path = get_abspath("LOCAL_DATA", str(chunk_id), "original")

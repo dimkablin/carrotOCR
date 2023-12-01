@@ -6,7 +6,7 @@ from src.db.processed_manager import ProcessedManager
 from src.utils.utils import get_abspath
 
 
-async def delete_data_by_id_chunk_service(chunk_id: int) -> bool:
+def delete_data_by_id_chunk_service(chunk_id: int) -> bool:
     """ Clear data by chunk id
 
     Args:

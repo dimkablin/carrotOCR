@@ -10,7 +10,7 @@ from src.db.processed_manager import ProcessedManager
 from src.db.processed_structure import ProcessedStructure
 
 
-async def archive_chunk_service(chunk_id: int,
+def archive_chunk_service(chunk_id: int,
                                 filename: str = "DATA") -> Optional[str]:
     """archive_chunk_service function service."""
 

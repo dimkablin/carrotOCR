@@ -47,7 +47,7 @@ def process_image(
     return data
 
 
-async def process_image_service(
+def process_image_service(
         ocr_model: OCR,
         tags_model: FindTags,
         req: ProcessImageRequest) -> ProcessImageResponse:
@@ -70,8 +70,8 @@ async def process_image_service(
     edited_paths = get_abspath("LOCAL_DATA", str(data.chunk_id), "edited")
     origin_paths = get_abspath("LOCAL_DATA", str(data.chunk_id), "original")
 
-    image = await pp.read_image(origin_paths + "/" + data.old_filename)
-    image = await pp.pipeline_image(
+    image = pp.read_image(origin_paths + "/" + data.old_filename)
+    image = pp.pipeline_image(
         image,
         path=edited_paths + "/" + data.old_filename,
         pipeline_params=req.pipeline_params
