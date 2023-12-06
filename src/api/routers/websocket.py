@@ -4,6 +4,7 @@ import json
 import asyncio
 from fastapi import APIRouter, WebSocket
 from fastapi.encoders import jsonable_encoder
+from concurrent.futures import ThreadPoolExecutor
 
 from src.api.models.process_chunk import ProcessChunkRequest, ProcessChunkResponse
 from src.api.services.process_chunk import process_chunk_service
@@ -11,7 +12,6 @@ from src.api.services.process_chunk import process_chunk_service
 from src.models.ocr.ocr import OCRModelFactory
 from src.models.find_tags import FindTags
 
-from concurrent.futures import ThreadPoolExecutor
 executor = ThreadPoolExecutor(max_workers=5)
 
 OCR_MODEL = OCRModelFactory()
@@ -38,7 +38,12 @@ async def websocket_endpoint(websocket: WebSocket, chunk_id: int, ocr_model_type
     req = ProcessChunkRequest(chunk_id=chunk_id, ocr_model_type=ocr_model_type)
 
     loop = asyncio.get_event_loop()
-    result = await loop.run_in_executor(executor, process_chunk_service, OCR_MODEL.get(req.ocr_model_type), FIND_TAGS_MODEL, req)
+    result = await loop.run_in_executor(
+        executor, process_chunk_service,
+        OCR_MODEL.get(req.ocr_model_type),
+        FIND_TAGS_MODEL,
+        req
+    )
     # result = await asyncio.create_task(process_chunk_service(
     #     OCR_MODEL.get(req.ocr_model_type),
     #     FIND_TAGS_MODEL,
