@@ -1,7 +1,6 @@
 # pylint: disable=E
 """ SOME DOCUMENTATION """
 
-import asyncio
 from typing import Optional
 
 import cv2

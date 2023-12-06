@@ -2,7 +2,6 @@
 """process-image function according to the MVC pattern."""
 import time
 import logging
-import asyncio
 
 from src.api.models.process_chunk import ProcessChunkRequest, ProcessChunkResponse
 from src.api.models.process_image import ProcessImageResponse
