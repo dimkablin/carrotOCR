@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from src.api.middleware.middleware import BackendMiddleware
-from src.utils.utils import get_abspath
+from src.utils.utils import create_dir_if_not_exist, get_abspath
 from src.api.routers.connection_manager import ConnectionManager
 from src.api.routers.pipeline_router import pipeline_router
 from src.api.routers.data_router import data_router
@@ -21,6 +21,8 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s',
 )
 logging.info("Running server.")
+
+create_dir_if_not_exist(get_abspath("LOCAL_DATA"))
 
 app = FastAPI(
     docs_url="/api/docs",
