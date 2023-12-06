@@ -89,7 +89,9 @@ def process_image_service(
         chunk_id=data.chunk_id
     )
 
-    data.angle = req.pipeline_params.angle
+    # Get an angle from the BD and add it to the req
+    data.angle = ProcessedManager.get_data_by_id(req.uid).angle
+    data.angle += req.pipeline_params.angle
 
     for bbox in data.bboxes:
         for coord in range(0, 7, 2):
