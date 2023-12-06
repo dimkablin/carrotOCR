@@ -81,6 +81,3 @@ result2show(image, outputs[0])
 ```
 
 <img src="notebooks/references/output1.png" alt="#">
-
-uvicorn src.api.main:app --reload --host 127.0.0.1 --port 8000
-nohup uvicorn src.api.main:app --reload --host 127.0.0.1 --port 8000 &
