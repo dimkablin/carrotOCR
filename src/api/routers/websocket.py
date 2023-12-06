@@ -2,9 +2,10 @@
 
 import json
 import asyncio
+from concurrent.futures import ThreadPoolExecutor
+
 from fastapi import APIRouter, WebSocket
 from fastapi.encoders import jsonable_encoder
-from concurrent.futures import ThreadPoolExecutor
 
 from src.api.models.process_chunk import ProcessChunkRequest, ProcessChunkResponse
 from src.api.services.process_chunk import process_chunk_service
