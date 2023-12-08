@@ -12,8 +12,8 @@ class EasyOCRInited(OCR):
         self.model = easyocr.Reader(
             self.languages,
             gpu=self.use_cuda,
-            model_storage_directory='./src/models/ocr/easyOCR_custom/model',
-            user_network_directory='./src/models/ocr/easyOCR_custom/user_network',
+            model_storage_directory='./models/ocr/easyOCR/model',
+            user_network_directory='./models/ocr/easyOCR/user_network',
             download_enabled=False,
             recog_network='cyrillic_g2'
         )
@@ -54,8 +54,8 @@ class EasyOCRInitedCustom(OCR):
         self.model = easyocr.Reader(
             self.languages,
             gpu=self.use_cuda,
-            model_storage_directory='./src/models/ocr/easyOCR_custom/model',
-            user_network_directory='./src/models/ocr/easyOCR_custom/user_network',
+            model_storage_directory='./models/ocr/easyOCR/model',
+            user_network_directory='./models/ocr/easyOCR/user_network',
             download_enabled=False,
             recog_network='ru_custom'
         )
