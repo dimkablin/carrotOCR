@@ -3,12 +3,13 @@ from typing import Any
 import easyocr
 
 from src.models.ocr.ocr_interface import OCR
+from src.env import USE_CUDA
 
 class EasyOCRInited(OCR):
     """ Initialized EasyOCR model """
     def __init__(self):
         self.languages = ['ru']
-        self.use_cuda = False
+        self.use_cuda = USE_CUDA
         self.model = easyocr.Reader(
             self.languages,
             gpu=self.use_cuda,
@@ -50,7 +51,7 @@ class EasyOCRInitedCustom(OCR):
     """ Initialized EasyOCR model """
     def __init__(self):
         self.languages = ['ru']
-        self.use_cuda = False
+        self.use_cuda = USE_CUDA
         self.model = easyocr.Reader(
             self.languages,
             gpu=self.use_cuda,
