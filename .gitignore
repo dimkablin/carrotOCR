@@ -92,3 +92,4 @@ target/
 /models/ocr/mmocr/dbnet/
 /models/ocr/mmocr/sar/
 /LOCAL_DATA/*
+carrotocr/

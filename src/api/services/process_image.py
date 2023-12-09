@@ -92,6 +92,7 @@ def process_image_service(
     # Get an angle from the BD and add it to the req
     data.angle = ProcessedManager.get_data_by_id(req.uid).angle
     data.angle += req.pipeline_params.angle
+    data.angle %= 360
 
     for bbox in data.bboxes:
         for coord in range(0, 7, 2):

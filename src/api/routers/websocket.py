@@ -40,7 +40,8 @@ async def websocket_endpoint(websocket: WebSocket, chunk_id: int, ocr_model_type
 
     loop = asyncio.get_event_loop()
     result = await loop.run_in_executor(
-        executor, process_chunk_service,
+        executor,
+        process_chunk_service,
         OCR_MODEL.get(req.ocr_model_type),
         FIND_TAGS_MODEL,
         req
