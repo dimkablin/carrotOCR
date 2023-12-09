@@ -3,17 +3,18 @@ from typing import Any
 import easyocr
 
 from src.models.ocr.ocr_interface import OCR
+from src.env import USE_CUDA
 
 class EasyOCRInited(OCR):
     """ Initialized EasyOCR model """
     def __init__(self):
         self.languages = ['ru']
-        self.use_cuda = False
+        self.use_cuda = USE_CUDA
         self.model = easyocr.Reader(
             self.languages,
             gpu=self.use_cuda,
-            model_storage_directory='./src/models/ocr/easyOCR_custom/model',
-            user_network_directory='./src/models/ocr/easyOCR_custom/user_network',
+            model_storage_directory='./models/ocr/easyOCR/model',
+            user_network_directory='./models/ocr/easyOCR/user_network',
             download_enabled=False,
             recog_network='cyrillic_g2'
         )
@@ -50,12 +51,12 @@ class EasyOCRInitedCustom(OCR):
     """ Initialized EasyOCR model """
     def __init__(self):
         self.languages = ['ru']
-        self.use_cuda = False
+        self.use_cuda = USE_CUDA
         self.model = easyocr.Reader(
             self.languages,
             gpu=self.use_cuda,
-            model_storage_directory='./src/models/ocr/easyOCR_custom/model',
-            user_network_directory='./src/models/ocr/easyOCR_custom/user_network',
+            model_storage_directory='./models/ocr/easyOCR/model',
+            user_network_directory='./models/ocr/easyOCR/user_network',
             download_enabled=False,
             recog_network='ru_custom'
         )

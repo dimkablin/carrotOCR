@@ -12,7 +12,6 @@ python-multipart~=0.0.6
 python-dotenv~=1.0.0
 numpy==1.24.4
 tqdm
-pytesseract~=0.3.10
 easyocr~=1.7.1
 opencv-python~=4.8.0.76
 Pillow~=10.0.0
@@ -28,3 +27,4 @@ Levenshtein~=0.22.0
 starlette~=0.27.0
 websockets
 albumentations==1.3.1
+pytesseract
