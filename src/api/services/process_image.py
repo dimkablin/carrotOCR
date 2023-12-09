@@ -9,8 +9,7 @@ from src.db.processed_structure import ProcessedStructure
 from src.models.find_tags import FindTags
 from src.models.ocr.ocr_interface import OCR
 import src.features.extract_features as pp
-from src.utils.utils import get_abspath
-
+from src.utils.utils import get_abspath, read_rotate_save
 
 
 def process_image(
@@ -93,6 +92,12 @@ def process_image_service(
     data.angle = ProcessedManager.get_data_by_id(req.uid).angle
     data.angle += req.pipeline_params.angle
     data.angle %= 360
+
+    # rotate original image
+    read_rotate_save(
+        path=origin_paths + "/" + data.old_filename,
+        angle=req.pipeline_params.angle
+    )
 
     for bbox in data.bboxes:
         for coord in range(0, 7, 2):
