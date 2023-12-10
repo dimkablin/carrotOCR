@@ -9,6 +9,7 @@ import numpy as np
 
 from src.api.models.get_processed import TBox
 from src.env import project_dir
+from src.features.build_features import rotate_image
 
 
 def get_abspath(*path):
@@ -60,3 +61,14 @@ def save_images(images: List[np.ndarray], image_names: List[str], path: str) -> 
 
     for i, image in enumerate(images):
         save_image(path + "/" + image_names[i], image)
+
+def read_rotate_save(path: str, angle: int) -> None:
+    """Read, rotate and save img
+
+    Args:
+        path (str): path to the image
+        angle (int): angle to rotate
+    """
+    img = cv2.imread(path)
+    img = rotate_image(img, angle)
+    save_image(path, img)
