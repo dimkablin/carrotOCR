@@ -70,5 +70,5 @@ def read_rotate_save(path: str, angle: int) -> None:
         angle (int): angle to rotate
     """
     img = cv2.imread(path)
-    rotate_image(img, angle)
+    img = rotate_image(img, angle)
     save_image(path, img)
