@@ -94,7 +94,7 @@ def process_image_service(
     )
 
     # Get an angle from the BD and add it to the req
-    data.angle = angle
+    data.angle = req.pipeline_params.angle
 
     # rotate original image
     read_rotate_save(
