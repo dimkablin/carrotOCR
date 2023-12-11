@@ -7,7 +7,6 @@ Project Organization
 ------------
 
     ├── LICENSE
-    ├── Makefile                <- Makefile with commands like `make data` or `make train`
     ├── README.md               <- The top-level README for developers using this project.
     │
     ├── docs                    <- A default Sphinx project; see sphinx-doc.org for details
@@ -25,26 +24,31 @@ Project Organization
     │   │   ├── models          <- Fast API models.
     │   │   └── main.py
     │   │
-    │   ├── db                  <- Scripts that using for connect to the database, 'processed' table manager.
+    │   ├── db                  <- Scripts that using for connect to the database, 'processed' and 'permatags' table manager.
     │   │   ├── database_manager.py
     │   │   ├── processed_structure.py
-    │   │   └── processed_manager.py
+    │   │   ├── processed_manager.py
+    │   │   ├── permatags_manager.py
+    │   │   └── permatags_manager.py
     │   │
     │   │
     │   ├── features            <- Scripts to turn raw data into features for modeling
-    │   │   └── build_features.py
+    │   │   ├── build_features.py
+    │   │   └── extract_features.py
     │   │
     │   ├── models              <- Scripts with loading trained models.
     │   │   ├── ocr             <- Factory Method pattern.
-    │   │   |   ├── ocr.py      
-    │   │   |   ├── mmocr.py    
+    │   │   |   ├── ocr.py       
     │   │   |   ├── easyocr.py  
     │   │   |   └── pytesseract.py 
     │   │   |   
-    │   │   └── zero_shot_classification.py
+    │   │   └── find_tags.py
     │   │
-    │   └── visualization       <- Scripts to create exploratory and results oriented visualizations
-    │       └── visualize.py
+    │   ├── visualization       <- Scripts to create exploratory and results oriented visualizations
+    │   │   └── visualize.py
+    │   │
+    │   └── utils               <- Scripts that contains some utils.
+    │       └── utils.py
     │
     ├── tests                   <- Unittest for each class in src. 
     │   └── ...
@@ -68,12 +72,12 @@ Now you can open locally this site http://127.0.0.1:8000/docs.
 ## Example of usage
 
 ```python
-import mmcv
+import cv2
 from src.visualization.visualize import *
 from src.models.ocr.ocr import OCRModelFactory
 
 url = 'data/raw/example1.jpg'
-image = mmcv.imread(url)
+image = cv2.imread(url)
 
 model = OCRModelFactory.create("pytesseract")
 outputs = model([image])
