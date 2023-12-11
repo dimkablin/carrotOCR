@@ -65,6 +65,11 @@ def process_image_service(
     # get data from database
     data = ProcessedManager.get_data_by_id(req.uid)
 
+    # update angle in pipeline
+    angle = data.angle
+    req.pipeline_params.angle += angle
+    req.pipeline_params.angle %= 360
+
     # read images and run general_pipeline
     edited_paths = get_abspath("LOCAL_DATA", str(data.chunk_id), "edited")
     origin_paths = get_abspath("LOCAL_DATA", str(data.chunk_id), "original")
@@ -89,9 +94,7 @@ def process_image_service(
     )
 
     # Get an angle from the BD and add it to the req
-    data.angle = ProcessedManager.get_data_by_id(req.uid).angle
-    data.angle += req.pipeline_params.angle
-    data.angle %= 360
+    data.angle = req.pipeline_params.angle
 
     # rotate original image
     read_rotate_save(
