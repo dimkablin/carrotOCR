@@ -62,7 +62,7 @@ def save_images(images: List[np.ndarray], image_names: List[str], path: str) -> 
     for i, image in enumerate(images):
         save_image(path + "/" + image_names[i], image)
 
-def read_rotate_save(path: str, angle: int) -> None:
+def read_rotate_save(path: str, angle: int, save_path: str = None) -> None:
     """Read, rotate and save img
 
     Args:
@@ -71,4 +71,8 @@ def read_rotate_save(path: str, angle: int) -> None:
     """
     img = cv2.imread(path)
     img = rotate_image(img, angle)
-    save_image(path, img)
+
+    if save_path is None:
+        save_image(path, img)
+    else:
+        save_image(save_path, img)

@@ -96,7 +96,8 @@ def process_image_service(
     # rotate original image
     read_rotate_save(
         path=origin_paths + "/" + data.old_filename,
-        angle=req.pipeline_params.angle
+        save_path=edited_paths + "/" + data.old_filename,
+        angle=data.angle
     )
 
     for bbox in data.bboxes:
