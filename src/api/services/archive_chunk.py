@@ -2,6 +2,7 @@
 
 from typing import Optional
 import warnings
+from urllib.parse import unquote
 import zipfile
 import os
 from src.env import SERVER_PATH
@@ -10,9 +11,11 @@ from src.db.processed_manager import ProcessedManager
 from src.db.processed_structure import ProcessedStructure
 
 
-def archive_chunk_service(chunk_id: int,
-                                filename: str = "DATA") -> Optional[str]:
+def archive_chunk_service(
+        chunk_id: int,
+        filename: str = "DATA") -> Optional[str]:
     """archive_chunk_service function service."""
+    filename = unquote(filename)
 
     path = get_abspath("LOCAL_DATA", str(chunk_id), "original")
     archive_path = get_abspath("LOCAL_DATA", str(chunk_id), filename + ".zip")
