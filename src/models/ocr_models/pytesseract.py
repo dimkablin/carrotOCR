@@ -2,7 +2,7 @@
 from typing import Any
 from pytesseract import Output
 import pytesseract
-from src.models.ocr.ocr_interface import OCR
+from src.models.ocr_models.ocr_interface import OCR
 
 class PyTesseractInited(OCR):
     """ Initialized PyTesseract model """

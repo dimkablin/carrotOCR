@@ -8,7 +8,7 @@ from src.api.models.process_image import ProcessImageResponse
 from src.api.services.process_image import process_image
 from src.db.processed_manager import ProcessedManager
 import src.features.extract_features as pp
-from src.models.ocr.ocr_interface import OCR
+from src.models.ocr_models.ocr_interface import OCR
 from src.utils.utils import create_dir_if_not_exist, get_abspath, read_paths
 from src.models.find_tags import FindTags
 

@@ -28,6 +28,7 @@ class PermatagsManager:
         create_table_query = f"""
             CREATE TABLE IF NOT EXISTS {PermatagsManager.table_name} (
                 id SERIAL PRIMARY KEY,
+                
                 tag TEXT NOT NULL
             );
         """

@@ -7,7 +7,7 @@ from src.api.models.process_image import ProcessImageRequest, ProcessImageRespon
 from src.db.processed_manager import ProcessedManager
 from src.db.processed_structure import ProcessedStructure
 from src.models.find_tags import FindTags
-from src.models.ocr.ocr_interface import OCR
+from src.models.ocr_models.ocr_interface import OCR
 import src.features.extract_features as pp
 from src.utils.utils import get_abspath, read_rotate_save
 

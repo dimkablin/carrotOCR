@@ -10,7 +10,7 @@ from fastapi.encoders import jsonable_encoder
 from src.api.models.process_chunk import ProcessChunkRequest, ProcessChunkResponse
 from src.api.services.process_chunk import process_chunk_service
 
-from src.models.ocr.ocr import OCRModelFactory
+from src.models.ocr import OCRModelFactory
 from src.models.find_tags import FindTags
 
 executor = ThreadPoolExecutor(max_workers=5)

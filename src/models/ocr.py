@@ -1,16 +1,18 @@
 """ Factory Method - Design Pattern """
-from src.models.ocr.easyocr import EasyOCRInited
-from src.models.ocr.easyocr import EasyOCRInitedCustom
-from src.models.ocr.pytesseract import PyTesseractInited
+from src.models.ocr_models.easyocr import EasyOCRInited
+from src.models.ocr_models.easyocr_custom import EasyOCRInitedCustom
+from src.models.ocr_models.pytesseract import PyTesseractInited
+from src.models.ocr_models.none_ocr import NoneOCRInited
 
 
 class OCRModelFactory:
     """ Factory Method - Design Pattern implementation """
 
     MODEL_MAPPING = {
+        NoneOCRInited.get_model_type(): NoneOCRInited(),
         PyTesseractInited.get_model_type(): PyTesseractInited(),
         EasyOCRInited.get_model_type(): EasyOCRInited(),
-        EasyOCRInitedCustom.get_model_type(): EasyOCRInitedCustom(),
+        EasyOCRInitedCustom.get_model_type(): EasyOCRInitedCustom()
     }
 
     @staticmethod
