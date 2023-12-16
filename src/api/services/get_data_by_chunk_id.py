@@ -3,7 +3,7 @@
 
 from typing import Any
 from src.db.processed_manager import ProcessedManager
-from src.db.processed_structure import ProcessedStructure
+from src.db.structures.processed_structure import ProcessedStructure
 
 
 def get_data_by_chunk_id_service(chunk_id: int) -> list[Any]:

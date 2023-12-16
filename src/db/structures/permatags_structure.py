@@ -6,6 +6,7 @@ class PermatagsStructure:
     """Data structure for each row for 'permatags' table."""
     uid: int = None
     tag: str = None
+    group_id: int = None
 
     def __init__(self, **kwargs):
         for attr_name in dir(self):
@@ -17,6 +18,7 @@ class PermatagsStructure:
         if not len(raw) == 0:
             self.uid = raw[0]
             self.tag = raw[1]
+            self.group_id = raw[2]
             return self
         return None
 

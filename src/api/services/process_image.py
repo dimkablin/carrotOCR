@@ -5,9 +5,9 @@ import logging
 import numpy as np
 from src.api.models.process_image import ProcessImageRequest, ProcessImageResponse
 from src.db.processed_manager import ProcessedManager
-from src.db.processed_structure import ProcessedStructure
+from src.db.structures.processed_structure import ProcessedStructure
 from src.models.find_tags import FindTags
-from src.models.ocr.ocr_interface import OCR
+from src.models.ocr_models.ocr_interface import OCR
 import src.features.extract_features as pp
 from src.utils.utils import get_abspath, read_rotate_save
 

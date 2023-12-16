@@ -18,7 +18,7 @@ from src.api.models.add_filenames import AddFilenameRequest
 from src.api.models.upload_files import UploadFilesResponse
 from src.api.models.process_chunk import ProcessChunkRequest, ProcessChunkResponse
 
-from src.models.ocr.ocr import OCRModelFactory
+from src.models.ocr import OCRModelFactory
 from src.models.find_tags import FindTags
 
 OCR_MODEL = OCRModelFactory()

@@ -8,7 +8,7 @@ import os
 from src.env import SERVER_PATH
 from src.utils.utils import get_abspath
 from src.db.processed_manager import ProcessedManager
-from src.db.processed_structure import ProcessedStructure
+from src.db.structures.processed_structure import ProcessedStructure
 
 
 def archive_chunk_service(

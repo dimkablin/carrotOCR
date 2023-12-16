@@ -4,7 +4,7 @@ from typing import Optional, List, Union
 from psycopg2 import extensions
 
 from src.db.database_manager import DatabaseManager
-from src.db.processed_structure import ProcessedStructure
+from src.db.structures.processed_structure import ProcessedStructure
 from src.env import DB_USER, DB_PASSWORD, DB_HOST, DB_NAME, DB_PORT
 
 

@@ -4,7 +4,7 @@ from typing import Optional
 from psycopg2 import extensions
 
 from src.db.database_manager import DatabaseManager
-from src.db.permatags_structure import PermatagsStructure
+from src.db.structures.permatags_structure import PermatagsStructure
 from src.env import DB_USER, DB_PASSWORD, DB_HOST, DB_NAME, DB_PORT
 
 class PermatagsManager:
@@ -28,6 +28,7 @@ class PermatagsManager:
         create_table_query = f"""
             CREATE TABLE IF NOT EXISTS {PermatagsManager.table_name} (
                 id SERIAL PRIMARY KEY,
+                group_id INTEGER NOT NULL,
                 tag TEXT NOT NULL
             );
         """
@@ -47,11 +48,11 @@ class PermatagsManager:
             #Если не нашли в бд тэг
             if not db_manager.execute_query(check_query, check_data, fetch=True):
                 query = f"""
-                    INSERT INTO {PermatagsManager.table_name} (tag)
-                    VALUES (%s)
+                    INSERT INTO {PermatagsManager.table_name} (group_id, tag)
+                    VALUES (%s, %s)
                     RETURNING id
                 """
-                data = (raw.tag,)
+                data = (raw.group_id, raw.tag)
                 return db_manager.execute_query(query, data, fetch=True)[0][0]
 
     @staticmethod
@@ -72,11 +73,11 @@ class PermatagsManager:
             return db_manager.execute_query(query, data)
 
     @staticmethod
-    def delete_data_by_tag(tag: str) -> bool:
+    def delete_data_by_tag(tag: str, group_id: int) -> bool:
         """Delete data from the database by id."""
         with DatabaseManager(**PermatagsManager.db_config) as db_manager:
-            query = f"DELETE FROM {PermatagsManager.table_name} WHERE tag = %s"
-            data = (tag,)
+            query = f"DELETE FROM {PermatagsManager.table_name} WHERE tag = %s AND group_id=%s"
+            data = (tag,group_id,)
             return db_manager.execute_query(query, data)
 
     @staticmethod
@@ -85,6 +86,16 @@ class PermatagsManager:
         with DatabaseManager(**PermatagsManager.db_config) as db_manager:
             query = f"""TRUNCATE TABLE {PermatagsManager.table_name} RESTART IDENTITY;"""
             return db_manager.execute_query(query)
+
+    @staticmethod
+    def get_data_by_group(group: int) -> Optional[tuple]:
+        """Get all data from db"""
+        with DatabaseManager(**PermatagsManager.db_config) as db_manager:
+            query = f"""SELECT tag FROM {PermatagsManager.table_name} WHERE group=%s"""
+            data=(group,)
+            result = db_manager.execute_query(query, data, fetch=True)
+            print(result)
+            return None
 
     @staticmethod
     def get_all_data() -> Optional[tuple]:
