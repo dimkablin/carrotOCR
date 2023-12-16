@@ -3,7 +3,7 @@ import unittest
 from typing import List
 
 from src.db.processed_manager import ProcessedManager
-from src.db.processed_structure import ProcessedStructure
+from src.db.structures.processed_structure import ProcessedStructure
 
 
 class TestDataProcessor(unittest.TestCase):
@@ -66,6 +66,9 @@ class TestDataProcessor(unittest.TestCase):
         """Unittest for get_all_data function."""
         result = ProcessedManager.get_all_data()
         self.assertIsInstance(result, List)
+
+    def test_7(self):
+        """Unittest for get_data_by_group"""
 
 
 class TestSuit(unittest.TestSuite):

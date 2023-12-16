@@ -1,11 +1,11 @@
 # pylint: disable=R
-"""Structure of permatags table."""
+"""Structure of grouptags table."""
 from typing import Optional
 
-class PermatagsStructure:
+class GrouptagsStructure:
     """Data structure for each row for 'permatags' table."""
     uid: int = None
-    tag: str = None
+    name: str = None
 
     def __init__(self, **kwargs):
         for attr_name in dir(self):
@@ -16,7 +16,7 @@ class PermatagsStructure:
         """Convert data from db to template"""
         if not len(raw) == 0:
             self.uid = raw[0]
-            self.tag = raw[1]
+            self.name = raw[1]
             return self
         return None
 

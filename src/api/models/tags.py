@@ -9,3 +9,9 @@ class GetTagsResponse(BaseModel):
 class RemoveTagsResponse(BaseModel):
     """Remove Tags function response."""
     response: bool
+
+
+class GrouptagsResponse(BaseModel):
+    """Get names of group of tags"""
+    uid: int
+    name: str
