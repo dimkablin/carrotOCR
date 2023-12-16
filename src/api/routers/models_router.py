@@ -36,9 +36,9 @@ def rm_permatags(tag: str):
 
 
 @ml_model_router.post("/set-permatag/", tags=["Tags"])
-def add_permatag(tag:str, group: str):
+def add_permatag(tag:str, group_id: int):
     """Add perma tag to database. will return int"""
-    data = PermatagsStructure(tag=tag, group=group)
+    data = PermatagsStructure(tag=tag, group_id=group_id)
     return PermatagsManager.insert_data(data)
 
 
@@ -46,3 +46,4 @@ def add_permatag(tag:str, group: str):
 def get_grouptags() -> list[GrouptagsResponse]:
     """Return group of tags"""
     data = GrouptagsManager.get_all_data()
+    return data

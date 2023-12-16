@@ -2,6 +2,7 @@
 """grouptags table manager"""
 from typing import Optional
 from psycopg2 import extensions
+from src.api.models.tags import GrouptagsResponse
 
 from src.db.database_manager import DatabaseManager
 from src.db.structures.grouptags_structure import GrouptagsStructure
@@ -28,27 +29,39 @@ class GrouptagsManager:
         create_table_query = f"""
             CREATE TABLE IF NOT EXISTS {GrouptagsManager.table_name} (
                 id SERIAL PRIMARY KEY,
-                name INTEGER NOT NULL
+                name TEXT NOT NULL
             );
         """
+
+        init_values = {
+            GrouptagsStructure(name="Масштаб"),
+            GrouptagsStructure(name="Что-то второе")
+        }
 
         with DatabaseManager(**GrouptagsManager.db_config) as db_manager:
             if db_manager.connect():
                 db_manager.connection.set_isolation_level(extensions.ISOLATION_LEVEL_AUTOCOMMIT)
-                return db_manager.execute_query(create_table_query)
+
+                # list of results of queries: [True, False, True]
+                result = [db_manager.execute_query(create_table_query)]
+                for i in init_values:
+                    result.append(GrouptagsManager.insert_data(i))
+
+                # return logical AND
+                return all(result)
+
         return None
 
     @staticmethod
-    def insert_data(raw: GrouptagsStructure) -> Optional[int]:
+    def insert_data(raw: GrouptagsStructure) -> bool:
         """Insert data into the database."""
         with DatabaseManager(**GrouptagsManager.db_config) as db_manager:
             query = f"""
                 INSERT INTO {GrouptagsManager.table_name} (name)
                 VALUES (%s)
-                RETURNING id
             """
             data = (raw.name,)
-            return db_manager.execute_query(query, data, fetch=True)[0][0]
+            return db_manager.execute_query(query, data)
 
     @staticmethod
     def get_data_by_id(uid: int) -> GrouptagsStructure:
@@ -75,12 +88,15 @@ class GrouptagsManager:
             return db_manager.execute_query(query)
 
     @staticmethod
-    def get_all_data() -> Optional[tuple]:
+    def get_all_data() -> list[GrouptagsResponse]:
         """Get all data from db"""
         with DatabaseManager(**GrouptagsManager.db_config) as db_manager:
-            query = f"""SELECT tag FROM {GrouptagsManager.table_name}"""
-            data = [
-                GrouptagsStructure().from_db(raw=i)
-                for i in db_manager.execute_query(query, fetch=True)
-            ]
+            query = f"""SELECT * FROM {GrouptagsManager.table_name}"""
+            data = db_manager.execute_query(query, fetch=True)
+
+            if data is not bool:
+                data = [
+                    GrouptagsStructure().from_db(raw=i)
+                    for i in data
+                ]
             return data
