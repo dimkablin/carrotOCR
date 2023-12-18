@@ -43,8 +43,9 @@ class PermatagsManager:
     def insert_data(raw: PermatagsStructure) -> Optional[int]:
         """Insert data into the database."""
         with DatabaseManager(**PermatagsManager.db_config) as db_manager:
-            check_query = f"SELECT * FROM {PermatagsManager.table_name} WHERE tag = %s"
-            check_data = (raw.tag,)
+            check_query = f"SELECT * FROM {PermatagsManager.table_name} \
+                WHERE tag = %s AND group_id = %s"
+            check_data = (raw.tag, raw.group_id)
             #Если не нашли в бд тэг
             if not db_manager.execute_query(check_query, check_data, fetch=True):
                 query = f"""
@@ -88,11 +89,11 @@ class PermatagsManager:
             return db_manager.execute_query(query)
 
     @staticmethod
-    def get_data_by_group(group: int) -> Optional[tuple]:
+    def get_data_by_group(group_id: int) -> Optional[tuple]:
         """Get all data from db"""
         with DatabaseManager(**PermatagsManager.db_config) as db_manager:
-            query = f"""SELECT tag FROM {PermatagsManager.table_name} WHERE group=%s"""
-            data=(group,)
+            query = f"""SELECT tag FROM {PermatagsManager.table_name} WHERE group_id=%s"""
+            data=(group_id,)
             result = db_manager.execute_query(query, data, fetch=True)
             print(result)
             return None
