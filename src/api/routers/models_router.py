@@ -15,11 +15,13 @@ def get_ocr_models():
     """Return OCR Models ids and its names."""
     return get_ocr_models_service()
 
+
 @ml_model_router.get("/get-permatags/", tags=["Tags"], response_model=GetTagsResponse)
 def get_permatags():
     """Return perma tags from database."""
     tags = PermatagsManager.get_all_data()
     return GetTagsResponse(tags=tags)
+
 
 @ml_model_router.get("/get-permatags/", tags=["Tags"], response_model=GetTagsResponse)
 def get_permatags_by_group(group: int):
@@ -29,9 +31,16 @@ def get_permatags_by_group(group: int):
 
 
 @ml_model_router.get("/rm-permatag/", tags=["Tags"], response_model=RemoveTagsResponse)
-def rm_permatags(tag: str):
+def rm_permatags(tag: str, group_id: int):
     """Remove perma tag from database."""
-    data = PermatagsManager.delete_data_by_tag(tag)
+    data = PermatagsManager.delete_data_by_tag(tag, group_id)
+    return RemoveTagsResponse(response=data)
+
+
+@ml_model_router.get("/rm-permatag/", tags=["Tags"], response_model=RemoveTagsResponse)
+def rm_permatags_by_id(uid: int):
+    """Remove perma tag from database."""
+    data = PermatagsManager.delete_data_by_id(uid)
     return RemoveTagsResponse(response=data)
 
 
