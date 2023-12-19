@@ -1,6 +1,5 @@
 # pylint: disable=R,E
 """grouptags table manager"""
-from typing import Optional
 from psycopg2 import extensions
 from src.api.models.tags import GrouptagsResponse
 
@@ -34,8 +33,8 @@ class GrouptagsManager:
         """
 
         init_values = {
-            GrouptagsStructure(name="Масштаб"),
-            GrouptagsStructure(name="Что-то второе")
+            GrouptagsStructure(name="Название"),
+            GrouptagsStructure(name="Масштаб")
         }
 
         with DatabaseManager(**GrouptagsManager.db_config) as db_manager:

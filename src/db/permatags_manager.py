@@ -2,6 +2,7 @@
 """permatags table manager"""
 from typing import Optional
 from psycopg2 import extensions
+from src.api.models.tags import GetPermatagsResponse, PermatagsResponse
 
 from src.db.database_manager import DatabaseManager
 from src.db.structures.permatags_structure import PermatagsStructure
@@ -43,8 +44,9 @@ class PermatagsManager:
     def insert_data(raw: PermatagsStructure) -> Optional[int]:
         """Insert data into the database."""
         with DatabaseManager(**PermatagsManager.db_config) as db_manager:
-            check_query = f"SELECT * FROM {PermatagsManager.table_name} WHERE tag = %s"
-            check_data = (raw.tag,)
+            check_query = f"SELECT * FROM {PermatagsManager.table_name} \
+                WHERE tag = %s AND group_id = %s"
+            check_data = (raw.tag, raw.group_id)
             #Если не нашли в бд тэг
             if not db_manager.execute_query(check_query, check_data, fetch=True):
                 query = f"""
@@ -88,18 +90,33 @@ class PermatagsManager:
             return db_manager.execute_query(query)
 
     @staticmethod
-    def get_data_by_group(group: int) -> Optional[tuple]:
+    def convert_raw_tags(result: list) -> GetPermatagsResponse:
+        """Convert query detch result to GetPermatagsResponse"""
+        result = [
+                PermatagsResponse(
+                    uid=i[0],
+                    group_id=i[1],
+                    tag=i[2]
+                )
+                for i in result
+            ]
+        return GetPermatagsResponse(tags=result)
+
+    @staticmethod
+    def get_data_by_group(group_id: int) -> Optional[tuple]:
         """Get all data from db"""
         with DatabaseManager(**PermatagsManager.db_config) as db_manager:
-            query = f"""SELECT tag FROM {PermatagsManager.table_name} WHERE group=%s"""
-            data=(group,)
+            query = f"""SELECT * FROM {PermatagsManager.table_name} WHERE group_id=%s"""
+            data=(group_id,)
             result = db_manager.execute_query(query, data, fetch=True)
-            print(result)
-            return None
+
+            return PermatagsManager.convert_raw_tags(result)
 
     @staticmethod
     def get_all_data() -> Optional[tuple]:
         """Get all data from db"""
         with DatabaseManager(**PermatagsManager.db_config) as db_manager:
-            query = f"""SELECT tag FROM {PermatagsManager.table_name}"""
-            return [i[0] for i in db_manager.execute_query(query, fetch=True)]
+            query = f"""SELECT * FROM {PermatagsManager.table_name}"""
+            result = db_manager.execute_query(query, fetch=True)
+
+            return PermatagsManager.convert_raw_tags(result)
