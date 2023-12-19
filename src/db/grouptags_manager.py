@@ -33,8 +33,8 @@ class GrouptagsManager:
         """
 
         init_values = {
-            GrouptagsStructure(name="Масштаб"),
-            GrouptagsStructure(name="Что-то второе")
+            GrouptagsStructure(name="Название"),
+            GrouptagsStructure(name="Масштаб")
         }
 
         with DatabaseManager(**GrouptagsManager.db_config) as db_manager:
