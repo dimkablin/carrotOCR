@@ -1,7 +1,7 @@
 #pylint: disable=E
 """ Connection to the Database of Carrot OCR project"""
+from typing import Any
 import psycopg2
-
 
 class DatabaseManager:
     """Database Manager for Carrot OCR project"""
@@ -34,7 +34,7 @@ class DatabaseManager:
             print("Error while connecting to PostgreSQL", error)
             return False
 
-    def execute_query(self, query, data=None, fetch=False):
+    def execute_query(self, query, data=None, fetch=False) -> Any:
         """
         Execute a SQL query.
 

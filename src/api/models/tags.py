@@ -2,9 +2,16 @@
 """Upload files function models."""
 from pydantic import BaseModel
 
-class GetTagsResponse(BaseModel):
-    """Get Tags function response."""
-    tags: list[str]
+class PermatagsResponse(BaseModel):
+    """Data structure for each row for 'permatags' table."""
+    uid: int
+    tag: str
+    group_id: int
+
+class GetPermatagsResponse(BaseModel):
+    """List of permatags"""
+    tags: list[PermatagsResponse]
+
 
 class RemoveTagsResponse(BaseModel):
     """Remove Tags function response."""

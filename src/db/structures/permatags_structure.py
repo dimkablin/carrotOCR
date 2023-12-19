@@ -2,7 +2,7 @@
 """Structure of permatags table."""
 from typing import Optional
 
-class PermatagsStructure:
+class PermatagsStructure():
     """Data structure for each row for 'permatags' table."""
     uid: int = None
     tag: str = None

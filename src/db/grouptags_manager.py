@@ -1,6 +1,5 @@
 # pylint: disable=R,E
 """grouptags table manager"""
-from typing import Optional
 from psycopg2 import extensions
 from src.api.models.tags import GrouptagsResponse
 
