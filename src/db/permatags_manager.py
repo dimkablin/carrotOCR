@@ -95,8 +95,8 @@ class PermatagsManager:
         result = [
                 PermatagsResponse(
                     uid=i[0],
-                    tag=i[1],
-                    group_id=i[2]
+                    group_id=i[1],
+                    tag=i[2]
                 )
                 for i in result
             ]

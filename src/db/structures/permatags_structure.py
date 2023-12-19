@@ -17,8 +17,8 @@ class PermatagsStructure():
         """Convert data from db to template"""
         if not len(raw) == 0:
             self.uid = raw[0]
-            self.tag = raw[1]
-            self.group_id = raw[2]
+            self.group_id = raw[1]
+            self.tag = raw[2]
             return self
         return None
 
