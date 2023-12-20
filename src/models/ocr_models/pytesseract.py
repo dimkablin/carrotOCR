@@ -52,4 +52,4 @@ class PyTesseractInited(OCR):
     @staticmethod
     def get_model_type() -> str:
         """Return model type."""
-        return "pytesseract"
+        return "Tesseract"
