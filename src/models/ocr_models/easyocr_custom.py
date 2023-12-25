@@ -43,4 +43,4 @@ class EasyOCRInitedCustom(OCR):
     @staticmethod
     def get_model_type() -> str:
         """Return model type."""
-        return "easyocrCustom"
+        return "Trained"
