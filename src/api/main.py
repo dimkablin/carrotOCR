@@ -4,13 +4,14 @@ import logging
 from fastapi import FastAPI, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-
 from src.api.middleware.middleware import BackendMiddleware
+
 from src.utils.utils import create_dir_if_not_exist, get_abspath
 from src.api.routers.connection_manager import ConnectionManager
+
 from src.api.routers.pipeline_router import pipeline_router
 from src.api.routers.data_router import data_router
-from src.api.routers.websocket import websoket_router
+from src.api.routers.websocket_router import websoket_router
 from src.api.routers.models_router import ml_model_router
 
 connection_manager = ConnectionManager()

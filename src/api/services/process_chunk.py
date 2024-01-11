@@ -1,9 +1,14 @@
 # pylint: disable=R
 """process-image function according to the MVC pattern."""
+import asyncio
 import time
 import logging
+import json
+from fastapi import WebSocket
 
-from src.api.models.process_chunk import ProcessChunkRequest, ProcessChunkResponse
+from fastapi.encoders import jsonable_encoder
+
+from src.api.models.process_chunk import ProcessChunkRequest, ProcessChunkResponse, ProgressResponse
 from src.api.models.process_image import ProcessImageResponse
 from src.api.services.process_image import process_image
 from src.db.processed_manager import ProcessedManager
@@ -13,11 +18,11 @@ from src.utils.utils import create_dir_if_not_exist, get_abspath, read_paths
 from src.models.find_tags import FindTags
 
 
-
 def process_chunk_service(
         ocr_model: OCR,
         tags_model: FindTags,
-        req: ProcessChunkRequest) -> ProcessChunkResponse:
+        req: ProcessChunkRequest,
+        connection: WebSocket = None) -> ProcessChunkResponse:
     """ process a chunk of data. 
 
     Args:
@@ -53,6 +58,7 @@ def process_chunk_service(
         len(image_names),
         time.time() - start_time
     )
+
     start_time = time.time()
     for i, image in enumerate(images):
         data = process_image(
@@ -74,6 +80,10 @@ def process_chunk_service(
             )
         )
 
+        # senf progress bar
+        if connection is not None:
+            send_progress_sync(connection, i, len(images))
+
     logging.info(
         "Processed %d images with %s model in %.3f seconds.",
         len(image_names),
@@ -81,3 +91,16 @@ def process_chunk_service(
         time.time() - start_time
     )
     return response
+
+
+def send_progress_sync(connection: WebSocket, iteration: int, length: int):
+    """ Send progress of the process_chunk service"""
+    asyncio.run_coroutine_threadsafe(
+        connection.send_text(json.dumps(jsonable_encoder(
+            ProgressResponse(
+                iter=iteration,
+                length=length
+            )
+        ))),
+        loop=asyncio.get_event_loop()
+    )
