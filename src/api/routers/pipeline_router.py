@@ -43,7 +43,8 @@ def process_chunk(req: ProcessChunkRequest):
     result = process_chunk_service(
         OCR_MODEL.get(req.ocr_model_type),
         FIND_TAGS_MODEL,
-        req
+        req,
+        
     )
     return result
 

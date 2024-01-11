@@ -1,4 +1,4 @@
-"""Websocket"""
+"""Websocket and initialization of models"""
 
 import json
 import asyncio
@@ -57,7 +57,8 @@ class WebSocketManager:
             process_chunk_service,
             self.ocr_model.get(req.ocr_model_type),
             self.find_tags_model,
-            req
+            req,
+            self.connections[chunk_id]
         )
         await self.send_message_to_chunk(chunk_id, result)
 

@@ -4,6 +4,7 @@ import asyncio
 import time
 import logging
 import json
+from typing import List
 from fastapi import WebSocket
 
 from fastapi.encoders import jsonable_encoder
@@ -22,7 +23,7 @@ def process_chunk_service(
         ocr_model: OCR,
         tags_model: FindTags,
         req: ProcessChunkRequest,
-        connection: WebSocket = None) -> ProcessChunkResponse:
+        connections: List[WebSocket] = None) -> ProcessChunkResponse:
     """ process a chunk of data. 
 
     Args:
@@ -81,8 +82,9 @@ def process_chunk_service(
         )
 
         # senf progress bar
-        if connection is not None:
-            send_progress_sync(connection, i, len(images))
+        if connections is not None:
+            for connection in connections:
+                send_progress_sync(connection, i, len(images))
 
     logging.info(
         "Processed %d images with %s model in %.3f seconds.",
@@ -95,12 +97,17 @@ def process_chunk_service(
 
 def send_progress_sync(connection: WebSocket, iteration: int, length: int):
     """ Send progress of the process_chunk service"""
-    asyncio.run_coroutine_threadsafe(
-        connection.send_text(json.dumps(jsonable_encoder(
-            ProgressResponse(
-                iter=iteration,
-                length=length
-            )
-        ))),
-        loop=asyncio.get_event_loop()
-    )
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+
+    try:
+        loop.run_until_complete(
+            connection.send_text(json.dumps(jsonable_encoder(
+                ProgressResponse(
+                    iter=iteration,
+                    length=length
+                )
+            )))
+        )
+    finally:
+        loop.close()
