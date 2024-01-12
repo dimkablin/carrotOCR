@@ -84,7 +84,7 @@ def process_chunk_service(
         # senf progress bar
         if connections is not None:
             for connection in connections:
-                send_progress_sync(connection, i, len(images))
+                send_progress_sync(connection, i, len(images), "Обработка моделью.")
 
     logging.info(
         "Processed %d images with %s model in %.3f seconds.",
@@ -95,7 +95,7 @@ def process_chunk_service(
     return response
 
 
-def send_progress_sync(connection: WebSocket, iteration: int, length: int):
+def send_progress_sync(connection: WebSocket, iteration: int, length: int, message: str):
     """ Send progress of the process_chunk service"""
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
@@ -106,7 +106,7 @@ def send_progress_sync(connection: WebSocket, iteration: int, length: int):
                 ProgressResponse(
                     iter=iteration,
                     length=length,
-                    message=""
+                    message=message
                 )
             )))
         )
