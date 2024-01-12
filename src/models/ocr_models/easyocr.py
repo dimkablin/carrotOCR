@@ -43,10 +43,7 @@ class EasyOCRInited(OCR):
     @staticmethod
     def get_model_type() -> str:
         """Return model type."""
-<<<<<<< Updated upstream:src/models/ocr_models/easyocr.py
         return "EasyOCR"
-=======
-        return "easyocr"
 
 class EasyOCRInitedCustom(OCR):
     """ Initialized EasyOCR model """
@@ -86,4 +83,3 @@ class EasyOCRInitedCustom(OCR):
     def get_model_type() -> str:
         """Return model type."""
         return "easyocrCustom"
->>>>>>> Stashed changes:src/models/ocr/easyocr.py
