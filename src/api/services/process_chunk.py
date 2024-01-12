@@ -105,7 +105,8 @@ def send_progress_sync(connection: WebSocket, iteration: int, length: int):
             connection.send_text(json.dumps(jsonable_encoder(
                 ProgressResponse(
                     iter=iteration,
-                    length=length
+                    length=length,
+                    message=""
                 )
             )))
         )

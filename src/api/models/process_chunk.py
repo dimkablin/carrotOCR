@@ -21,3 +21,4 @@ class ProgressResponse(BaseModel):
     """Progress bar response"""
     iter: int
     length: int
+    message: str
