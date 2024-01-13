@@ -243,8 +243,8 @@ def find_tilt_angle(image_edges: np.ndarray) -> int:
 
 def rotate_image(image: np.ndarray, angle: int) -> np.ndarray:
     """rotate the image"""
-    if angle % 90 != 0:
-        raise ValueError("Angle must be a multiple of 90 degrees.")
+    if angle == 0:
+        return image
 
     if angle == 90:
         rotation_flag = cv2.ROTATE_90_CLOCKWISE
@@ -253,7 +253,7 @@ def rotate_image(image: np.ndarray, angle: int) -> np.ndarray:
     elif angle == 270:
         rotation_flag = cv2.ROTATE_90_COUNTERCLOCKWISE
     else:
-        rotation_flag = cv2.ROTATE_90_CLOCKWISE
+        raise ValueError("Angle must be a multiple of 90 degrees.")
 
     rotated_image = cv2.rotate(image, rotation_flag)
 
