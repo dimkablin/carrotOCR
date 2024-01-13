@@ -15,6 +15,7 @@ class ProcessChunkResponse(BaseModel):
     """ Response of the OCR model """
     chunk_id: int  # Chunk ID
     results: List[ProcessImageResponse]
+    action: str = "chunk"
 
 
 class ProgressResponse(BaseModel):
@@ -22,3 +23,4 @@ class ProgressResponse(BaseModel):
     iter: int
     length: int
     message: str
+    action: str = "progress_bar"

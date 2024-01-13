@@ -5,7 +5,9 @@ from typing import Optional
 
 import cv2
 import numpy as np
+from src.api.models.process_chunk import ProgressResponse
 from src.api.models.process_image import Cut, PipelineParams
+from src.api.services.process_chunk import send_progress_sync
 from src.features import build_features as pp
 from src.utils.utils import save_image
 
@@ -59,10 +61,6 @@ def pipeline_image(
     """
 
     if pipeline_params is None:
-        # image = cropped(image)
-        # bina_image = binarize_image(image)
-        # image_edges = find_edges(bina_image)
-        # angle = find_tilt_angle(image_edges)
         w2h_koeff = 0 if ( 0.4 < image.shape[0]/image.shape[1] < 2.5 ) else 1
         pipeline_params = PipelineParams(
             angle=0,
@@ -76,11 +74,27 @@ def pipeline_image(
     return image
 
 
-def pipeline_images(images, paths):
+def pipeline_images(images, paths, connections=None):
     """
     crop and rotate list of images
     """
-    return [pipeline_image(image, path) for image, path in zip(images, paths)]
+    result = []
+    for i, (image, path) in enumerate(zip(images, paths)):
+        result.append(pipeline_image(image, path))
+
+        # send progress via connection
+        if connections is not None:
+            for connection in connections:
+                send_progress_sync(
+                    connection,
+                    ProgressResponse(
+                        iter=i,
+                        length=2 * len(images),
+                        message="Предобработка данных."
+                    )
+                )
+
+    return result
 
 
 def cropped(img: np.ndarray) -> np.ndarray:
