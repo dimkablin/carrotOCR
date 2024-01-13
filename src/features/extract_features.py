@@ -67,7 +67,7 @@ def pipeline_image(
             cut=Cut(x1=0, y1=0, height=image.shape[0], width=image.shape[1])
         )
 
-    #save_image(path, image)
+    save_image(path, image)
     image = _pipeline_image(image, pipeline_params)
 
     return image
