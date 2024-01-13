@@ -1,4 +1,5 @@
 """process-image function according to the MVC pattern."""
+import os
 import time
 import logging
 
@@ -6,10 +7,10 @@ import numpy as np
 from src.api.models.process_image import ProcessImageRequest, ProcessImageResponse
 from src.db.processed_manager import ProcessedManager
 from src.db.structures.processed_structure import ProcessedStructure
+from src.env import DATA_PATH
 from src.models.find_tags import FindTags
 from src.models.ocr_models.ocr_interface import OCR
 import src.features.extract_features as pp
-from src.utils.utils import get_abspath, read_rotate_save
 
 
 def process_image(
@@ -71,15 +72,10 @@ def process_image_service(
     req.pipeline_params.angle %= 360
 
     # read images and run general_pipeline
-    edited_paths = get_abspath("LOCAL_DATA", str(data.chunk_id), "edited")
-    origin_paths = get_abspath("LOCAL_DATA", str(data.chunk_id), "original")
+    paths = os.path.join(DATA_PATH, str(data.chunk_id))
 
-    image = pp.read_image(origin_paths + "/" + data.old_filename)
-    image = pp.pipeline_image(
-        image,
-        path=edited_paths + "/" + data.old_filename,
-        pipeline_params=req.pipeline_params
-    )
+    image = pp.read_image(paths + "/" + data.old_filename)
+    image = pp.pipeline_image(image, pipeline_params=req.pipeline_params)
 
     logging.info("Pipeline images executed in %.3s seconds", time.time() - start_time)
     start_time = time.time()
@@ -96,13 +92,7 @@ def process_image_service(
     # Get an angle from the BD and add it to the req
     data.angle = req.pipeline_params.angle
 
-    # rotate original image
-    read_rotate_save(
-        path=origin_paths + "/" + data.old_filename,
-        save_path=edited_paths + "/" + data.old_filename,
-        angle=data.angle
-    )
-
+    # поменять начальную точку ббоксов отнсоительно оригинальной фотографии
     for bbox in data.bboxes:
         for coord in range(0, 7, 2):
             bbox[coord] += req.pipeline_params.cut.x1
