@@ -1,16 +1,15 @@
 # pylint: disable=R
 """process-image function according to the MVC pattern."""
-import asyncio
+
 import time
 import logging
-import json
 from typing import List
 from fastapi import WebSocket
 
-from fastapi.encoders import jsonable_encoder
 
 from src.api.models.process_chunk import ProcessChunkRequest, ProcessChunkResponse, ProgressResponse
 from src.api.models.process_image import ProcessImageResponse
+from src.api.routers.utils import send_progress_sync
 from src.api.services.process_image import process_image
 from src.db.processed_manager import ProcessedManager
 import src.features.extract_features as pp
@@ -35,14 +34,11 @@ def process_chunk_service(
         ProcessChunkResponse: response of process chunk
     """
     start_time = time.time()
-
     origin_paths = get_abspath("LOCAL_DATA", str(req.chunk_id), "original")
     image_names = [i.split("/")[-1] for i in read_paths(origin_paths)]
-
     edited_paths = get_abspath("LOCAL_DATA", str(req.chunk_id), "edited")
     create_dir_if_not_exist(edited_paths)
     edited_paths = [edited_paths+"/"+image_name for image_name in image_names]
-
     response = ProcessChunkResponse(
         chunk_id=req.chunk_id,
         results=[]
@@ -50,9 +46,16 @@ def process_chunk_service(
 
     # read images and use model
     paths_to_images = [origin_paths+"/"+i for i in image_names]
-
     images = pp.read_images(paths_to_images)
-    images = pp.pipeline_images(images, edited_paths)
+    logging.info(
+        "Read %d images in %.3f seconds",
+        len(image_names),
+        time.time() - start_time
+    )
+    start_time = time.time()
+
+    # Prepare images
+    images = pp.pipeline_images(images, edited_paths, connections=connections)
 
     logging.info(
         "Pipeline executed %d images in %.3f seconds",
@@ -93,7 +96,7 @@ def process_chunk_service(
                     )
                 )
 
-    # delete images from GPU or CPU 
+    # delete images from GPU or CPU
     del images
 
     logging.info(
@@ -103,16 +106,3 @@ def process_chunk_service(
         time.time() - start_time
     )
     return response
-
-
-def send_progress_sync(connection: WebSocket, progress: ProgressResponse):
-    """ Send progress of the process_chunk service"""
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-
-    try:
-        loop.run_until_complete(
-            connection.send_text(json.dumps(jsonable_encoder(progress)))
-        )
-    finally:
-        loop.close()

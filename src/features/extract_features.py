@@ -7,10 +7,9 @@ import cv2
 import numpy as np
 from src.api.models.process_chunk import ProgressResponse
 from src.api.models.process_image import Cut, PipelineParams
-from src.api.services.process_chunk import send_progress_sync
+from src.api.routers.utils import send_progress_sync
 from src.features import build_features as pp
 from src.utils.utils import save_image
-
 
 def read_image(path: str):
     """ Async open an image
@@ -68,7 +67,7 @@ def pipeline_image(
             cut=Cut(x1=0, y1=0, height=image.shape[0], width=image.shape[1])
         )
 
-    save_image(path, image)
+    #save_image(path, image)
     image = _pipeline_image(image, pipeline_params)
 
     return image
@@ -95,26 +94,3 @@ def pipeline_images(images, paths, connections=None):
                 )
 
     return result
-
-
-def cropped(img: np.ndarray) -> np.ndarray:
-    """Cropping the image 
-
-    Args:
-        img (np.ndarray): input image
-
-    Returns:
-        np.ndarray: cropped image
-    """
-    # img = cv2.imdecode(np.fromfile(img_path, dtype=np.uint8), 1)
-    height, width = img.shape[:2]
-
-    if width >= height:
-        if width > 5000:
-            img = img[0:height, 0:height]
-        # img = img[0:h, 0:int(w/(0.75*(w/h)))]
-    else:
-        if height > 1920:
-            img = img[0:width, 0:width]
-        # img = img[0:int(h/(0.75*(h/w))), 0:w]
-    return img
