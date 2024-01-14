@@ -53,7 +53,6 @@ def process_chunk_service(
     )
     start_time = time.time()
 
-    cv2.imwrite("/mnt/u/image_before.jpg", images[0])
     # Prepare images
     images = pp.pipeline_images(images, connections=connections)
 
@@ -62,7 +61,6 @@ def process_chunk_service(
         len(image_names),
         time.time() - start_time
     )
-    cv2.imwrite("/mnt/u/image_after.jpg", images[0])
 
     start_time = time.time()
     for i, image in enumerate(images):

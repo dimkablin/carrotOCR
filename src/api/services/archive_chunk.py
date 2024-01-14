@@ -27,6 +27,10 @@ def archive_chunk_service(
         for data in datas:
             data = ProcessedStructure().from_db(data)
 
+            if data.new_filename is None:
+                warnings.warn(f"No new filename for {old_path}.")
+                continue
+
             new_filename = data.new_filename + "." + data.old_filename.split(".")[-1]
             old_path = os.path.join(DATA_PATH, str(chunk_id), data.old_filename)
 
@@ -36,4 +40,4 @@ def archive_chunk_service(
 
             zip_file.write(old_path, arcname=new_filename)
 
-    return SERVER_PATH + archive_path[path.find(DATA_PATH):]
+    return SERVER_PATH + os.path.join("LOCAL_DATA", str(chunk_id), filename + ".zip")
