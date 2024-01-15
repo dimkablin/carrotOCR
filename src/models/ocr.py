@@ -10,9 +10,9 @@ class OCRModelFactory:
 
     MODEL_MAPPING = {
         NoneOCRInited.get_model_type(): NoneOCRInited(),
+        PyTesseractInited.get_model_type(): PyTesseractInited(),
         EasyOCRInited.get_model_type(): EasyOCRInited(),
         EasyOCRInitedCustom.get_model_type(): EasyOCRInitedCustom(),
-        PyTesseractInited.get_model_type(): PyTesseractInited(),
     }
 
     @staticmethod
