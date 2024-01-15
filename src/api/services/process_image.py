@@ -66,11 +66,6 @@ def process_image_service(
     # get data from database
     data = ProcessedManager.get_data_by_id(req.uid)
 
-    # update angle in pipeline
-    angle = data.angle
-    req.pipeline_params.angle += angle
-    req.pipeline_params.angle %= 360
-
     # read images and run general_pipeline
     paths = os.path.join(DATA_PATH, str(data.chunk_id))
     print(os.path.join(paths,  data.old_filename))
