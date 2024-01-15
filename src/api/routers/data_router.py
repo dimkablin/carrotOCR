@@ -41,7 +41,7 @@ def delete_data_by_chunk_id(chunk_id: int):
     return delete_data_by_id_chunk_service(chunk_id)
 
 
-@data_router.get("/get-backend-version/")
+@data_router.get("/get-backend-version/", tags=["Work with data"], response_model=str)
 def get_backend_version():
     """Return version of backend."""
     distribution = get_distribution("src")
