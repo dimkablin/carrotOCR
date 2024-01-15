@@ -29,8 +29,7 @@ services:
       - PYTHONUNBUFFERED=True
     command: bash -c "python3 db_script.py && uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --timeout-keep-alive 99999999999"
     depends_on:
-      postgres:
-        condition: service_healthy
+      - postgres
       
   front:
     build: ../search_text_rename_file

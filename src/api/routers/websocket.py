@@ -30,6 +30,7 @@ class WebSocketManager:
 
         if chunk_id not in self.connections:
             self.connections[chunk_id] = []
+            asyncio.create_task(self.send_pong(websocket))
         else:
             if len(self.connections[chunk_id]) >= 1:
                 await websocket.close(
@@ -39,6 +40,18 @@ class WebSocketManager:
                 return
 
         self.connections[chunk_id].append(websocket)
+
+    async def send_pong(self, websocket: WebSocket):
+        """Send 'pong' message every 10 seconds"""
+        while True:
+            try:
+                await asyncio.sleep(10)
+                await websocket.send_json({"action": "pong"})
+            except asyncio.CancelledError:
+                break
+            except Exception as e:
+                print(f"Error in send_pong: {e}")
+                break
 
     async def disconnect(self, websocket: WebSocket, chunk_id: int):
         """Handle WebSocket disconnection"""
