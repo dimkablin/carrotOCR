@@ -26,13 +26,14 @@ def archive_chunk_service(
     with zipfile.ZipFile(archive_path, "w", zipfile.ZIP_DEFLATED) as zip_file:
         for data in datas:
             data = ProcessedStructure().from_db(data)
+            old_path = os.path.join(DATA_PATH, str(chunk_id), data.old_filename)
 
             if data.new_filename is None:
                 warnings.warn(f"No new filename for {old_path}.")
-                continue
+                new_filename = data.old_filename
+            else:
+                new_filename = data.new_filename + "." + data.old_filename.split(".")[-1]
 
-            new_filename = data.new_filename + "." + data.old_filename.split(".")[-1]
-            old_path = os.path.join(DATA_PATH, str(chunk_id), data.old_filename)
 
             if not os.path.exists(old_path):
                 warnings.warn(f"File {old_path} not found.")
