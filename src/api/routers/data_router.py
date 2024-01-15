@@ -1,5 +1,6 @@
 """Router that work with data"""
 
+from pkg_resources import get_distribution
 from fastapi import APIRouter
 from src.api.services.delete_data_by_chunk_id import delete_data_by_id_chunk_service
 from src.api.services.get_data_by_chunk_id import get_data_by_chunk_id_service
@@ -38,3 +39,10 @@ def get_data_by_chunk_id(chunk_id: int):
 def delete_data_by_chunk_id(chunk_id: int):
     """Clear data by chunk id"""
     return delete_data_by_id_chunk_service(chunk_id)
+
+
+@data_router.get("/get-backend-version/")
+def get_backend_version():
+    """Return version of backend."""
+    distribution = get_distribution("src")
+    return distribution.version
