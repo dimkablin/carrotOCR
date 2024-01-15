@@ -22,7 +22,7 @@ services:
             ipv4_address: 172.20.0.6
     environment:
       - PYTHONUNBUFFERED=True
-    command: bash -c "python3 db_script.py && uvicorn src.api.main:app --reload --host 0.0.0.0 --port 8000"
+    command: bash -c "python3 db_script.py && uvicorn src.api.main:app --reload --host 0.0.0.0 --port 8000 --timeout-keep-alive 99999999999"
     depends_on:
       - postgres
       

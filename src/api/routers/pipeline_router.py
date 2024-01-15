@@ -4,6 +4,8 @@ from typing import List
 from fastapi import APIRouter, UploadFile, File
 from src.api.models.get_processed import GetProcessedResponse, GetProcessedRequest
 from src.api.models.process_image import ProcessImageResponse, ProcessImageRequest
+from src.api.routers.websocket import OCR_MODEL, FIND_TAGS_MODEL
+
 from src.api.services.archive_chunk import archive_chunk_service
 from src.api.services.delete_data_by_id import delete_data_by_id_service
 from src.api.services.get_chunk_id import get_chunk_id_service
@@ -18,11 +20,6 @@ from src.api.models.add_filenames import AddFilenameRequest
 from src.api.models.upload_files import UploadFilesResponse
 from src.api.models.process_chunk import ProcessChunkRequest, ProcessChunkResponse
 
-from src.models.ocr import OCRModelFactory
-from src.models.find_tags import FindTags
-
-OCR_MODEL = OCRModelFactory()
-FIND_TAGS_MODEL = FindTags()
 pipeline_router = APIRouter()
 
 

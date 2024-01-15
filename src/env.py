@@ -16,6 +16,7 @@ DB_PORT = os.getenv("DB_PORT")
 DB_NAME = os.getenv("DB_NAME")
 SERVER_PATH = os.getenv("SERVER_PATH")
 USE_CUDA = bool(os.getenv("USE_CUDE"))
+DATA_PATH= str(os.getenv("DATA_PATH"))
 
 if __name__ == "__main__":
     print(project_dir)

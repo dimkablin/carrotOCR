@@ -12,7 +12,6 @@ from skimage.color import rgb2gray
 from skimage.transform import (hough_line, hough_line_peaks)
 from skimage.filters import threshold_otsu, sobel
 from scipy.stats import mode
-from scipy import ndimage
 
 from src.api.models.process_image import Cut
 
@@ -244,9 +243,21 @@ def find_tilt_angle(image_edges: np.ndarray) -> int:
 
 def rotate_image(image: np.ndarray, angle: int) -> np.ndarray:
     """rotate the image"""
-    # ndimage.rotate поворачивает картинку против часой стрелки поэтмоу минус
-    image = ndimage.rotate(image, -angle)
-    return image
+    if angle == 0:
+        return image
+
+    if angle == 90:
+        rotation_flag = cv2.ROTATE_90_CLOCKWISE
+    elif angle == 180:
+        rotation_flag = cv2.ROTATE_180
+    elif angle == 270:
+        rotation_flag = cv2.ROTATE_90_COUNTERCLOCKWISE
+    else:
+        raise ValueError("Angle must be a multiple of 90 degrees.")
+
+    rotated_image = cv2.rotate(image, rotation_flag)
+
+    return rotated_image
 
 
 def crop(image: np.ndarray,
@@ -267,9 +278,6 @@ def crop(image: np.ndarray,
         width = min(width, int(height*w2h_koeff))
     else:
         height = min(height, int(width/w2h_koeff))
-
-
-    print(height, width)
 
     image = cut(
         image,
