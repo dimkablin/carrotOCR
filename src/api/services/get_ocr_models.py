@@ -6,4 +6,4 @@ from src.models.ocr import OCRModelFactory
 def get_ocr_models_service() -> GetOCRModelsResponse:
     """Get OCR Models service function."""
     models = OCRModelFactory.get_models()
-    return GetOCRModelsResponse(models=models)
+    return GetOCRModelsResponse(models=models, default=0)

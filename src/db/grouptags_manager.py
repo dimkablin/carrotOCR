@@ -32,10 +32,10 @@ class GrouptagsManager:
             );
         """
 
-        init_values = {
-            GrouptagsStructure(name="Название"),
-            GrouptagsStructure(name="Масштаб")
-        }
+        init_values = [
+            GrouptagsStructure(name="Масштаб"),
+            GrouptagsStructure(name="Название")
+        ]
 
         with DatabaseManager(**GrouptagsManager.db_config) as db_manager:
             if db_manager.connect():

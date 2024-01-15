@@ -3,7 +3,8 @@ import os.path
 import warnings
 
 from src.api.models.upload_files import UploadFilesResponse
-from src.utils.utils import create_dir_if_not_exist, get_abspath
+from src.env import DATA_PATH
+from src.utils.utils import create_dir_if_not_exist
 
 # available extension
 EXTENSIONS = [".jpg", ".jpeg", ".png", ".bmp", ".webp"]
@@ -18,7 +19,7 @@ def check_extension(filename) -> bool:
 def upload_files_service(chunk_id, files) -> UploadFilesResponse:
     """Upload files to the server"""
     paths = []
-    save_path = get_abspath("LOCAL_DATA", str(chunk_id), "original")
+    save_path = os.path.join(DATA_PATH, str(chunk_id))
     create_dir_if_not_exist(save_path)
 
     for file in files:

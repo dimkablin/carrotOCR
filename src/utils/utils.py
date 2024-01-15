@@ -9,17 +9,11 @@ import numpy as np
 
 from src.api.models.get_processed import TBox
 from src.env import project_dir
-from src.features.build_features import rotate_image
 
 
 def get_abspath(*path):
     """ Get the absolute path from this file and add the argument path"""
     return os.path.join(project_dir, *path)
-
-
-def read_paths(dir_: str) -> List[str]:
-    """Return the paths from the dir"""
-    return [get_abspath(dir_, f) for f in os.listdir(dir_)]
 
 
 def bbox2rect(bbox: List[int]) -> TBox:
@@ -61,18 +55,3 @@ def save_images(images: List[np.ndarray], image_names: List[str], path: str) -> 
 
     for i, image in enumerate(images):
         save_image(path + "/" + image_names[i], image)
-
-def read_rotate_save(path: str, angle: int, save_path: str = None) -> None:
-    """Read, rotate and save img
-
-    Args:
-        path (str): path to the image
-        angle (int): angle to rotate
-    """
-    img = cv2.imread(path)
-    img = rotate_image(img, angle)
-
-    if save_path is None:
-        save_image(path, img)
-    else:
-        save_image(save_path, img)

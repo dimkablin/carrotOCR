@@ -9,10 +9,10 @@ class OCRModelFactory:
     """ Factory Method - Design Pattern implementation """
 
     MODEL_MAPPING = {
+        NoneOCRInited.get_model_type(): NoneOCRInited(),
         PyTesseractInited.get_model_type(): PyTesseractInited(),
         EasyOCRInited.get_model_type(): EasyOCRInited(),
         EasyOCRInitedCustom.get_model_type(): EasyOCRInitedCustom(),
-        NoneOCRInited.get_model_type(): NoneOCRInited(),
     }
 
     @staticmethod
