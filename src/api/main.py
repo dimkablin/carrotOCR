@@ -1,5 +1,6 @@
 """ FastAPI connection """
 import logging
+import asyncio
 
 from fastapi import FastAPI, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
@@ -14,6 +15,8 @@ from src.api.routers.pipeline_router import pipeline_router
 from src.api.routers.data_router import data_router
 from src.api.routers.websocket_router import websoket_router
 from src.api.routers.models_router import ml_model_router
+
+from db_script import check_and_initialize_tables
 
 connection_manager = ConnectionManager()
 
@@ -45,6 +48,10 @@ app.add_middleware(
     allow_credentials=True,
 )
 app.mount("/api/LOCAL_DATA", StaticFiles(directory=DATA_PATH), name="LOCAL_DATA")
+
+@app.on_event("startup")
+async def startup_event():
+    await check_and_initialize_tables()
 
 app.include_router(router, prefix="/api")
 app.include_router(pipeline_router, prefix="/api")
