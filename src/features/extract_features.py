@@ -51,13 +51,13 @@ def pipeline_image(
             cut=Cut(x1=0, y1=0, height=image.shape[0], width=image.shape[1])
         )
 
-    # prepare images by pipeline config (rotate and cut)
-    image = pp.rotate_image(image, pipeline_params.angle)
-
     if pipeline_params.w2h_koeff > 0:
         image = pp.crop(image, pipeline_params.w2h_koeff)
     else:
         image = pp.cut(image, pipeline_params.cut)
+
+    # prepare images by pipeline config (rotate and cut)
+    image = pp.rotate_image(image, pipeline_params.angle)
 
     return image
 
