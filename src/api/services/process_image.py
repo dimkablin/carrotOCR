@@ -68,7 +68,7 @@ def process_image_service(
 
     # read images and run general_pipeline
     paths = os.path.join(DATA_PATH, str(data.chunk_id))
-    print(os.path.join(paths,  data.old_filename))
+
     image = pp.read_image(os.path.join(paths,  data.old_filename))
 
     image = pp.pipeline_image(image, pipeline_params=req.pipeline_params)

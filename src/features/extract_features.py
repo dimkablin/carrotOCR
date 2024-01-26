@@ -53,7 +53,8 @@ def pipeline_image(
 
     if pipeline_params.w2h_koeff > 0:
         image = pp.crop(image, pipeline_params.w2h_koeff)
-    else:
+
+    if pipeline_params.cut.width !=0 and pipeline_params.cut.height != 0:
         image = pp.cut(image, pipeline_params.cut)
 
     # prepare images by pipeline config (rotate and cut)
