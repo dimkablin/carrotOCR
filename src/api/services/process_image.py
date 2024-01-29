@@ -89,10 +89,10 @@ def process_image_service(
     data.angle = req.pipeline_params.angle
 
     # поменять начальную точку ббоксов отнсоительно оригинальной фотографии
-    for bbox in data.bboxes:
-        for coord in range(0, 7, 2):
-            bbox[coord] += req.pipeline_params.cut.x1
-            bbox[coord + 1] += req.pipeline_params.cut.y1
+    # for bbox in data.bboxes:
+    #     for coord in range(0, 7, 2):
+    #         bbox[coord] += req.pipeline_params.cut.x1
+    #         bbox[coord + 1] += req.pipeline_params.cut.y1
 
     ProcessedManager.update_data_by_id(data, req.uid)
 
