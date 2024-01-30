@@ -11,6 +11,7 @@ from src.env import DATA_PATH
 from src.models.find_tags import FindTags
 from src.models.ocr_models.ocr_interface import OCR
 import src.features.extract_features as pp
+import src.features.build_features as bf
 
 
 def process_image(
@@ -88,12 +89,16 @@ def process_image_service(
     # Get an angle from the BD and add it to the req
     data.angle = req.pipeline_params.angle
 
-    # поменять начальную точку ббоксов отнсоительно оригинальной фотографии
-    # for bbox in data.bboxes:
-    #     for coord in range(0, 7, 2):
-    #         bbox[coord] += req.pipeline_params.cut.x1
-    #         bbox[coord + 1] += req.pipeline_params.cut.y1
+    # повернуть боксы относительно оригинальной фотки
+    data.bboxes = bf.rotate_bboxes(data.bboxes, -data.angle, image.shape[:2])
 
+    # поменять начальную точку ббоксов отнсоительно оригинальной фотографии
+    for bbox in data.bboxes:
+        for coord in range(0, 7, 2):
+            bbox[coord] += req.pipeline_params.cut.x1
+            bbox[coord + 1] += req.pipeline_params.cut.y1
+
+    print(req.pipeline_params.cut)
     ProcessedManager.update_data_by_id(data, req.uid)
 
     logging.info(
