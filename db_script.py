@@ -1,9 +1,9 @@
-import asyncio
 """ Script that you can run to set project env """
 from src.db.database_manager import DatabaseManager
 from src.db.processed_manager import ProcessedManager
 from src.db.permatags_manager import PermatagsManager
 from src.db.grouptags_manager import GrouptagsManager
+
 
 if __name__ == "__main__":
     t_managers = [
