@@ -6,7 +6,6 @@ import time
 import logging
 from typing import List
 from fastapi import WebSocket
-import cv2
 
 from src.api.models.process_chunk import ProcessChunkRequest, ProcessChunkResponse, ProgressResponse
 from src.api.models.process_image import ProcessImageResponse

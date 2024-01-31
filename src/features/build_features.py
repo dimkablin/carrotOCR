@@ -1,3 +1,4 @@
+#pylint: disable=C
 """ Image Processing Utilities
 
 This module contains utility functions for image processing tasks.
