@@ -17,6 +17,7 @@ FIND_TAGS_MODEL = FindTags()
 
 executor = ThreadPoolExecutor(max_workers=5)
 
+
 class WebSocketManager:
     """WebSocket Class"""
     def __init__(self, ocr_model, find_tags_model):
