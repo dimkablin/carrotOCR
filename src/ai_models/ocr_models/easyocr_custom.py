@@ -13,8 +13,8 @@ class EasyOCRInitedCustom(OCR):
         self.model = easyocr.Reader(
             self.languages,
             gpu=self.use_cuda,
-            model_storage_directory='src/ai_models/weights/ocr/easyOCR/model',
-            user_network_directory='src/ai_models/weights/ocr/easyOCR/user_network',
+            model_storage_directory='src/ai_models/weights/ocr/easyocr/model',
+            user_network_directory='src/ai_models/weights/ocr/easyocr/user_network',
             download_enabled=False,
             recog_network='ru_custom'
         )
