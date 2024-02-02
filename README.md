@@ -1,4 +1,4 @@
-TatneftIT 
+CarrotOCR
 ==============================
 
 Implementation of OCR from open sources for internal tasks of the Tatneft Group.
@@ -10,8 +10,6 @@ Project Organization
     ├── README.md               <- The top-level README for developers using this project.
     │
     ├── docs                    <- A default Sphinx project; see sphinx-doc.org for details
-    │
-    ├── models                  <- Trained and serialized models, model predictions, or model summaries
     │
     ├── notebooks               <- Jupyter notebooks. Example of the model usage.
     │
@@ -36,13 +34,17 @@ Project Organization
     │   │   ├── build_features.py
     │   │   └── extract_features.py
     │   │
-    │   ├── models              <- Scripts with loading trained models.
-    │   │   ├── ocr             <- Factory Method pattern.
+    │   ├── ai_models           <- Scripts with loading trained models.
+    │   │   ├── ocr_models      <- Factory Method pattern.
+    │   │   |   ├── none_ocr.py       
     │   │   |   ├── ocr.py       
     │   │   |   ├── easyocr.py  
     │   │   |   └── pytesseract.py 
     │   │   |   
+    │   │   ├── weights         <- Weights of models
     │   │   └── find_tags.py
+    │   │
+    │   ├── tests               <- Unittest for each class in src.
     │   │
     │   ├── visualization       <- Scripts to create exploratory and results oriented visualizations
     │   │   └── visualize.py
@@ -50,8 +52,6 @@ Project Organization
     │   └── utils               <- Scripts that contains some utils.
     │       └── utils.py
     │
-    ├── tests                   <- Unittest for each class in src. 
-    │   └── ...
     │
     └── tox.ini                 <- tox file with settings for running tox; see tox.readthedocs.io
 
@@ -63,10 +63,9 @@ It is preferable to run the project on the linux
 ```bash
  docker build -t carrot-ocr . --no-cache  2>&1 | tee build_log.txt
 ```
-#### Hosting Docker Image
-In progress...
+
 ## FastAPI Swagger
-Now you can open locally this site http://127.0.0.1:8000/docs.
+Now you can open locally this site http://127.0.0.1:8000/api/docs.
 <img src="notebooks/references/backend.jpg" alt="#">
 
 ## Example of usage
@@ -74,12 +73,12 @@ Now you can open locally this site http://127.0.0.1:8000/docs.
 ```python
 import cv2
 from src.visualization.visualize import *
-from src.ai_models.ocr.ocr import OCRModelFactory
+from src.ai_models.ocr import OCRModelFactory
 
 url = 'data/raw/example1.jpg'
 image = cv2.imread(url)
 
-model = OCRModelFactory.create("pytesseract")
+model = OCRModelFactory.get("easyocr")
 outputs = model([image])
 result2show(image, outputs[0])
 ```
