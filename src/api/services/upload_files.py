@@ -7,13 +7,14 @@ from src.env import DATA_PATH
 from src.utils.utils import create_dir_if_not_exist
 
 # available extension
-EXTENSIONS = [".jpg", ".jpeg", ".png", ".bmp", ".webp"]
+IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png", ".bmp", ".webp"]
+FILE_EXTENSIONS = [".pdf", ".xps", ".epub", ".mobi", ".fb2", ".cbz", ".svg", ".txt"]
 
 
 def check_extension(filename) -> bool:
     """Check available filename extension"""
     file_extension = os.path.splitext(filename)[-1].lower()
-    return file_extension in EXTENSIONS
+    return file_extension in IMAGE_EXTENSIONS
 
 
 def upload_files_service(chunk_id, files) -> UploadFilesResponse:

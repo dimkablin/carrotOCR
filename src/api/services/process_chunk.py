@@ -14,9 +14,9 @@ from src.api.services.process_image import process_image
 from src.db.processed_manager import ProcessedManager
 from src.env import DATA_PATH
 import src.features.extract_features as pp
-from src.models.ocr_models.ocr_interface import OCR
+from src.ai_models.ocr_models.ocr_interface import OCR
 from src.utils.utils import create_dir_if_not_exist
-from src.models.find_tags import FindTags
+from src.ai_models.find_tags import FindTags
 
 def process_chunk_service(
         ocr_model: OCR,

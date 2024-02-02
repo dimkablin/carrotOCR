@@ -1,4 +1,4 @@
-"""process image models."""
+"""process image ai_models."""
 from pydantic import BaseModel
 
 

@@ -2,12 +2,12 @@
 from typing import Any
 from pytesseract import Output
 import pytesseract
-from src.models.ocr_models.ocr_interface import OCR
+from src.ai_models.ocr_models.ocr_interface import OCR
 
 class PyTesseractInited(OCR):
     """ Initialized PyTesseract model """
     def __init__(self):
-        self.local_config_dir = 'models/ocr/pytesseract'
+        self.local_config_dir = 'src/ai_models/weights/ocr/pytesseract'
         self.oem = 3
         self.psm = 6
         self.config = f"--oem {self.oem} --psm {self.psm} --tessdata-dir {self.local_config_dir}"

@@ -8,7 +8,7 @@ dotenv_path = os.path.join(project_dir, '.env')
 
 dotenv.load_dotenv(dotenv_path)
 
-# impoting environment variables from .env file
+# importing environment variables from .env file
 DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
 DB_HOST = os.getenv("DB_HOST")

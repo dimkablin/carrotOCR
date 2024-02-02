@@ -74,7 +74,7 @@ Now you can open locally this site http://127.0.0.1:8000/docs.
 ```python
 import cv2
 from src.visualization.visualize import *
-from src.models.ocr.ocr import OCRModelFactory
+from src.ai_models.ocr.ocr import OCRModelFactory
 
 url = 'data/raw/example1.jpg'
 image = cv2.imread(url)

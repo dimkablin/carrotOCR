@@ -1,4 +1,4 @@
-"""Get files or folders function models."""
+"""Get files or folders function ai_models."""
 from typing import List
 from pydantic import BaseModel
 

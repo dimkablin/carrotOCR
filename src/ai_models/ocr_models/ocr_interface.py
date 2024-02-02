@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 
 
 class OCR(ABC):
-    """ Interface of ocr models """
+    """ Interface of ocr ai_models """
     @abstractmethod
     def __call__(self, *args, **kwargs) -> dict:
         """

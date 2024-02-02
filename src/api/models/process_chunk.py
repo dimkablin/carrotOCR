@@ -1,4 +1,4 @@
-"""Process chunk models."""
+"""Process chunk ai_models."""
 from typing import List
 from pydantic import BaseModel
 

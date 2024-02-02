@@ -1,5 +1,5 @@
 # pylint: disable=R,E
-"""Upload files function models."""
+"""Upload files function ai_models."""
 from pydantic import BaseModel
 
 class PermatagsResponse(BaseModel):

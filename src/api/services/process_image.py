@@ -8,8 +8,8 @@ from src.api.models.process_image import ProcessImageRequest, ProcessImageRespon
 from src.db.processed_manager import ProcessedManager
 from src.db.structures.processed_structure import ProcessedStructure
 from src.env import DATA_PATH
-from src.models.find_tags import FindTags
-from src.models.ocr_models.ocr_interface import OCR
+from src.ai_models.find_tags import FindTags
+from src.ai_models.ocr_models.ocr_interface import OCR
 import src.features.extract_features as pp
 import src.features.build_features as bf
 

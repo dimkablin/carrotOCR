@@ -1,4 +1,4 @@
-"""Upload files function models."""
+"""Upload files function ai_models."""
 from typing import List
 from pydantic import BaseModel
 

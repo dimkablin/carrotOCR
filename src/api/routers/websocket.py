@@ -1,4 +1,4 @@
-"""Websocket and initialization of models"""
+"""Websocket and initialization of ai_models"""
 
 import json
 import asyncio
@@ -7,8 +7,8 @@ from concurrent.futures import ThreadPoolExecutor
 from fastapi import WebSocket
 from fastapi.encoders import jsonable_encoder
 
-from src.models.ocr import OCRModelFactory
-from src.models.find_tags import FindTags
+from src.ai_models.ocr import OCRModelFactory
+from src.ai_models.find_tags import FindTags
 from src.api.models.process_chunk import ProcessChunkRequest, ProcessChunkResponse
 from src.api.services.process_chunk import process_chunk_service
 

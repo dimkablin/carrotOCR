@@ -91,7 +91,7 @@ class APITestCasePipeline(unittest.TestCase):
 class APITestCaseOCR(unittest.TestCase):
     """ Tests the APITest OCR"""
     def test_get_ocr_models(self):
-        """/api/get-ocr-models/"""
+        """/api/get-ocr-ai_models/"""
         url = BASE_URL
         response = requests.get(url)
         self.assertEqual(response.status_code, 200)

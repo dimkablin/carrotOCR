@@ -1,6 +1,6 @@
 """Trained EasyOCR Initialization."""
 from typing import Any
-from src.models.ocr_models.ocr_interface import OCR
+from src.ai_models.ocr_models.ocr_interface import OCR
 
 
 class NoneOCRInited(OCR):

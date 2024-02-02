@@ -49,6 +49,7 @@ def save_image(image_path: str, image: np.ndarray) -> None:
     """Save an image."""
     cv2.imwrite(image_path, image)
 
+
 def save_images(images: List[np.ndarray], image_names: List[str], path: str) -> None:
     """Save images to path/names[i]"""
     create_dir_if_not_exist(path)

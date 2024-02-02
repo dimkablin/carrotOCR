@@ -10,6 +10,7 @@ from src.api.models.process_image import Cut, PipelineParams
 from src.api.routers.utils import send_progress_sync
 from src.features import build_features as pp
 
+
 def read_image(path: str):
     """ Async open an image
 
@@ -18,6 +19,7 @@ def read_image(path: str):
     """
     image = cv2.imread(path)
     return image
+
 
 def read_images(paths):
     """ Async read all images

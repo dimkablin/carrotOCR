@@ -89,7 +89,7 @@ target/
 
 # Mypy cache
 .mypy_cache/
-/models/ocr/mmocr/dbnet/
-/models/ocr/mmocr/sar/
+/src/ai_models/weights/ocr/mmocr/dbnet/
+/src/ai_models/weights/ocr/mmocr/sar/
 /LOCAL_DATA/*
 carrotocr/

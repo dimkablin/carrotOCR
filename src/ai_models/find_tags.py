@@ -1,13 +1,13 @@
 #pylint: disable=E
 """ Find Tags model """
 import json
-
 import Levenshtein
+
 
 class FindTags:
     """ Zero Shot Classification init class"""
     def __init__(self):
-        self.path_to_classes = "./models/zero-shot-classification/classes.json"
+        self.path_to_classes = "src/ai_models/weights/zero-shot-classification/classes.json"
         self.values = []
         self.keys = []
         self.scores = {}

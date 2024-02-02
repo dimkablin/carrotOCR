@@ -1,11 +1,11 @@
-"""Easy OCR Initialization."""
+"""Trained EasyOCR Initialization."""
 from typing import Any
 import easyocr
 
-from src.models.ocr_models.ocr_interface import OCR
+from src.ai_models.ocr_models.ocr_interface import OCR
 from src.env import USE_CUDA
 
-class EasyOCRInited(OCR):
+class EasyOCRInitedCustom(OCR):
     """ Initialized EasyOCR model """
     def __init__(self):
         self.languages = ['ru']
@@ -13,10 +13,10 @@ class EasyOCRInited(OCR):
         self.model = easyocr.Reader(
             self.languages,
             gpu=self.use_cuda,
-            model_storage_directory='./models/ocr/easyOCR/model',
-            user_network_directory='./models/ocr/easyOCR/user_network',
+            model_storage_directory='src/ai_models/weights/ocr/easyOCR/model',
+            user_network_directory='src/ai_models/weights/ocr/easyOCR/user_network',
             download_enabled=False,
-            recog_network='cyrillic_g2'
+            recog_network='ru_custom'
         )
 
     def __call__(self, inputs, *args, **kwargs) -> list[dict[str, list[Any]]]:
@@ -43,4 +43,4 @@ class EasyOCRInited(OCR):
     @staticmethod
     def get_model_type() -> str:
         """Return model type."""
-        return "EasyOCR"
+        return "Trained"

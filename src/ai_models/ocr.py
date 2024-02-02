@@ -1,8 +1,8 @@
 """ Factory Method - Design Pattern """
-from src.models.ocr_models.easyocr import EasyOCRInited
-from src.models.ocr_models.easyocr_custom import EasyOCRInitedCustom
-from src.models.ocr_models.pytesseract import PyTesseractInited
-from src.models.ocr_models.none_ocr import NoneOCRInited
+from src.ai_models.ocr_models.easyocr import EasyOCRInited
+from src.ai_models.ocr_models.easyocr_custom import EasyOCRInitedCustom
+from src.ai_models.ocr_models.pytesseract import PyTesseractInited
+from src.ai_models.ocr_models.none_ocr import NoneOCRInited
 
 
 class OCRModelFactory:
@@ -26,5 +26,5 @@ class OCRModelFactory:
 
     @staticmethod
     def get_models():
-        """ Getter of models name """
+        """ Getter of ai_models name """
         return OCRModelFactory.MODEL_MAPPING.keys()

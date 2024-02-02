@@ -1,4 +1,4 @@
-"""get_processed function models."""
+"""get_processed function ai_models."""
 from typing import List, Optional
 from pydantic import BaseModel
 
