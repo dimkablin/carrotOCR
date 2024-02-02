@@ -27,6 +27,7 @@ logging.info("Running server.")
 create_dir_if_not_exist(DATA_PATH)
 
 app = FastAPI(
+    title="Backend API",
     docs_url="/api/docs",
     openapi_url="/api/openapi.json",
     openapi_tags=[{
