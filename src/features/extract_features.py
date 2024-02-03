@@ -68,4 +68,3 @@ def pipeline_image(
     image = bf.rotate_image(image, pipeline_params.angle)
 
     return image
-

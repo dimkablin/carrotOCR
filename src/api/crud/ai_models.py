@@ -27,7 +27,6 @@ from src.db.structures.processed_structure import ProcessedStructure
 # work with images
 import src.features.extract_features as pp
 import src.features.build_features as bf
-from src.utils.utils import create_dir
 
 
 class AIModels:
@@ -225,6 +224,7 @@ class AIModels:
                             message="Обработка моделью."
                         )
                     )
+                    # проверить не отменили ли обработку
 
         # delete images from DEVICE
         del images

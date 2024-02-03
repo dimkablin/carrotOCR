@@ -4,9 +4,6 @@
 import os
 from typing import List
 
-import cv2
-import numpy as np
-
 from src.api.models.database import TBox
 from src.env import project_dir, DATA_PATH
 
