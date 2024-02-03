@@ -3,12 +3,18 @@
 
 from typing import Optional
 
+import os
 import cv2
 import numpy as np
-from src.api.models.process_chunk import ProgressResponse
-from src.api.models.process_image import Cut, PipelineParams
-from src.api.routers.utils import send_progress_sync
-from src.features import build_features as pp
+
+from src.api.models.ai_models import Cut, PipelineParams
+from src.features import build_features as bf
+
+
+def check_extension(filename, extensions) -> bool:
+    """Check available filename extension"""
+    ext = os.path.splitext(filename)[-1].lower()
+    return ext in extensions
 
 
 def read_image(path: str):
@@ -37,7 +43,6 @@ def pipeline_image(
 
     Args:
         image (np.ndarray): input image
-        path (str): path to save result image
         pipeline_params (Optional[PipelineParams], optional): Pipeline args. Defaults to None.
 
     Returns:
@@ -46,7 +51,7 @@ def pipeline_image(
 
     # set config for pipeline
     if pipeline_params is None:
-        w2h_koeff = 0 if ( 0.4 < image.shape[0]/image.shape[1] < 2.5 ) else 1
+        w2h_koeff = 0 if (0.4 < image.shape[0]/image.shape[1] < 2.5) else 1
         pipeline_params = PipelineParams(
             angle=0,
             w2h_koeff=w2h_koeff,
@@ -54,35 +59,13 @@ def pipeline_image(
         )
 
     if pipeline_params.w2h_koeff > 0:
-        image = pp.crop(image, pipeline_params.w2h_koeff)
+        image = bf.crop(image, pipeline_params.w2h_koeff)
 
-    if pipeline_params.cut.width !=0 and pipeline_params.cut.height != 0:
-        image = pp.cut(image, pipeline_params.cut)
+    if pipeline_params.cut.width != 0 and pipeline_params.cut.height != 0:
+        image = bf.cut(image, pipeline_params.cut)
 
     # prepare images by pipeline config (rotate and cut)
-    image = pp.rotate_image(image, pipeline_params.angle)
+    image = bf.rotate_image(image, pipeline_params.angle)
 
     return image
 
-
-def pipeline_images(images, connections=None):
-    """
-    crop and rotate list of images
-    """
-    result = []
-    for i, image in enumerate(images):
-        result.append(pipeline_image(image))
-
-        # send progress via connection
-        if connections is not None:
-            for connection in connections:
-                send_progress_sync(
-                    connection,
-                    ProgressResponse(
-                        iter=i,
-                        length=2 * len(images),
-                        message="Предобработка данных."
-                    )
-                )
-
-    return result

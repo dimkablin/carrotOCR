@@ -91,7 +91,7 @@ class ProcessedManager:
             return db_manager.execute_query(query, data)
 
     @staticmethod
-    def get_data_by_chunk_id(chunk_id: int) -> ProcessedStructure:
+    def get_data_by_chunk_id(chunk_id: int) -> List[Optional[tuple]]:
         """Get data from the database by chunk_id."""
         with DatabaseManager(**ProcessedManager.db_config) as db_manager:
             query = f"SELECT * FROM {ProcessedManager.table_name} WHERE chunk_id = %s"

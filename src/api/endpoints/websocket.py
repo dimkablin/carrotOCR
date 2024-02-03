@@ -1,11 +1,12 @@
-""" Websocket router file"""
+"""Websocket and initialization of ai_models"""
 
 from fastapi import APIRouter, WebSocket
-from src.api.routers.websocket import websocket_manager
+from src.api.websocket import websocket_manager
 
-websoket_router = APIRouter()
+router = APIRouter()
 
-@websoket_router.websocket("/ws")
+
+@router.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket, chunk_id: int, ocr_model_type: str):
     """Process Chunk WebSocket init"""
     await websocket_manager.connect(websocket, chunk_id, ocr_model_type)
