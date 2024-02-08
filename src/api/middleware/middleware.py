@@ -1,6 +1,7 @@
 """Middleware"""
 import time
 import logging
+import traceback
 
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
@@ -23,7 +24,8 @@ class BackendMiddleware(BaseHTTPMiddleware):
 
         except self.ERRORS as error:
             logging.critical("%s", "Raised error in services.")
-            logging.error(error)
+            logging.exception(error)
+            traceback.print_exc()
 
     def __str__(self):
         return ""

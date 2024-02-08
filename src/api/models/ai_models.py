@@ -39,6 +39,15 @@ class ProcessImageResponse(BaseModel):
     duplicate_id: int  # Duplicate ID if it is already in database
 
 
+class ProcessFileResponse(BaseModel):
+    """ OCR model result type """
+    uid: int  # Image ID
+    old_filename: str
+    duplicate_id: int  # Duplicate ID if it is already in database
+    file_type: str = None
+    heirs: List[ProcessImageResponse] = None
+
+
 class ProcessChunkRequest(BaseModel):
     """ Request to the OCR model """
     chunk_id: int  # Chunk ID
@@ -48,7 +57,7 @@ class ProcessChunkRequest(BaseModel):
 class ProcessChunkResponse(BaseModel):
     """ Response of the OCR model """
     chunk_id: int  # Chunk ID
-    results: List[ProcessImageResponse]
+    results: List[ProcessFileResponse]
     action: str = "chunk"
 
 

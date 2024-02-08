@@ -93,3 +93,4 @@ target/
 /src/ai_models/weights/ocr/mmocr/sar/
 /LOCAL_DATA/*
 carrotocr/
+/notebooks/data/image.jpg

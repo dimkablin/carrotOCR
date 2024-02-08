@@ -27,7 +27,7 @@ def process_chunk(req: ProcessChunkRequest):
     return result
 
 
-@router.post("/process-image/", response_model=ProcessImageResponse)
+@router.post("/process-image/", response_model=ProcessFileResponse)
 def process_image(req: ProcessImageRequest):
     """Rotate and process image function."""
     return AIModels.process_image(OCR_MODEL.get(req.ocr_model_type), FIND_TAGS_MODEL, req)

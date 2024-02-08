@@ -8,6 +8,7 @@ import numpy as np
 
 from websocket import WebSocket
 
+from src.db.files_manager import FilesManager
 # importing path to the folder
 from src.env import DATA_PATH
 from src.api.models.data import IMAGE_EXTENSIONS
@@ -31,7 +32,6 @@ import src.features.build_features as bf
 
 class AIModels:
     """AI models class."""
-
     @staticmethod
     def get_ocr_models() -> GetOCRModelsResponse:
         """Get OCR Models service function."""
@@ -75,7 +75,7 @@ class AIModels:
     def process_image(
             ocr_model: OCR,
             tags_model: FindTags,
-            req: ProcessImageRequest) -> ProcessImageResponse:
+            req: ProcessImageRequest) -> ProcessFileResponse:
         """ process a image.
 
         Args:
@@ -128,7 +128,7 @@ class AIModels:
             time.time() - start_time
         )
 
-        res = ProcessImageResponse(
+        res = ProcessFileResponse(
             uid=req.uid,
             old_filename=data.old_filename,
             duplicate_id=-1
@@ -141,58 +141,67 @@ class AIModels:
             ocr_model: OCR,
             tags_model: FindTags,
             req: ProcessChunkRequest,
-            connections: List[WebSocket] = None,
-            send_progress_sync=None) -> ProcessChunkResponse:
-        """ process a chunk of data.
-
-        Args:
-            ocr_model (OCRModelFactoryProcessor): OCR model class
-            tags_model (FindTags): FindTags model that will find model
-            req (ProcessChunkRequest): request from frontend
-            connections (List[WebSocket]):
-            send_progress_sync (function):
-        Returns:
-            ProcessChunkResponse: response of process chunk
-
+            tqdm) -> ProcessChunkResponse:
         """
+        process a chunk of data.
+        :param ocr_model:
+        :param tags_model:
+        :param req:
+        :param tqdm:
+        :return:
+        """
+        # init tqdm and response
+        tqdm.message = "Обработка моделью."
+        response = ProcessChunkResponse(chunk_id=req.chunk_id, results=[])
+
+        # START LOGGING
         start_time = time.time()
 
-        paths = os.path.join(DATA_PATH, str(req.chunk_id))
+        # process IMAGES in chunk_id
+        path = os.path.join(DATA_PATH, str(req.chunk_id))
+        results = AIModels._process_chunk(ocr_model, tags_model, req, path, tqdm)
+        response.results += results
+
+        # process PDF in chunk_id
+        all_pdf = FilesManager().get_data_by_chunk_id(req.chunk_id)
+        print(all_pdf)
+
+        # read images and use model
+
+        # END LOGGING
+        logging.info(
+            "Processed %d images with %s model in %.3f seconds.",
+            tqdm.length, ocr_model.get_model_type(), time.time() - start_time
+        )
+        return response
+
+    @staticmethod
+    def _process_chunk(
+            ocr_model: OCR,
+            tags_model: FindTags,
+            req: ProcessChunkRequest,
+            path: str,
+            tqdm) -> List[ProcessFileResponse]:
+        """
+        Internal function to process the chunk of images
+        :param ocr_model: OCR model type
+        :param tags_model: FindTags model that will find model
+        :param req: request model with details
+        :param : Paths to images
+        :return: ProcessChunkResponse
+        """
+        results = []
 
         image_names = []
-        for i in os.listdir(paths):
+        for i in os.listdir(path):
             if pp.check_extension(i, IMAGE_EXTENSIONS):
                 image_names.append(i.split("/")[-1])
 
-        response = ProcessChunkResponse(chunk_id=req.chunk_id, results=[])
+        paths = [path + "/" + i for i in image_names]
 
-        # read images and use model
-        paths_to_images = [paths + "/" + i for i in image_names]
-        images = pp.read_images(paths_to_images)
+        images = pp.read_images(paths)
+        images = [pp.pipeline_image(image) for image in images]
 
-        result = []
-        for i, image in enumerate(images):
-            result.append(pp.pipeline_image(image))
-
-            # send progress via connection
-            if connections is not None:
-                for connection in connections:
-                    send_progress_sync(
-                        connection,
-                        ProgressResponse(
-                            iter=i,
-                            length=2 * len(images),
-                            message="Предобработка данных."
-                        )
-                    )
-
-        logging.info(
-            "Pipeline executed %d images in %.3f seconds",
-            len(image_names),
-            time.time() - start_time
-        )
-
-        start_time = time.time()
         for i, image in enumerate(images):
             data = AIModels._process_image(
                 image=image,
@@ -205,34 +214,14 @@ class AIModels:
             data.angle = 0
             uid = ProcessedManager.insert_data(data)
 
-            response.results.append(
-                ProcessImageResponse(
-                    uid=uid,
-                    old_filename=data.old_filename,
-                    duplicate_id=-1
-                )
+            results.append(
+                ProcessFileResponse(uid=uid, old_filename=data.old_filename, duplicate_id=-1)
             )
 
             # senf progress bar
-            if connections is not None:
-                for connection in connections:
-                    send_progress_sync(
-                        connection,
-                        ProgressResponse(
-                            iter=i + len(images),
-                            length=2 * len(images),
-                            message="Обработка моделью."
-                        )
-                    )
-                    # проверить не отменили ли обработку
+            tqdm.update()
 
         # delete images from DEVICE
         del images
 
-        logging.info(
-            "Processed %d images with %s model in %.3f seconds.",
-            len(image_names),
-            ocr_model.get_model_type(),
-            time.time() - start_time
-        )
-        return response
+        return results

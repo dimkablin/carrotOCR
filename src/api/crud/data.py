@@ -7,6 +7,8 @@ import zipfile
 import fitz
 
 from src.db.processed_manager import ProcessedManager
+from src.db.files_manager import FilesManager
+from src.db.structures.file_structure import FileStructure
 from src.db.structures.processed_structure import ProcessedStructure
 from src.env import SERVER_PATH, DATA_PATH
 from src.api.models.data import *
@@ -42,18 +44,17 @@ class Data:
         return GetFilesResponse(files=files)
 
     @staticmethod
-    def pdf_to_images(save_path: str, filename: str, dpi: int = 200) -> List[str]:
+    def pdf_to_images(file_path: str, save_path: str, dpi: int = 200) -> List[str]:
         """Convert pdf to images"""
-        doc = fitz.open(os.path.join(save_path, filename))
         paths = []
 
-        for page in doc:
+        for page in fitz.open(file_path):
             image = page.get_pixmap(matrix=fitz.Matrix(dpi/72.0, dpi/72.0))
 
             # Save the image as PNG
             image_path = os.path.join(
                 save_path,
-                f"{filename}_page_{page.number}.png"
+                f"page_{page.number}.png"
             )
             image.save(image_path)
             paths.append(image_path)
@@ -75,16 +76,24 @@ class Data:
                 warnings.warn("File extension is not supported.")
                 continue
 
-            path = os.path.join(save_path, filename)
+            file_path = os.path.join(save_path, filename)
 
             # сохраним файл в save_path
-            with open(path, "wb") as wb_f:
+            with open(file_path, "wb") as wb_f:
                 wb_f.write(file.file.read())
-                paths.append(path)
+                paths.append(file_path)
 
             # если файл пдф, то конвертируем его в изображения
             if pp.check_extension(filename, FILE_EXTENSIONS):
-                result = Data.pdf_to_images(save_path, filename)
+                pdf_id = FilesManager.insert_data(FileStructure(
+                    chunk_id=chunk_id,
+                    old_filename=filename
+                ))
+                # выгрузим сканы в папку save_path
+                i_save_path = os.path.join(save_path, str(pdf_id))
+                create_dir(i_save_path)
+
+                result = Data.pdf_to_images(file_path, i_save_path)
                 paths += result
 
         return UploadFilesResponse(paths=paths)

@@ -3,13 +3,15 @@ from src.db.database_manager import DatabaseManager
 from src.db.processed_manager import ProcessedManager
 from src.db.permatags_manager import PermatagsManager
 from src.db.grouptags_manager import GrouptagsManager
+from src.db.files_manager import FilesManager
 
 
 if __name__ == "__main__":
     t_managers = [
         GrouptagsManager,
         ProcessedManager,
-        PermatagsManager
+        PermatagsManager,
+        FilesManager
     ]
 
     # deleting tables

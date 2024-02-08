@@ -3,9 +3,12 @@
 from concurrent.futures import ThreadPoolExecutor
 import asyncio
 import json
+from typing import List
+
 from fastapi.encoders import jsonable_encoder
 
 from fastapi import WebSocket
+from pydantic import BaseModel
 
 from src.ai_models.ocr import OCR_MODEL
 from src.ai_models.find_tags import FIND_TAGS_MODEL
@@ -67,15 +70,15 @@ class WebSocketManager:
         req = ProcessChunkRequest(chunk_id=chunk_id, ocr_model_type=ocr_model_type)
 
         loop = asyncio.get_event_loop()
+
+        tqdm = UpdateProgress(connections=self.connections[chunk_id])
         result = await loop.run_in_executor(
             executor,
             AIModels.process_chunk,
             self.ocr_model.get(req.ocr_model_type),
             self.find_tags_model,
             req,
-            self.connections[chunk_id],
-            WebSocketManager.send_progress_sync
-
+            tqdm
         )
         await self.send_message_to_chunk(chunk_id, result)
 
@@ -87,17 +90,40 @@ class WebSocketManager:
                 await connection.send_text(json_message)
 
     @staticmethod
-    def send_progress_sync(connection: WebSocket, progress: ProgressResponse):
+    def send_json(connection: WebSocket, message: BaseModel):
         """ Send progress of the process_chunk service"""
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
 
         try:
             loop.run_until_complete(
-                connection.send_text(json.dumps(jsonable_encoder(progress)))
+                connection.send_text(json.dumps(jsonable_encoder(message)))
             )
         finally:
             loop.close()
+
+
+class UpdateProgress:
+    def __init__(self, connections: List[WebSocket], length: int = 0, message: str = ""):
+        self.i = 0
+        self.length = length
+        self.connections = connections
+        self.message = message
+
+    def update(self):
+        """ Update progress and senf it via socket"""
+        self.i += 1
+
+        if self.connections is not None:
+            for connection in self.connections:
+                WebSocketManager.send_json(
+                    connection,
+                    ProgressResponse(
+                        iter=self.i,
+                        length=self.length,
+                        message=self.message
+                    )
+                )
 
 
 websocket_manager = WebSocketManager(OCR_MODEL, FIND_TAGS_MODEL)

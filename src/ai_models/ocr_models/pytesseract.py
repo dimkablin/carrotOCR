@@ -4,12 +4,13 @@ from pytesseract import Output
 import pytesseract
 from src.ai_models.ocr_models.ocr_interface import OCR
 
+
 class PyTesseractInited(OCR):
     """ Initialized PyTesseract model """
-    def __init__(self):
+    def __init__(self, psm=6, oem=3):
         self.local_config_dir = 'src/ai_models/weights/ocr/pytesseract'
-        self.oem = 3
-        self.psm = 6
+        self.oem = oem
+        self.psm = psm
         self.config = f"--oem {self.oem} --psm {self.psm} --tessdata-dir {self.local_config_dir}"
         self.thresh = 0.3
 
