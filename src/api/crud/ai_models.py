@@ -36,39 +36,6 @@ class AIModels:
         return GetOCRModelsResponse(models=models, default=0)
 
     @staticmethod
-    def _process_image(
-            image: np.ndarray,
-            ocr_model: OCR,
-            tags_model: FindTags,
-            image_name: str,
-            chunk_id: int) -> ProcessedStructure:
-        """ Main function to process a chunk of data
-
-        Args:
-            image: input image
-            ocr_model (OCRModelFactoryProcessor): ocr model
-            tags_model (FindTags): model to find tags
-            image_name (list[str]): names of images
-            chunk_id (int): chunk ID
-
-        Returns:
-            ProcessChunkResponse: response of process chunk
-        """
-
-        # use model
-        output = ocr_model([image])[0]
-
-        data = ProcessedStructure(
-            chunk_id=chunk_id,
-            old_filename=image_name,
-            tags=tags_model(n_out=10, texts=output['rec_texts']),
-            text=output['rec_texts'],
-            bboxes=output['det_polygons']
-        )
-
-        return data
-
-    @staticmethod
     def process_image(
             ocr_model: OCR,
             tags_model: FindTags,
@@ -132,6 +99,39 @@ class AIModels:
         )
 
         return res
+
+    @staticmethod
+    def _process_image(
+            image: np.ndarray,
+            ocr_model: OCR,
+            tags_model: FindTags,
+            image_name: str,
+            chunk_id: int) -> ProcessedStructure:
+        """ Main function to process a chunk of data
+
+        Args:
+            image: input image
+            ocr_model (OCRModelFactoryProcessor): ocr model
+            tags_model (FindTags): model to find tags
+            image_name (list[str]): names of images
+            chunk_id (int): chunk ID
+
+        Returns:
+            ProcessChunkResponse: response of process chunk
+        """
+
+        # use model
+        output = ocr_model([image])[0]
+
+        data = ProcessedStructure(
+            chunk_id=chunk_id,
+            old_filename=image_name,
+            tags=tags_model(n_out=10, texts=output['rec_texts']),
+            text=output['rec_texts'],
+            bboxes=output['det_polygons']
+        )
+
+        return data
 
     @staticmethod
     def process_chunk(
@@ -233,9 +233,13 @@ class AIModels:
                 )
             )
 
-            # senf progress bar
+            # send progress bar
             if tqdm is not None:
                 tqdm.update()
+
+                # if websockets was closed
+                if not tqdm.connections:
+                    break
 
         # delete images from DEVICE
         del images
