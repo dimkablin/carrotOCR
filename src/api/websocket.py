@@ -104,6 +104,7 @@ class WebSocketManager:
 
 
 class UpdateProgress:
+    """Class to send progress via websocket"""
     def __init__(self, connections: List[WebSocket], length: int = 0, message: str = ""):
         self.i = 0
         self.length = length

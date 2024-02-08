@@ -48,6 +48,7 @@ class ProcessFileResponse(BaseModel):
     heirs: List[ProcessImageResponse] = None
 
     def process_image_response(self):
+        """convert to ProcessImageResponse class"""
         return ProcessImageResponse(
             uid=self.uid,
             old_filename=self.old_filename,
