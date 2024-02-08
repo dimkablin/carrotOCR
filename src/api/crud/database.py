@@ -1,8 +1,8 @@
 """Crud of functions for database"""
 from typing import List, Any
 
-from src.db.processed_manager import ProcessedManager, ProcessedStructure
-from src.db.files_manager import FilesManager, FileStructure
+from src.db.processed_manager import ProcessedManager
+from src.db.files_manager import FilesManager
 
 from src.utils.utils import bboxes2rect
 from src.api.models.database import *
