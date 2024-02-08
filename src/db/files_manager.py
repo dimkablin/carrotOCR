@@ -83,13 +83,13 @@ class FilesManager:
             return db_manager.execute_query(query, data)
 
     @staticmethod
-    def get_data_by_chunk_id(chunk_id: int) -> List[Optional[tuple]]:
+    def get_data_by_chunk_id(chunk_id: int) -> List[FileStructure]:
         """Get data from the database by chunk_id."""
         with DatabaseManager(**FilesManager.db_config) as db_manager:
             query = f"SELECT * FROM {FilesManager.table_name} WHERE chunk_id = %s"
             data = (chunk_id,)
             result = db_manager.execute_query(query, data, fetch=True)
-            return result
+            return [FileStructure().from_db(i) for i in result]
 
     @staticmethod
     def insert_new_filename(new_filename: str, uid: int) -> bool:

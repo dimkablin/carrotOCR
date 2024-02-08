@@ -55,6 +55,7 @@ class AddFilenameRequest(BaseModel):
     uid: int
     filename: str
     is_duplicate: bool = False
+    file_type: str
 
 
 class AddFilenamesRequest(BaseModel):

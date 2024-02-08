@@ -3,8 +3,8 @@
 from typing import List
 from pydantic import BaseModel
 
-IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
-FILE_EXTENSIONS = {".pdf", ".xps", ".epub", ".mobi", ".fb2", ".cbz", ".txt"}
+IMAGE_EXTENSIONS = {"jpg", "jpeg", "png", "bmp", "webp"}
+FILE_EXTENSIONS = {"pdf", "xps", "epub", "mobi", "fb2", "cbz", "txt"}
 
 
 class GetFRequest(BaseModel):

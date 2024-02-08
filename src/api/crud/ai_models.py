@@ -1,12 +1,9 @@
 """AI models module."""
 
 import os
-from typing import List
 import time
 import logging
 import numpy as np
-
-from websocket import WebSocket
 
 from src.db.files_manager import FilesManager
 # importing path to the folder
@@ -141,7 +138,7 @@ class AIModels:
             ocr_model: OCR,
             tags_model: FindTags,
             req: ProcessChunkRequest,
-            tqdm) -> ProcessChunkResponse:
+            tqdm=None) -> ProcessChunkResponse:
         """
         process a chunk of data.
         :param ocr_model:
@@ -150,28 +147,41 @@ class AIModels:
         :param tqdm:
         :return:
         """
+        path = os.path.join(DATA_PATH, str(req.chunk_id))
+
         # init tqdm and response
-        tqdm.message = "Обработка моделью."
+        if tqdm is not None:
+            tqdm.message = "Обработка моделью."
+            tqdm.length = pp.count_files(path)
+
         response = ProcessChunkResponse(chunk_id=req.chunk_id, results=[])
 
         # START LOGGING
         start_time = time.time()
 
         # process IMAGES in chunk_id
-        path = os.path.join(DATA_PATH, str(req.chunk_id))
         results = AIModels._process_chunk(ocr_model, tags_model, req, path, tqdm)
         response.results += results
 
         # process PDF in chunk_id
         all_pdf = FilesManager().get_data_by_chunk_id(req.chunk_id)
-        print(all_pdf)
+        for pdf in all_pdf:
+            path = os.path.join(DATA_PATH, str(req.chunk_id), str(pdf.uid))
+            results = AIModels._process_chunk(ocr_model, tags_model, req, path, tqdm)
+            response.results.append(ProcessFileResponse(
+                uid=pdf.uid,
+                old_filename=pdf.old_filename,
+                duplicate_id=-1,
+                file_type='file',
+                heirs=[result.process_image_response() for result in results]
+            ))
 
         # read images and use model
 
         # END LOGGING
         logging.info(
             "Processed %d images with %s model in %.3f seconds.",
-            tqdm.length, ocr_model.get_model_type(), time.time() - start_time
+            tqdm.length if tqdm else 0, ocr_model.get_model_type(), time.time() - start_time
         )
         return response
 
@@ -215,11 +225,17 @@ class AIModels:
             uid = ProcessedManager.insert_data(data)
 
             results.append(
-                ProcessFileResponse(uid=uid, old_filename=data.old_filename, duplicate_id=-1)
+                ProcessFileResponse(
+                    uid=uid,
+                    old_filename=data.old_filename,
+                    duplicate_id=-1,
+                    file_type='image'
+                )
             )
 
             # senf progress bar
-            tqdm.update()
+            if tqdm is not None:
+                tqdm.update()
 
         # delete images from DEVICE
         del images

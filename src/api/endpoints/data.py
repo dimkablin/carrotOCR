@@ -46,6 +46,16 @@ def get_images_extension():
     return IMAGE_EXTENSIONS
 
 
+@router.get("/get-file-type/", response_model=str)
+def get_file_type(extension: str):
+    """Return file type"""
+    if extension in FILE_EXTENSIONS:
+        return "file"
+    elif extension in IMAGE_EXTENSIONS:
+        return "image"
+    else:
+        return "unknown"
+
 @router.post("/upload-files/", response_model=UploadFilesResponse)
 def upload_files(chunk_id: int, files: List[UploadFile] = File(...)):
     """Uploading files to the server."""

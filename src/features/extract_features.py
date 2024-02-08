@@ -13,7 +13,7 @@ from src.features import build_features as bf
 
 def check_extension(filename, extensions) -> bool:
     """Check available filename extension"""
-    ext = os.path.splitext(filename)[-1].lower()
+    ext = filename.split(".")[-1]
     return ext in extensions
 
 
@@ -68,3 +68,16 @@ def pipeline_image(
     image = bf.rotate_image(image, pipeline_params.angle)
 
     return image
+
+def count_files(directory_path):
+    """
+    Counts the number of files in a dir
+    :param directory_path:
+    :return:
+    """
+    file_count = 0
+
+    for root, dirs, files in os.walk(directory_path):
+        file_count += len(files)
+
+    return file_count

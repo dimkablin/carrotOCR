@@ -1,8 +1,9 @@
 """Crud of functions for database"""
 from typing import List, Any
 
-from src.db.processed_manager import ProcessedManager
-from src.db.structures.processed_structure import ProcessedStructure
+from src.db.processed_manager import ProcessedManager, ProcessedStructure
+from src.db.files_manager import FilesManager, FileStructure
+
 from src.utils.utils import bboxes2rect
 from src.api.models.database import *
 
@@ -31,15 +32,17 @@ class Database:
         if req.is_duplicate:
             return False
 
-        return ProcessedManager.insert_new_filename(req.filename, req.uid)
+        if req.file_type == "image":
+            return ProcessedManager.insert_new_filename(req.filename, req.uid)
+        elif req.file_type == "file":
+            return FilesManager.insert_new_filename(req.filename, req.uid)
+
+        return False
 
     @staticmethod
     def get_data_by_chunk_id(chunk_id: int) -> List[Any]:
         """Return data by chunk id"""
-        datas = ProcessedManager.get_data_by_chunk_id(chunk_id)
-        datas = [ProcessedStructure().from_db(data) for data in datas]
-
-        return datas
+        return ProcessedManager.get_data_by_chunk_id(chunk_id)
 
     @staticmethod
     def delete_data_by_id_chunk(chunk_id: int) -> bool:

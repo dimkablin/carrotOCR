@@ -47,6 +47,13 @@ class ProcessFileResponse(BaseModel):
     file_type: str = None
     heirs: List[ProcessImageResponse] = None
 
+    def process_image_response(self):
+        return ProcessImageResponse(
+            uid=self.uid,
+            old_filename=self.old_filename,
+            duplicate_id=self.duplicate_id
+        )
+
 
 class ProcessChunkRequest(BaseModel):
     """ Request to the OCR model """

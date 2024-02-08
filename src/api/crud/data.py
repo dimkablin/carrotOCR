@@ -141,17 +141,39 @@ class Data:
         if not os.path.exists(path):
             return None
 
-        datas = ProcessedManager.get_data_by_chunk_id(chunk_id)
+        # getting data from DataBase and files from chunk_id dir
+        datas = []
+        for data in ProcessedManager.get_data_by_chunk_id(chunk_id):
+            datas.append({
+                "old_filename": data.old_filename,
+                "new_filename": data.new_filename,
+                "type": "image"
+            })
+        for data in FilesManager.get_data_by_chunk_id(chunk_id):
+            datas.append({
+                "old_filename": data.old_filename,
+                "new_filename": data.new_filename,
+                "type": "file"
+            })
+
+        filenames = [
+            i for i in os.listdir(path)
+            if pp.check_extension(filename, FILE_EXTENSIONS | IMAGE_EXTENSIONS)
+        ]
+
         with zipfile.ZipFile(archive_path, "w", zipfile.ZIP_DEFLATED) as zip_file:
             for data in datas:
-                data = ProcessedStructure().from_db(data)
-                old_path = os.path.join(DATA_PATH, str(chunk_id), data.old_filename)
+                # if file is not in LOCAL_DATA/chunk_id/ dir
+                if data["old_filename"] not in filenames:
+                    continue
 
-                if data.new_filename is None:
+                old_path = os.path.join(DATA_PATH, str(chunk_id), data["old_filename"])
+
+                if data["new_filename"] is None:
                     warnings.warn(f"No new filename for {old_path}.")
-                    new_filename = data.old_filename
+                    new_filename = data["old_filename"]
                 else:
-                    new_filename = data.new_filename + "." + data.old_filename.split(".")[-1]
+                    new_filename = data["new_filename"] + "." + data["old_filename"].split(".")[-1]
 
                 if not os.path.exists(old_path):
                     warnings.warn(f"File {old_path} not found.")
