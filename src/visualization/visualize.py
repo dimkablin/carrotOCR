@@ -71,4 +71,3 @@ def result2show(image, result, cmap=colormaps['summer']) -> None:
                      va='center')
 
     plt.tight_layout()
-    plt.show()
