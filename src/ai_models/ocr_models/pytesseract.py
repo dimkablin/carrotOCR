@@ -7,7 +7,7 @@ from src.ai_models.ocr_models.ocr_interface import OCR
 
 class PyTesseractInited(OCR):
     """ Initialized PyTesseract model """
-    def __init__(self, psm=6, oem=3):
+    def __init__(self, psm=3, oem=3):
         self.local_config_dir = 'src/ai_models/weights/ocr/pytesseract'
         self.oem = oem
         self.psm = psm

@@ -9,7 +9,6 @@ import fitz
 from src.db.processed_manager import ProcessedManager
 from src.db.files_manager import FilesManager
 from src.db.structures.file_structure import FileStructure
-from src.db.structures.processed_structure import ProcessedStructure
 from src.env import SERVER_PATH, DATA_PATH
 from src.api.models.data import *
 from src.features import extract_features as pp
@@ -158,15 +157,15 @@ class Data:
 
         filenames = [
             i for i in os.listdir(path)
-            if pp.check_extension(filename, FILE_EXTENSIONS | IMAGE_EXTENSIONS)
+            if pp.check_extension(i, FILE_EXTENSIONS | IMAGE_EXTENSIONS)
         ]
 
         with zipfile.ZipFile(archive_path, "w", zipfile.ZIP_DEFLATED) as zip_file:
+            print(datas, filenames)
             for data in datas:
                 # if file is not in LOCAL_DATA/chunk_id/ dir
                 if data["old_filename"] not in filenames:
                     continue
-
                 old_path = os.path.join(DATA_PATH, str(chunk_id), data["old_filename"])
 
                 if data["new_filename"] is None:
