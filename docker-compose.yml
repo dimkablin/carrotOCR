@@ -1,53 +1,38 @@
 version: '3'
-networks:
-  database:
-    ipam:
-      config:
-        - subnet: 172.20.0.0/24
+
 services:
+  web:
+    image: fa4stik/carrotocr_web
+    env_file:
+      - '.env'
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+
+  backend:
+    image: fa4stik/carrotocr_back
+    command: sh -c "sleep 5 && python3 /carrotocr/db_script.py && python3 /carrotocr/src/main.py"
+    env_file:
+      - '.env'
+    depends_on:
+      - postgres
+    volumes:
+      - ./LOCAL_DATA:/carrotocr/LOCAL_DATA
+    ports:
+      - "7000:8000"
+
   postgres:
     image: postgres:14
-    networks:
-        database:
-            ipv4_address: 172.20.0.5
-    environment:
-      POSTGRES_DB: "carrotocr"
-      POSTGRES_USER: "admin"
-      POSTGRES_PASSWORD: "MQcjPndiWW"
+    env_file:
+      - '.env'
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready", "-d", "db_prod"]
+      test: [ "CMD-SHELL", "pg_isready", "-d", "db_prod" ]
       interval: 30s
       timeout: 60s
       retries: 5
-      
-  carrotocr:
-    build: ./
-    networks:
-        database:
-            ipv4_address: 172.20.0.6
-    environment:
-      - PYTHONUNBUFFERED=True
-    command: bash -c "python3 db_script.py && uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --timeout-keep-alive 99999 --ws-ping-timeout 99999 --limit-concurrency 99999"
-    depends_on:
-      - postgres
-      
-  front:
-    build: ../search_text_rename_file
-    networks:
-        database:
-            ipv4_address: 172.20.0.7
-    command: bash -c "npm start"
-    
-  nginx:
-    image: nginx:latest
-    networks:
-        database:
-            ipv4_address: 172.20.0.8
-    depends_on:
-      - carrotocr
-      - front
-      - postgres
-    ports:
-      - '80:80'
+      start_period: 80s
     volumes:
-      - ../search_text_rename_file/nginx.conf:/etc/nginx/nginx.conf
+      - ./postgres-data:/var/lib/postgresql/data
+    ports:
+      - "6000:5432"
