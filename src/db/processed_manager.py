@@ -91,13 +91,13 @@ class ProcessedManager:
             return db_manager.execute_query(query, data)
 
     @staticmethod
-    def get_data_by_chunk_id(chunk_id: int) -> ProcessedStructure:
+    def get_data_by_chunk_id(chunk_id: int) -> List[ProcessedStructure]:
         """Get data from the database by chunk_id."""
         with DatabaseManager(**ProcessedManager.db_config) as db_manager:
             query = f"SELECT * FROM {ProcessedManager.table_name} WHERE chunk_id = %s"
             data = (chunk_id,)
             result = db_manager.execute_query(query, data, fetch=True)
-            return result
+            return [ProcessedStructure().from_db(i) for i in result]
 
     @staticmethod
     def insert_new_filename(new_filename: str, uid: int) -> bool:

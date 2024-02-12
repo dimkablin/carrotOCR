@@ -14,7 +14,7 @@ from skimage.transform import (hough_line, hough_line_peaks)
 from skimage.filters import threshold_otsu, sobel
 from scipy.stats import mode
 
-from src.api.models.process_image import Cut
+from src.api.models.ai_models import Cut
 
 
 def byte2numpy(image) -> np.ndarray:

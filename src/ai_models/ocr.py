@@ -28,3 +28,6 @@ class OCRModelFactory:
     def get_models():
         """ Getter of ai_models name """
         return OCRModelFactory.MODEL_MAPPING.keys()
+
+
+OCR_MODEL = OCRModelFactory()

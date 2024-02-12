@@ -18,8 +18,9 @@ Project Organization
     ├── setup.py                <- makes project pip installable (pip install -e .) so src can be imported
     ├── src                     <- Source code for use in this project.
     │   ├── api                 
-    │   │   ├── services        <- Fast API services.
+    │   │   ├── crud            
     │   │   ├── models          <- Fast API models.
+    │   │   ├── endpoints       <- Fast API endpoints.
     │   │   └── main.py
     │   │
     │   ├── db                  <- Scripts that using for connect to the database, 'processed' and 'permatags' table manager.

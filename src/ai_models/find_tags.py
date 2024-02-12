@@ -47,3 +47,6 @@ class FindTags:
                 result.append(self.keys[i])
 
         return result
+
+
+FIND_TAGS_MODEL = FindTags()

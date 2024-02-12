@@ -1,7 +1,7 @@
 # pylint: disable=R,E
 """grouptags table manager"""
 from psycopg2 import extensions
-from src.api.models.tags import GrouptagsResponse
+from src.api.models.database import GrouptagsResponse
 
 from src.db.database_manager import DatabaseManager
 from src.db.structures.grouptags_structure import GrouptagsStructure

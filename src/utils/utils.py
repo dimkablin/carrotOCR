@@ -4,11 +4,8 @@
 import os
 from typing import List
 
-import cv2
-import numpy as np
-
-from src.api.models.get_processed import TBox
-from src.env import project_dir
+from src.api.models.database import TBox
+from src.env import project_dir, DATA_PATH
 
 
 def get_abspath(*path):
@@ -39,20 +36,9 @@ def bboxes2rect(bboxes: List[List[int]]) -> List[TBox]:
     return result
 
 
-def create_dir_if_not_exist(path_: str) -> None:
-    """Creating directory if it doesn't exist."""
-    if not os.path.exists(path_):
-        os.mkdir(path_)
+def create_dir(dirname: str = None) -> None:
+    """create_chunk_id_dir function service."""
+    path = os.path.join(DATA_PATH, dirname) if dirname else DATA_PATH
 
-
-def save_image(image_path: str, image: np.ndarray) -> None:
-    """Save an image."""
-    cv2.imwrite(image_path, image)
-
-
-def save_images(images: List[np.ndarray], image_names: List[str], path: str) -> None:
-    """Save images to path/names[i]"""
-    create_dir_if_not_exist(path)
-
-    for i, image in enumerate(images):
-        save_image(path + "/" + image_names[i], image)
+    if not os.path.exists(path):
+        os.mkdir(path)

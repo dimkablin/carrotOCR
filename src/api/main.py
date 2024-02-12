@@ -1,21 +1,15 @@
 """ FastAPI connection """
 import logging
 
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from src.api.middleware.middleware import BackendMiddleware
 from src.env import DATA_PATH
 
-from src.utils.utils import create_dir_if_not_exist
-from src.api.routers.connection_manager import ConnectionManager
+from src.utils.utils import create_dir
 
-from src.api.routers.pipeline_router import pipeline_router
-from src.api.routers.data_router import data_router
-from src.api.routers.websocket_router import websoket_router
-from src.api.routers.ai_models_router import ml_model_router
-
-connection_manager = ConnectionManager()
+from src.api.endpoints import ai_models, data, database, websocket
 
 # LOGGING CONFIG SETTING
 logging.basicConfig(
@@ -24,7 +18,7 @@ logging.basicConfig(
 )
 logging.info("Running server.")
 
-create_dir_if_not_exist(DATA_PATH)
+create_dir(DATA_PATH)
 
 app = FastAPI(
     title="Backend API",
@@ -35,7 +29,6 @@ app = FastAPI(
         "description": "Backend API router."
     }]
 )
-router = APIRouter()
 
 app.add_middleware(BackendMiddleware)
 app.add_middleware(
@@ -47,8 +40,7 @@ app.add_middleware(
 )
 app.mount("/api/LOCAL_DATA", StaticFiles(directory=DATA_PATH), name="LOCAL_DATA")
 
-app.include_router(router, prefix="/api")
-app.include_router(pipeline_router, prefix="/api")
-app.include_router(data_router, prefix='/api')
-app.include_router(websoket_router, prefix='/api')
-app.include_router(ml_model_router, prefix="/api")
+app.include_router(ai_models.router, prefix="/api", tags=["ai_models"])
+app.include_router(data.router, prefix="/api", tags=["data"])
+app.include_router(database.router, prefix='/api', tags=["database"])
+app.include_router(websocket.router, prefix='/api', tags=["websocket"])
