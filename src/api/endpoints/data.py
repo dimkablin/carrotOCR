@@ -23,9 +23,9 @@ def get_folders(req: GetFRequest):
 
 
 @router.get("/get-file/")
-def get_file(uid: int):
+def get_file(uid: int, pdf_id: int):
     """Return file from static directory."""
-    return Data.get_file(uid)
+    return Data.get_file(uid, pdf_id)
 
 
 @router.get('/get-chunk-id/', response_model=int)
@@ -51,10 +51,9 @@ def get_file_type(extension: str):
     """Return file type"""
     if extension in FILE_EXTENSIONS:
         return "file"
-    elif extension in IMAGE_EXTENSIONS:
+    if extension in IMAGE_EXTENSIONS:
         return "image"
-    else:
-        return "unknown"
+    return "unknown"
 
 
 @router.post("/upload-files/", response_model=UploadFilesResponse)

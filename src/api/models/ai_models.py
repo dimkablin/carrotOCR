@@ -37,6 +37,7 @@ class ProcessImageResponse(BaseModel):
     uid: int  # Image ID
     old_filename: str
     duplicate_id: int  # Duplicate ID if it is already in database
+    filetype: str = 'image'
 
 
 class ProcessFileResponse(BaseModel):
@@ -52,7 +53,8 @@ class ProcessFileResponse(BaseModel):
         return ProcessImageResponse(
             uid=self.uid,
             old_filename=self.old_filename,
-            duplicate_id=self.duplicate_id
+            duplicate_id=self.duplicate_id,
+            filetype='file'
         )
 
 

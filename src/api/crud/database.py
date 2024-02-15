@@ -34,7 +34,8 @@ class Database:
 
         if req.file_type == "image":
             return ProcessedManager.insert_new_filename(req.filename, req.uid)
-        elif req.file_type == "file":
+
+        if req.file_type == "file":
             return FilesManager.insert_new_filename(req.filename, req.uid)
 
         return False

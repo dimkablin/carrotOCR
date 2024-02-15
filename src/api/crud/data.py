@@ -19,10 +19,15 @@ class Data:
     """Functions working with os class"""
 
     @staticmethod
-    def get_file(uid: int):
+    def get_file(uid: int, pdf_id: int = None):
         """get file service's main function."""
         data = ProcessedManager.get_data_by_id(uid)
-        path = SERVER_PATH + os.path.join('LOCAL_DATA', str(data.chunk_id), data.old_filename)
+        path = SERVER_PATH + os.path.join('LOCAL_DATA', str(data.chunk_id))
+
+        if pdf_id is not None:
+            path = os.path.join(path, str(pdf_id), data.old_filename)
+        else:
+            path = os.path.join(path, data.old_filename)
 
         return path
 
@@ -155,13 +160,13 @@ class Data:
                 "type": "file"
             })
 
+        # выделяем только файлы в папке chunk_id
         filenames = [
             i for i in os.listdir(path)
             if pp.check_extension(i, FILE_EXTENSIONS | IMAGE_EXTENSIONS)
         ]
 
         with zipfile.ZipFile(archive_path, "w", zipfile.ZIP_DEFLATED) as zip_file:
-            print(datas, filenames)
             for data in datas:
                 # if file is not in LOCAL_DATA/chunk_id/ dir
                 if data["old_filename"] not in filenames:
