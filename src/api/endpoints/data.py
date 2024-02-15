@@ -23,7 +23,7 @@ def get_folders(req: GetFRequest):
 
 
 @router.get("/get-file/")
-def get_file(uid: int, pdf_id: int):
+def get_file(uid: int, pdf_id: int = None):
     """Return file from static directory."""
     return Data.get_file(uid, pdf_id)
 
