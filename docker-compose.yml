@@ -11,7 +11,7 @@ services:
       - "80:80"
 
   backend:
-    image: fa4stik/carrotocr_back
+    image: dimkablin/carrotocr_back
     command: sh -c "sleep 5 && python3 /carrotocr/db_script.py && python3 /carrotocr/src/main.py"
     env_file:
       - '.env'
@@ -20,7 +20,7 @@ services:
     volumes:
       - ./LOCAL_DATA:/carrotocr/LOCAL_DATA
     ports:
-      - "39781:8000"
+      - "8000:8000"
 
   postgres:
     image: postgres:14
