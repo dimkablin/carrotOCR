@@ -20,4 +20,4 @@ RUN pip install torch==2.1.0 torchvision==0.16.0 torchaudio==2.1.0 --index-url h
 
 RUN apt-get update && apt-get install -y uvicorn && rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install -r requirements.txt
+RUN pip install -r requirements.txt

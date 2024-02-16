@@ -34,4 +34,3 @@ websocket-client~=1.5.1
 requests~=2.28.2
 scikit-image~=0.21.0
 scipy~=1.9.1
-torch~=2.1.2+cu118

@@ -20,7 +20,7 @@ services:
     volumes:
       - ./LOCAL_DATA:/carrotocr/LOCAL_DATA
     ports:
-      - "7000:8000"
+      - "39781:8000"
 
   postgres:
     image: postgres:14
