@@ -14,7 +14,7 @@ from src.features import build_features as bf
 def check_extension(filename, extensions) -> bool:
     """Check available filename extension"""
     ext = filename.split(".")[-1]
-    return ext in extensions
+    return ext.lower() in extensions
 
 
 def read_image(path: str):
