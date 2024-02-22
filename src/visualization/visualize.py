@@ -67,7 +67,7 @@ def result2show(image, result, cmap=colormaps['summer']) -> None:
                      np.mean(y_coord),
                      rec_texts.replace('$', r'\$'),
                      color='black',
-                     fontsize=7,
+                     fontsize=12,
                      va='center')
 
     plt.tight_layout()

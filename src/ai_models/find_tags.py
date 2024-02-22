@@ -7,7 +7,7 @@ import Levenshtein
 class FindTags:
     """ Zero Shot Classification init class"""
     def __init__(self):
-        self.path_to_classes = "src/ai_models/weights/zero-shot-classification/classes.json"
+        self.path_to_classes = "src/ai_models/weights/zero-shot-classification/backup_classes.json"
         self.values = []
         self.keys = []
         self.scores = {}
