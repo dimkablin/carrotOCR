@@ -15,7 +15,7 @@ DB_HOST = os.getenv("DB_HOST")
 DB_PORT = os.getenv("DB_PORT")
 DB_NAME = os.getenv("DB_NAME")
 SERVER_PATH = os.getenv("SERVER_PATH")
-USE_CUDA = bool(os.getenv("USE_CUDA"))
+USE_CUDA = eval(os.getenv("USE_CUDA"))
 DATA_PATH = str(os.getenv("DATA_PATH"))
 
 if __name__ == "__main__":
