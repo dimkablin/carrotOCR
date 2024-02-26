@@ -2,7 +2,7 @@
 from src.ai_models.ocr_models.easyocr import EasyOCRInited
 from src.ai_models.ocr_models.easyocr_custom import EasyOCRInitedCustom
 from src.ai_models.ocr_models.pytesseract import PyTesseractInited, PyTesseractTrained
-from src.ai_models.ocr_models.pytesseract2 import PyTesseractCraftTrained
+from src.ai_models.ocr_models.pytesseract2 import PyTesseractCraftTrained, PyTesseractCraft
 from src.ai_models.ocr_models.none_ocr import NoneOCRInited
 
 
@@ -13,6 +13,7 @@ class OCRModelFactory:
         NoneOCRInited.get_model_type(): NoneOCRInited(),
         PyTesseractInited.get_model_type(): PyTesseractInited(),
         PyTesseractTrained.get_model_type(): PyTesseractTrained(),
+        PyTesseractCraft.get_model_type(): PyTesseractCraft(),
         PyTesseractCraftTrained.get_model_type(): PyTesseractCraftTrained(),
         EasyOCRInitedCustom.get_model_type(): EasyOCRInitedCustom(),
         EasyOCRInited.get_model_type(): EasyOCRInited(),
