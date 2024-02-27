@@ -46,8 +46,9 @@ class RemoveTagsResponse(BaseModel):
 
 class GrouptagsResponse(BaseModel):
     """Get names of group of tags"""
-    uid: int
+    uid: int = None
     name: str
+    is_local: bool = False
 
 
 class AddFilenameRequest(BaseModel):

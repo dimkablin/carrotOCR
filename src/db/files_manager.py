@@ -54,8 +54,10 @@ class FilesManager:
                 raw.chunk_id,
                 raw.old_filename
             )
-
-            return db_manager.execute_query(query, data, fetch=True)[0][0]
+            result = db_manager.execute_query(query, data, fetch=True)
+            if len(result) == 0:
+                return None
+            return result[0][0]
 
     @staticmethod
     def get_data_by_id(uid: int) -> FileStructure:

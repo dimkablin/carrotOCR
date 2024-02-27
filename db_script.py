@@ -15,11 +15,11 @@ if __name__ == "__main__":
     ]
 
     # deleting tables
-    for t_manager in t_managers:
-        query = f"DROP TABLE IF EXISTS {t_manager.table_name};"
-        with DatabaseManager(**ProcessedManager.db_config) as db_manager:
-            if db_manager.execute_query(query):
-                print(f"Table {t_manager.table_name} deleted successfulyy")
+    # for t_manager in t_managers:
+    #     query = f"DROP TABLE IF EXISTS {t_manager.table_name};"
+    #     with DatabaseManager(**ProcessedManager.db_config) as db_manager:
+    #         if db_manager.execute_query(query):
+    #             print(f"Table {t_manager.table_name} deleted successfulyy")
 
     # creating tables
     for t_manager in t_managers:

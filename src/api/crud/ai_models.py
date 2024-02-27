@@ -160,17 +160,17 @@ class AIModels:
         start_time = time.time()
 
         # process IMAGES in chunk_id
-        results = AIModels._process_chunk(ocr_model, tags_model, req, path, tqdm)
+        results = AIModels._process_chunk(ocr_model, tags_model, req, path, tqdm=tqdm)
         response.results += results
 
         # process PDF in chunk_id
         all_pdf = FilesManager().get_data_by_chunk_id(req.chunk_id)
         for pdf in all_pdf:
             path = os.path.join(DATA_PATH, str(req.chunk_id), str(pdf.uid))
-            results = AIModels._process_chunk(ocr_model, tags_model, req, path, tqdm)
+            results = AIModels._process_chunk(ocr_model, tags_model, req, path, pdf_id=pdf.uid, tqdm=tqdm)
             response.results.append(ProcessFileResponse(
                 uid=pdf.uid,
-                old_filename=str(pdf.uid) + "/" + pdf.old_filename,
+                old_filename=pdf.old_filename,
                 duplicate_id=-1,
                 file_type='file',
                 heirs=[result.process_image_response() for result in results]
@@ -191,7 +191,8 @@ class AIModels:
             tags_model: FindTags,
             req: ProcessChunkRequest,
             path: str,
-            tqdm) -> List[ProcessFileResponse]:
+            pdf_id: int = None,
+            tqdm=None) -> List[ProcessFileResponse]:
         """
         Internal function to process the chunk of images
         :param ocr_model: OCR model type
@@ -217,7 +218,7 @@ class AIModels:
                 image=image,
                 ocr_model=ocr_model,
                 tags_model=tags_model,
-                image_name=image_names[i],
+                image_name=image_names[i] if pdf_id is None else str(pdf_id) + "/" + image_names[i],
                 chunk_id=req.chunk_id
             )
 

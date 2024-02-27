@@ -11,7 +11,7 @@ services:
       - "80:80"
 
   backend:
-    image: dimkablin/carrotocr_back
+    image: fa4stik/carrotocr_back
     command: sh -c "sleep 5 && python3 /carrotocr/db_script.py && python3 /carrotocr/src/main.py"
     env_file:
       - '.env'

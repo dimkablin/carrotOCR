@@ -22,12 +22,7 @@ class Data:
     def get_file(uid: int, pdf_id: int = None):
         """get file service's main function."""
         data = ProcessedManager.get_data_by_id(uid)
-        path = SERVER_PATH + os.path.join('LOCAL_DATA', str(data.chunk_id))
-
-        if pdf_id is not None:
-            path = os.path.join(path, str(pdf_id), data.old_filename)
-        else:
-            path = os.path.join(path, data.old_filename)
+        path = SERVER_PATH + os.path.join('LOCAL_DATA', str(data.chunk_id), data.old_filename)
 
         return path
 

@@ -66,6 +66,10 @@ def add_permatag(tag:str, group_id: int):
 def get_grouptags() -> list[GrouptagsResponse]:
     """Return group of tags"""
     data = GrouptagsManager.get_all_data()
+    data.append(GrouptagsResponse(
+        name="Дата",
+        is_local=True
+    ))
     return data
 
 
