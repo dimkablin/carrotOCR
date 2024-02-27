@@ -65,11 +65,16 @@ def add_permatag(tag:str, group_id: int):
 @router.post("/get-group-tags/")
 def get_grouptags() -> list[GrouptagsResponse]:
     """Return group of tags"""
+    name_queue = ['Название', 'Масштаб', 'Дата']
+
     data = GrouptagsManager.get_all_data()
     data.append(GrouptagsResponse(
         name="Дата",
         is_local=True
     ))
+
+    data = sorted(data, key=lambda x: name_queue.index(x.name) if x.name in name_queue else len(name_queue))
+
     return data
 
 
