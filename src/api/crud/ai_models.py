@@ -4,6 +4,7 @@ import os
 import time
 import logging
 import numpy as np
+import torch
 
 from src.db.files_manager import FilesManager
 # importing path to the folder
@@ -98,6 +99,7 @@ class AIModels:
             duplicate_id=-1
         )
 
+        torch.cuda.empty_cache()
         return res
 
     @staticmethod
@@ -130,6 +132,9 @@ class AIModels:
             text=output['rec_texts'],
             bboxes=output['det_polygons']
         )
+
+        # delete images from DEVICE
+        torch.cuda.empty_cache()
 
         return data
 
@@ -243,6 +248,6 @@ class AIModels:
                     break
 
         # delete images from DEVICE
-        del images
+        torch.cuda.empty_cache()
 
         return results
