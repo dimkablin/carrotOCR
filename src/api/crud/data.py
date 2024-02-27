@@ -48,7 +48,7 @@ class Data:
         return GetFilesResponse(files=files)
 
     @staticmethod
-    def pdf_to_images(file_path: str, save_path: str, dpi: int = 200) -> List[str]:
+    def pdf_to_images(file_path: str, save_path: str, dpi: int = 300) -> List[str]:
         """Convert pdf to images"""
         paths = []
 

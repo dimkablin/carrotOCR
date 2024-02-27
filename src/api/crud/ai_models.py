@@ -170,7 +170,7 @@ class AIModels:
             results = AIModels._process_chunk(ocr_model, tags_model, req, path, tqdm)
             response.results.append(ProcessFileResponse(
                 uid=pdf.uid,
-                old_filename=pdf.old_filename,
+                old_filename=str(pdf.uid) + "/" + pdf.old_filename,
                 duplicate_id=-1,
                 file_type='file',
                 heirs=[result.process_image_response() for result in results]
