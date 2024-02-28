@@ -12,7 +12,7 @@ class PyTesseractCraftTrained(OCR):
     def __init__(self, psm=13):
         self.local_config_dir = 'src/ai_models/weights/ocr/pytesseract'
         self.psm = psm
-        self.oem = 1
+        self.oem = 3
         self.config = f"--oem {self.oem} --psm {self.psm} --tessdata-dir {self.local_config_dir}"
         self.thresh = 0.3
 

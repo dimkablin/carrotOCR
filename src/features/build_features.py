@@ -151,6 +151,20 @@ def adaptive_threshold(image: np.ndarray,
     return image
 
 
+def normalize_image(image: np.ndarray, mean: float = None) -> np.ndarray:
+    """ Normalize the input image"""
+    min_val, max_val, _, _ = cv2.minMaxLoc(image)
+    image = image/(max_val-min_val) * 255
+
+    if mean is not None:
+        image = image + (mean*255 - np.mean(image))
+
+    image = np.clip(image, 0, 255)
+    image = image.astype(np.uint8)
+
+    return image
+
+
 def contrast_enhancement(image: np.ndarray) -> np.ndarray:
     """ Enhance the contrast of the input image.
 
@@ -165,6 +179,15 @@ def contrast_enhancement(image: np.ndarray) -> np.ndarray:
         alpha=255.0 / (max_val - min_val),
         beta=-min_val * (255.0 / (max_val - min_val))
     )
+
+    return image
+
+
+def stretch_image(image: np.ndarray, k: float) -> np.ndarray:
+    """ Stretch the image"""
+    image = cv2.multiply(image, k)
+    image = cv2.subtract(image, (k-1)/2)
+    image = np.clip(image, 0, 255)
 
     return image
 
@@ -211,11 +234,10 @@ def blend(image1: np.ndarray,
     return image
 
 
-def binarize_image(rgb_image: np.ndarray) -> np.ndarray:
+def binarize_image(image: np.ndarray) -> np.ndarray:
     """biniarize the image"""
-    image = rgb2gray(rgb_image)
     threshold = threshold_otsu(image)
-    bina_image = image < threshold
+    bina_image = (image < threshold).astype(np.uint8)
     return bina_image
 
 

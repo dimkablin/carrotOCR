@@ -67,7 +67,17 @@ def pipeline_image(
     # prepare images by pipeline config (rotate and cut)
     image = bf.rotate_image(image, pipeline_params.angle)
 
+    # preprocessing
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    image = cv2.filter2D(image, -1, np.ones((3, 3), np.float32) / 9)
+    image = bf.normalize_image(image, mean=0.5)
+    image = bf.stretch_image(image, k=3)
+
+    image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
+
     return image
+
 
 def count_files(directory_path):
     """
