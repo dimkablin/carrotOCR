@@ -3,6 +3,7 @@ from typing import Any
 from pytesseract import Output
 import pytesseract
 from src.ai_models.ocr_models.ocr_interface import OCR
+from src.features.extract_features import preprocess_image
 
 
 class PyTesseractInited(OCR):
@@ -16,7 +17,10 @@ class PyTesseractInited(OCR):
 
     def __call__(self, inputs, *args, **kwargs) -> list[dict[str, list[Any]]]:
         results = []
+
         for image in inputs:
+            # preprocess image
+            image = preprocess_image(image)
             outputs = pytesseract.image_to_data(image,
                                                 lang='rus',
                                                 config=self.config,

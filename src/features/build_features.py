@@ -183,11 +183,11 @@ def contrast_enhancement(image: np.ndarray) -> np.ndarray:
     return image
 
 
-def stretch_image(image: np.ndarray, k: float) -> np.ndarray:
+def stretch_image(image: np.ndarray, k: float = 1.4) -> np.ndarray:
     """ Stretch the image"""
     image = cv2.multiply(image, k)
-    image = cv2.subtract(image, (k-1)/2)
     image = np.clip(image, 0, 255)
+    image = cv2.multiply(image, 1 / k)
 
     return image
 
