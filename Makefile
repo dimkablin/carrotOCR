@@ -30,9 +30,25 @@ data: requirements
 	$(PYTHON_INTERPRETER) src/data/make_dataset.py data/raw data/processed
 
 ## Delete all compiled Python files
-clean:
-	find . -type f -name "*.py[co]" -delete
-	find . -type d -name "__pycache__" -delete
+clean: clean-build clean-pyc
+	rm -rf .mypy_cache/
+	rm -rf .pytest_cache/
+	rm -f .coverage
+	rm -f .__pycache__/
+
+
+clean-build:
+	rm -rf build/
+	rm -rf dist/
+	rm -rf *.egg-info
+
+
+clean-pyc:
+	find . -name '*.pyc' -exec rm -rf {} +
+	find . -name '*.pyo' -exec rm -rf {} +
+	find . -name '*~' -exec rm -f {} +
+	find . -name '__pycache__' -exec rm -rf {} +
+
 
 ## Lint using flake8
 lint:
