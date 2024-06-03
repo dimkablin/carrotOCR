@@ -23,5 +23,20 @@ if __name__ == "__main__":
 
     # creating tables
     for t_manager in t_managers:
+        # Check if the table already exists
+        table_exists_query = f"""
+            SELECT EXISTS (
+                SELECT FROM information_schema.tables 
+                WHERE table_name = '{GrouptagsManager.table_name}'
+            );
+        """
+        table_exists = DatabaseManager.execute_query(table_exists_query, fetch=True)
+
+        if table_exists[0][0]:
+            print(f"Table '{GrouptagsManager.table_name}' already exists.")
+            continue
+        
         if t_manager.create_table():
             print(f"Table '{t_manager.table_name}' created successfully.")
+        
+        print(f"Cannot create the '{t_manager.table_name}' table")
