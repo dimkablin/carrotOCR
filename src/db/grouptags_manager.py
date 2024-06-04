@@ -54,9 +54,9 @@ class GrouptagsManager:
                 db_manager.execute_query(create_table_query)
 
                 # if table exists
-                if db_manager.execute_query(table_exists_query, 
-                                            (GrouptagsManager.table_name,), 
-                                            fetch=True)[0][0]:
+                if not db_manager.execute_query(table_exists_query,
+                                                (GrouptagsManager.table_name,), 
+                                                fetch=True)[0][0]:
                     # fill it with init value
                     for i in init_values:
                         return GrouptagsManager.insert_data(i)
