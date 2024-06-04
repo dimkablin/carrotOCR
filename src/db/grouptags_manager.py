@@ -32,6 +32,15 @@ class GrouptagsManager:
             );
         """
 
+        table_exists_query = """
+        SELECT EXISTS (
+            SELECT 1 
+            FROM information_schema.tables 
+            WHERE table_name = %s
+        );
+        """
+
+
         init_values = [
             GrouptagsStructure(name="Масштаб"),
             GrouptagsStructure(name="Название")
@@ -40,14 +49,19 @@ class GrouptagsManager:
         with DatabaseManager(**GrouptagsManager.db_config) as db_manager:
             if db_manager.connect():
                 db_manager.connection.set_isolation_level(extensions.ISOLATION_LEVEL_AUTOCOMMIT)
+                
+                # create table if it doesnt exist
+                db_manager.execute_query(create_table_query)
 
-                # list of results of queries: [True, False, True]
-                result = [db_manager.execute_query(create_table_query)]
-                for i in init_values:
-                    result.append(GrouptagsManager.insert_data(i))
+                # if table exists
+                if db_manager.execute_query(table_exists_query, 
+                                            (GrouptagsManager.table_name,), 
+                                            fetch=True)[0][0]:
+                    # fill it with init value
+                    for i in init_values:
+                        return GrouptagsManager.insert_data(i)
 
-                # return logical AND
-                return all(result)
+                return False
 
         return None
 
