@@ -40,8 +40,7 @@ class GrouptagsManager:
         with DatabaseManager(**GrouptagsManager.db_config) as db_manager:
             if db_manager.connect():
                 db_manager.connection.set_isolation_level(extensions.ISOLATION_LEVEL_AUTOCOMMIT)
-                
-                # create table if it doesnt exist
+
                 # list of results of queries: [True, False, True]
                 result = [db_manager.execute_query(create_table_query)]
                 for i in init_values:
